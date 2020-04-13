@@ -58,7 +58,7 @@ class Device:
         elif type(value[0]) is list:
             return [self._formatMapping(v) for v in value]
         else:
-            print("Device: Unknown structure...")
+            #print("Device: Unknown structure...")
             return value
 
     def generateNote(self, x, y, state):
