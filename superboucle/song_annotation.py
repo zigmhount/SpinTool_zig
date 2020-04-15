@@ -9,7 +9,8 @@ class SongAnnotation(QDialog, Ui_Dialog):
         self.gui = parent
         self.setupUi(self)
         self.txtAnnotation.clear()
-        self.txtAnnotation.setText(self.gui.song.annotation) 
+        self.txtAnnotation.setText(self.gui.song.annotation)
+        self.txtAnnotation.textChanged.connect(self.onTextChanged)
         
         self.setLayout(self.formLayout)
         
@@ -20,15 +21,18 @@ class SongAnnotation(QDialog, Ui_Dialog):
 
     # Saving window position
 
+    def onTextChanged(self):
+        self.gui.song.annotation = str(self.txtAnnotation.toPlainText())
+
     def moveEvent(self, event):
         self.geometry = self.saveGeometry()
-        self.gui.song_annotation_geometry = copy.deepcopy(self.geometry) # deep copy
+        self.gui.song_annotation_geometry = copy.deepcopy(self.geometry) 
 
     def updateText(self, text):
         self.txtAnnotation.setText(text) 
 
     def hideEvent(self, event):
-        self.onHide() 
+        self.onHide()
 
     def onHide(self):
         self.gui.song.annotation = str(self.txtAnnotation.toPlainText())

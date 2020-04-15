@@ -266,6 +266,9 @@ class Gui(QMainWindow, Ui_MainWindow):
                 self.updateScenesButtons(self.song.initial_scene)
         
         self.update()
+        
+        if self.device:
+            time.sleep(0.5) # wait for all init and light signals to be processed by controller
             
         self.songLoad.emit()
 
@@ -684,7 +687,7 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def onActionAbout(self):
         About(self) # about Dialog
-        self.actionAbout.setEnabled(False)
+        #self.actionAbout.setEnabled(False)
         
     def onActionWiki(self): 
         QDesktopServices.openUrl(QUrl(WIKI_LINK))
@@ -843,12 +846,15 @@ class Gui(QMainWindow, Ui_MainWindow):
                     (a, b_channel, b_pitch, b) = self.device.scene_buttons[i]
                     if i == self.current_scene:
                         color = self.device.green_vel
-                        if self.scenesManagerDialog:
-                            self.scenesManagerDialog.selectItem(i)
                     else:
                         color = self.device.black_vel
-                    self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))            
-        
+                        
+                    self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))
+                    time.sleep(0.01)
+                
+                if self.scenesManagerDialog:
+                    self.scenesManagerDialog.selectItem(self.current_scene)
+                
         # Line blocks 
         elif (btn_id in self.device.block_buttons
               or btn_id_vel in self.device.block_buttons):

@@ -24,14 +24,14 @@ class About(QDialog, Ui_Dialog):
                                   "you can re-distribute and/or change it according to " + 
                                   "GNU General Public License version 2 or later")
         
-        #self.setModal(True)
+        self.setModal(True)
         self.show()
 
     def onWebLinkDoubleClick(self):
          QDesktopServices.openUrl(QUrl(self.webLink))
 
-    def onHide(self):
-        self.gui.actionAbout.setEnabled(True)
+    #def onHide(self):
+        #self.gui.actionAbout.setEnabled(True)
 
     def onFinished(self):
         pass
