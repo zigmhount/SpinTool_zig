@@ -6,7 +6,7 @@ import superboucle.jack as jack
 import sys, os.path
 from superboucle.clip import Clip, Song, load_song_from_file
 from superboucle.gui import Gui
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QStyleFactory
 from queue import Empty
 import argparse
 from PyQt5.QtCore import QSettings
@@ -243,6 +243,9 @@ def start():
                 sb_out = gui.port_by_name[ch_name]
                 client.connect(sb_out, pl_port)
 
+        # print(QStyleFactory.keys())
+        style = QStyleFactory.create('gtk2')
+        app.setStyle(style)
         app.exec_()
 
 if __name__ == "__main__":
