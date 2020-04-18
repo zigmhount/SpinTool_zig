@@ -37,7 +37,7 @@ BEATS_PER_BAR = 4.0
 BEAT_TYPE = 4.0
 TICKS_PER_BEAT = 960.0
 
-APP_VERSION = "v 20.04.13"
+APP_VERSION = "v 20.04.18"
 WIKI_LINK = "https://github.com/manucontrovento/SpinTool/wiki"
 
 class Gui(QMainWindow, Ui_MainWindow):
@@ -102,6 +102,7 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.readQueueIn.connect(self.readQueue)
         self.current_vol_block = 0
         self.last_clip = None
+        self.memory_clip = None
         self.songAnnotationDialog = None # Annotation window
         self.scenesManagerDialog = None
         self.current_scene = None
@@ -179,6 +180,7 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.output.activated.connect(self.onOutputChange)
         self.mute_group.valueChanged.connect(self.onMuteGroupChange)
         self.one_shot_clip.stateChanged.connect(self.onOneShotClip)
+        self.lock_record.stateChanged.connect(self.onLockRecord)
         self.frame_offset.valueChanged.connect(self.onFrameOffsetChange)
         self.beat_offset.valueChanged.connect(self.onBeatOffsetChange)
         self.revertButton.clicked.connect(self.onRevertClip)
@@ -352,21 +354,28 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def startStop(self, x, y):
         clip = self.btn_matrix[x][y].clip # affected clip
+        
         if clip is None:
             return
+
         if self.song.is_record:
-            self.song.is_record = False
-            self.updateRecordBtn()
-            # calculate buffer size
-            state, position = self._jack_client.transport_query()
-            bps = position['beats_per_minute'] / 60
-            fps = position['frame_rate']
-            size = int((1 / bps) * clip.beat_diviser * fps)
-            self.song.init_record_buffer(clip, 2, size, fps)
-            # set frame offset based on jack block size
-            clip.frame_offset = self._jack_client.blocksize
-            clip.state = Clip.PREPARE_RECORD
-            self.recordButton.setStyleSheet(self.RECORD_DEFAULT)
+            if clip.lock_rec == True:
+                # Can't record on this clip:
+                print("This clip is LOCKED for recording")
+                
+            else:
+                self.song.is_record = False
+                self.updateRecordBtn()
+                # calculate buffer size
+                state, position = self._jack_client.transport_query()
+                bps = position['beats_per_minute'] / 60
+                fps = position['frame_rate']
+                size = int((1 / bps) * clip.beat_diviser * fps)
+                self.song.init_record_buffer(clip, 2, size, fps)
+                # set frame offset based on jack block size
+                clip.frame_offset = self._jack_client.blocksize
+                clip.state = Clip.PREPARE_RECORD
+                self.recordButton.setStyleSheet(self.RECORD_DEFAULT)
         else:
             self.song.toggle(clip.x, clip.y)
             
@@ -390,6 +399,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.clip_volume.setValue(self.last_clip.volume * 256)
             self.updateClipVolumeValue()
             self.one_shot_clip.setChecked(self.last_clip.one_shot)
+            self.lock_record.setChecked(self.last_clip.lock_rec)
             
             if (updateDetailsOnly == False):
             
@@ -482,10 +492,12 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def onRecord(self):
         self.song.is_record = not self.song.is_record
-        self.labelRecording.setVisible(self.song.is_record)
+        #self.labelRecording.setVisible(self.song.is_record)
         self.updateRecordBtn()
 
     def updateRecordBtn(self):
+        self.labelRecording.setVisible(self.song.is_record)
+        
         if not self.song.is_record:
             self.recordButton.setStyleSheet(self.RECORD_DEFAULT)
         if self.device.record_btn:
@@ -516,7 +528,8 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.updateClipVolumeValue()
 
     def onBeatDiviserChange(self):
-        self.last_clip.beat_diviser = self.beat_diviser.value()
+        if self.last_clip:
+            self.last_clip.beat_diviser = self.beat_diviser.value()
 
     def onOutputChange(self):
         new_port = self.output.currentText()
@@ -594,6 +607,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.last_clip.output = self.memory_clip.output
             self.last_clip.mute_group = self.memory_clip.mute_group
             self.last_clip.one_shot = self.memory_clip.one_shot
+            self.last_clip.lock_rec = self.memory_clip.lock_rec
             self.last_clip.shot = False
             
             self.updateClipInfo(True)
@@ -602,14 +616,21 @@ class Gui(QMainWindow, Ui_MainWindow):
         if self.last_clip:
             self.last_clip.one_shot = self.one_shot_clip.isChecked()
 
+    def onLockRecord(self):
+        if self.last_clip:
+            self.last_clip.lock_rec  = self.lock_record.isChecked()
+
     def onMuteGroupChange(self):
-        self.last_clip.mute_group = self.mute_group.value()
+        if self.last_clip:
+            self.last_clip.mute_group = self.mute_group.value()
 
     def onFrameOffsetChange(self):
-        self.last_clip.frame_offset = self.frame_offset.value()
+        if self.last_clip:
+            self.last_clip.frame_offset = self.frame_offset.value()
 
     def onBeatOffsetChange(self):
-        self.last_clip.beat_offset = self.beat_offset.value()
+        if self.last_clip:
+            self.last_clip.beat_offset = self.beat_offset.value()
 
     def onActionNew(self):
         NewSongDialog(self)
@@ -686,8 +707,10 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.actionPort_Manager.setEnabled(False)
 
     def onActionAbout(self):
-        About(self) # about Dialog
-        #self.actionAbout.setEnabled(False)
+        About(self)
+    
+    def onActionShowConsole(self):
+	    self.showConsoleText()
         
     def onActionWiki(self): 
         QDesktopServices.openUrl(QUrl(WIKI_LINK))

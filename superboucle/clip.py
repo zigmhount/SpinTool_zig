@@ -72,7 +72,7 @@ class Clip():
 
     def __init__(self, audio_file=None, name='',
                  volume=1, frame_offset=0, beat_offset=0.0, beat_diviser=1,
-                 output=DEFAULT_OUTPUT, mute_group=0, one_shot = False):
+                 output=DEFAULT_OUTPUT, mute_group=0, one_shot = False, lock_rec  =False):
 
         if name == '' and audio_file:
             self.name = audio_file
@@ -89,6 +89,7 @@ class Clip():
         self.output = output
         self.mute_group = mute_group
         self.one_shot = one_shot
+        self.lock_rec = lock_rec
         self.shot = False # When one_shot clip is shot, this becomes True
 
     def stop(self):
@@ -265,6 +266,7 @@ class Song():
             raise Exception("No file specified")
 
     def saveTo(self, file):
+        
         with ZipFile(file, 'w') as zip:
             song_file = configparser.ConfigParser()
             port_list = list(self.outputsPorts)

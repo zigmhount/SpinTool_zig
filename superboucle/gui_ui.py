@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Applicazioni/SpinTool/spintool/gui_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/gui_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.3
 #
@@ -145,7 +145,7 @@ class Ui_MainWindow(object):
 "color: rgb(0, 0, 0);")
         self.deleteButton.setObjectName("deleteButton")
         self.exportButton = QtWidgets.QPushButton(self.frame_clip)
-        self.exportButton.setGeometry(QtCore.QRect(110, 452, 101, 23))
+        self.exportButton.setGeometry(QtCore.QRect(110, 454, 101, 23))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
@@ -173,7 +173,7 @@ class Ui_MainWindow(object):
 "color: rgb(0, 0, 0);")
         self.normalizeButton.setObjectName("normalizeButton")
         self.revertButton = QtWidgets.QPushButton(self.frame_clip)
-        self.revertButton.setGeometry(QtCore.QRect(10, 452, 91, 23))
+        self.revertButton.setGeometry(QtCore.QRect(10, 454, 91, 23))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
@@ -228,7 +228,7 @@ class Ui_MainWindow(object):
         self.groupBoxClipOffset.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.groupBoxClipOffset.setObjectName("groupBoxClipOffset")
         self.frame_offset = QtWidgets.QSpinBox(self.groupBoxClipOffset)
-        self.frame_offset.setGeometry(QtCore.QRect(1, 49, 97, 31))
+        self.frame_offset.setGeometry(QtCore.QRect(1, 49, 121, 31))
         self.frame_offset.setStyleSheet("background-color: rgb(250, 250, 250);\n"
 "font: 12pt \"Noto Sans\";\n"
 "text-align: left;")
@@ -248,7 +248,7 @@ class Ui_MainWindow(object):
 "text-align: left;")
         self.label_2.setObjectName("label_2")
         self.label = QtWidgets.QLabel(self.groupBoxClipOffset)
-        self.label.setGeometry(QtCore.QRect(102, 27, 27, 18))
+        self.label.setGeometry(QtCore.QRect(130, 27, 27, 18))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
@@ -261,7 +261,7 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.beat_offset = QtWidgets.QDoubleSpinBox(self.groupBoxClipOffset)
         self.beat_offset.setEnabled(True)
-        self.beat_offset.setGeometry(QtCore.QRect(102, 49, 69, 31))
+        self.beat_offset.setGeometry(QtCore.QRect(130, 49, 69, 31))
         self.beat_offset.setStyleSheet("background-color: rgb(250, 250, 250);\n"
 "font: 12pt \"Noto Sans\";\n"
 "text-align: left;")
@@ -315,7 +315,7 @@ class Ui_MainWindow(object):
         self.beat_diviser.setMaximum(999)
         self.beat_diviser.setObjectName("beat_diviser")
         self.groupBoxClipVolume = QtWidgets.QGroupBox(self.frame_clip)
-        self.groupBoxClipVolume.setGeometry(QtCore.QRect(10, 364, 201, 51))
+        self.groupBoxClipVolume.setGeometry(QtCore.QRect(10, 366, 201, 51))
         self.groupBoxClipVolume.setTitle("")
         self.groupBoxClipVolume.setObjectName("groupBoxClipVolume")
         self.labelClipVolume = QtWidgets.QLabel(self.groupBoxClipVolume)
@@ -353,7 +353,7 @@ class Ui_MainWindow(object):
         self.label_5.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_5.setObjectName("label_5")
         self.one_shot_clip = QtWidgets.QCheckBox(self.frame_clip)
-        self.one_shot_clip.setGeometry(QtCore.QRect(6, 330, 201, 29))
+        self.one_shot_clip.setGeometry(QtCore.QRect(6, 330, 105, 29))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(11)
@@ -366,7 +366,7 @@ class Ui_MainWindow(object):
 "background-color: rgb(223, 223, 223);")
         self.one_shot_clip.setObjectName("one_shot_clip")
         self.btnCopy = QtWidgets.QPushButton(self.frame_clip)
-        self.btnCopy.setGeometry(QtCore.QRect(10, 422, 91, 23))
+        self.btnCopy.setGeometry(QtCore.QRect(10, 426, 91, 23))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
@@ -380,7 +380,7 @@ class Ui_MainWindow(object):
 "color: rgb(0, 0, 0);")
         self.btnCopy.setObjectName("btnCopy")
         self.btnPaste = QtWidgets.QPushButton(self.frame_clip)
-        self.btnPaste.setGeometry(QtCore.QRect(110, 422, 101, 23))
+        self.btnPaste.setGeometry(QtCore.QRect(110, 426, 101, 23))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
@@ -393,6 +393,19 @@ class Ui_MainWindow(object):
 "text-align: center;\n"
 "color: rgb(0, 0, 0);")
         self.btnPaste.setObjectName("btnPaste")
+        self.lock_record = QtWidgets.QCheckBox(self.frame_clip)
+        self.lock_record.setGeometry(QtCore.QRect(117, 330, 101, 29))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.lock_record.setFont(font)
+        self.lock_record.setStyleSheet("font: bold 11pt \"Noto Sans\";\n"
+"text-align: left;\n"
+"background-color: rgb(223, 223, 223);")
+        self.lock_record.setObjectName("lock_record")
         self.playButton = QtWidgets.QPushButton(self.frame_in)
         self.playButton.setGeometry(QtCore.QRect(55, 140, 36, 30))
         self.playButton.setStyleSheet("QPushButton {background-color: rgb(250, 250, 250);}\n"
@@ -469,16 +482,16 @@ class Ui_MainWindow(object):
         self.labelMasterVolume.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.labelMasterVolume.setObjectName("labelMasterVolume")
         self.labelRecording = QtWidgets.QLabel(self.frame_in)
-        self.labelRecording.setGeometry(QtCore.QRect(190, 110, 41, 21))
+        self.labelRecording.setGeometry(QtCore.QRect(188, 92, 41, 41))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
-        font.setPointSize(11)
+        font.setPointSize(10)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
         self.labelRecording.setFont(font)
         self.labelRecording.setStyleSheet("color: rgb(255, 0, 0);\n"
-"font: bold 11pt \"Noto Sans\";\n"
+"font: bold 10pt \"Noto Sans\";\n"
 "text-align: center;")
         self.labelRecording.setObjectName("labelRecording")
         self.label_12 = QtWidgets.QLabel(self.frame_in)
@@ -591,7 +604,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setStretch(1, 9)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 400, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 400, 31))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -635,6 +648,8 @@ class Ui_MainWindow(object):
         self.actionAbout.setObjectName("actionAbout")
         self.action_SongAnnotation = QtWidgets.QAction(MainWindow)
         self.action_SongAnnotation.setObjectName("action_SongAnnotation")
+        self.actionSystemMessages = QtWidgets.QAction(MainWindow)
+        self.actionSystemMessages.setObjectName("actionSystemMessages")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -676,15 +691,17 @@ class Ui_MainWindow(object):
         self.groupBoxOutputPort.setTitle(_translate("MainWindow", "Output port"))
         self.groupBoxBeat.setTitle(_translate("MainWindow", "Beat amount"))
         self.label_5.setText(_translate("MainWindow", "Clip volume"))
-        self.one_shot_clip.setText(_translate("MainWindow", "One-shot clip"))
+        self.one_shot_clip.setText(_translate("MainWindow", "One-shot"))
         self.btnCopy.setText(_translate("MainWindow", "Copy details"))
         self.btnPaste.setText(_translate("MainWindow", "Paste details"))
+        self.lock_record.setText(_translate("MainWindow", "Lock rec"))
         self.playButton.setToolTip(_translate("MainWindow", "Play"))
         self.pauseButton.setToolTip(_translate("MainWindow", "Pause"))
         self.rewindButton.setToolTip(_translate("MainWindow", "Rewind"))
         self.gotoButton.setToolTip(_translate("MainWindow", "Go to"))
         self.recordButton.setToolTip(_translate("MainWindow", "Pause"))
-        self.labelRecording.setText(_translate("MainWindow", "REC"))
+        self.labelRecording.setText(_translate("MainWindow", "ready\n"
+"to REC"))
         self.label_12.setText(_translate("MainWindow", "Go to position"))
         self.label_10.setText(_translate("MainWindow", "BPM"))
         self.label_11.setText(_translate("MainWindow", "Beat per bar"))
@@ -721,5 +738,7 @@ class Ui_MainWindow(object):
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.action_SongAnnotation.setText(_translate("MainWindow", "Song annotation"))
         self.action_SongAnnotation.setShortcut(_translate("MainWindow", "F8"))
+        self.actionSystemMessages.setText(_translate("MainWindow", "System messages"))
+        self.actionSystemMessages.setShortcut(_translate("MainWindow", "F9"))
 from superboucle.qsuperdial import QSuperDial
 import gui_rc

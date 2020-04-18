@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
-    <height>249</height>
+    <width>410</width>
+    <height>263</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>210</y>
+     <y>220</y>
      <width>381</width>
      <height>32</height>
     </rect>
@@ -93,21 +93,71 @@
     <string notr="true">color: rgb(0, 0, 0);</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="cBoxOneShotClip">
+  <widget class="QGroupBox" name="groupBoxClip">
    <property name="geometry">
     <rect>
-     <x>42</x>
-     <y>150</y>
-     <width>331</width>
-     <height>41</height>
+     <x>40</x>
+     <y>144</y>
+     <width>341</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">font: italic 9pt &quot;Noto Sans&quot;;
+color: rgb(0, 0, 0);
+border: 1;</string>
    </property>
-   <property name="text">
-    <string>One-shot clip</string>
+   <property name="title">
+    <string>Clip behaviour</string>
    </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+   <widget class="QCheckBox" name="cBoxLockRec">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>30</y>
+      <width>191</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>10</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(242, 242, 242);
+font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Lock clip (no recording)</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cBoxOneShotClip">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(242, 242, 242);
+font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>One-shot clip</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

@@ -46,5 +46,6 @@ class AddClipDialog(QDialog, Ui_Dialog):
             
         if new_clip:
             new_clip.one_shot = self.cBoxOneShotClip.isChecked()
+            new_clip.lock_rec = self.cBoxLockRec.isChecked()
             new_clip.beat_diviser = self.gui.song.beat_per_bar
             self.cell.setClip(new_clip)
