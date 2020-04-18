@@ -35,8 +35,10 @@ A bunch of issues were fixed, and some features were added.
 Especially:
 
 * One-shot clips
+* Clip lock (prevents a clip from recording)
 * Light-on all midi device buttons (scenes and transport too)
 * Preferences Window
+* Song annotation
 * Start a clip just after recording it
 * Show clip details when triggered for start/stop
 * Show clip details when its volume is changed from controller
