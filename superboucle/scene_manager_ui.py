@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Applicazioni/SpinTool/spintool/scene_manager_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/scene_manager_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.3
 #
@@ -51,6 +51,9 @@ class Ui_Dialog(object):
         self.verticalLayout_3.addWidget(self.setInitialSceneBtn)
         self.horizontalLayout.addLayout(self.verticalLayout_3)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.cBoxBigFonts = QtWidgets.QCheckBox(Dialog)
+        self.cBoxBigFonts.setObjectName("cBoxBigFonts")
+        self.gridLayout.addWidget(self.cBoxBigFonts, 1, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -62,4 +65,5 @@ class Ui_Dialog(object):
         self.addScenesBtn.setText(_translate("Dialog", "Add Scene"))
         self.removeScenesBtn.setText(_translate("Dialog", "Remove Scene"))
         self.setInitialSceneBtn.setText(_translate("Dialog", "Set initial Scene"))
+        self.cBoxBigFonts.setText(_translate("Dialog", "Use big fonts"))
 import gui_rc

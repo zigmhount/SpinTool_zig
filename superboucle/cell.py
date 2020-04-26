@@ -89,7 +89,7 @@ class Cell(QWidget, Ui_Cell):
             path = urls[0].path()
             self.setClip(self.getClip(path))
 
-    def setClip(self, new_clip):
+    def setClip(self, new_clip, fromDialog = True):
         
         if not new_clip:
             return
@@ -98,7 +98,8 @@ class Cell(QWidget, Ui_Cell):
         self.clip_name.setText(new_clip.name)
         self.start_stop.clicked.connect(self.gui.onStartStopClicked)
         self.edit.setText("Edit")
-        self.edit.clicked.disconnect(self.gui.onAddClipClicked)
+        if fromDialog == True:
+            self.edit.clicked.disconnect(self.gui.onAddClipClicked)
         self.edit.clicked.connect(self.gui.onEdit)
         self.start_stop.setEnabled(True)
         self.clip_position.setEnabled(True)

@@ -15,7 +15,7 @@ class PortManager(QDialog, Ui_Dialog):
         self.addPortBtn.clicked.connect(self.onAddPort)
         self.loadPortlistBtn.clicked.connect(self.onLoadPortlist)
         self.savePortlistBtn.clicked.connect(self.onSavePortlist)
-        self.autoconnectCBox.setChecked(self.gui.auto_connect)
+        self.autoconnectCBox.setChecked(self.gui.auto_connect_output)
         self.autoconnectCBox.stateChanged.connect(self.onCheckAutoconnect)
         self.finished.connect(self.onFinished)
         self.gui.updatePorts.connect(self.updateList)
@@ -75,7 +75,7 @@ class PortManager(QDialog, Ui_Dialog):
                 f.write(json.dumps(data))
 
     def onCheckAutoconnect(self):
-        self.gui.auto_connect = self.autoconnectCBox.isChecked()
+        self.gui.auto_connect_output = self.autoconnectCBox.isChecked()
 
     def hideEvent(self, event):
         self.gui.actionPort_Manager.setEnabled(True)

@@ -50,8 +50,8 @@ text-align: center;</string>
     <rect>
      <x>20</x>
      <y>230</y>
-     <width>521</width>
-     <height>61</height>
+     <width>511</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -71,9 +71,9 @@ text-align: left top;</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>310</y>
+     <y>330</y>
      <width>521</width>
-     <height>61</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">

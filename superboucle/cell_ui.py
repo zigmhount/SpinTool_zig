@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Applicazioni/SpinTool/spintool/cell_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/cell_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.3
 #

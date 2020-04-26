@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Applicazioni/SpinTool/spintool/about_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/about_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.3
 #
@@ -28,7 +28,7 @@ class Ui_Dialog(object):
         self.labelVersion.setAlignment(QtCore.Qt.AlignCenter)
         self.labelVersion.setObjectName("labelVersion")
         self.labelText = QtWidgets.QLabel(Dialog)
-        self.labelText.setGeometry(QtCore.QRect(20, 230, 521, 61))
+        self.labelText.setGeometry(QtCore.QRect(20, 230, 511, 91))
         self.labelText.setStyleSheet("background-color: rgb(242, 242, 242);\n"
 "color: rgb(0, 0, 0);\n"
 "font: 11pt \"Noto Sans\";\n"
@@ -36,7 +36,7 @@ class Ui_Dialog(object):
         self.labelText.setWordWrap(True)
         self.labelText.setObjectName("labelText")
         self.labelLicense = QtWidgets.QLabel(Dialog)
-        self.labelLicense.setGeometry(QtCore.QRect(20, 310, 521, 61))
+        self.labelLicense.setGeometry(QtCore.QRect(20, 330, 521, 51))
         self.labelLicense.setStyleSheet("background-color: rgb(242, 242, 242);\n"
 "color: rgb(0, 0, 0);\n"
 "font: 11pt \"Noto Sans\";\n"

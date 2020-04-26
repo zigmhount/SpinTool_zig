@@ -37,7 +37,7 @@ BEATS_PER_BAR = 4.0
 BEAT_TYPE = 4.0
 TICKS_PER_BEAT = 960.0
 
-APP_VERSION = "v 20.04.18"
+APP_VERSION = "v 20.04.26"
 WIKI_LINK = "https://github.com/manucontrovento/SpinTool/wiki"
 
 class Gui(QMainWindow, Ui_MainWindow):
@@ -134,11 +134,15 @@ class Gui(QMainWindow, Ui_MainWindow):
         print("Loading preferences")
         
         # Load preferences
-        self.auto_connect = self.settings.value('auto_connect','true') == "true"
+        self.use_big_fonts_playlist = self.settings.value('use_big_fonts_playlist') == 'true'
+        self.use_big_fonts_scenes = self.settings.value('use_big_fonts_scenes') == 'true'
+        self.auto_connect_output = self.settings.value('auto_connect_output','true') == "true"
+        self.auto_connect_input = self.settings.value('auto_connect_input','true') == 'true'
         self.show_clip_details_on_trigger = self.settings.value('show_clip_details_on_trigger','false') == "true"
         self.show_clip_details_on_volume = self.settings.value('show_clip_details_on_volume','false') == "true"
         self.play_clip_after_record = self.settings.value('play_clip_after_record','false') == "true"     
         self.show_scenes_on_start = self.settings.value('show_scenes_on_start','false') == 'true'
+        self.allow_record_empty_clip = self.settings.value('allow_record_empty_clip', 'false') == 'true'
         self.show_playlist_on_start = self.settings.value('show_playlist_on_start','false') == 'true'
         self.show_song_annotation_on_load = self.settings.value('show_song_annotation_on_load','false') == 'true'
         # and windows position
@@ -258,7 +262,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             for init_cmd in self.device.init_command:
                 self.queue_out.put(init_cmd)
     
-            self.setWindowTitle("SpinTool - {} - {}".format(APP_VERSION, new_song.file_name or "Empty Song"))
+            self.setWindowTitle(self.getWindowTitle(new_song.file_name or "Empty Song"))
             self.labelRecording.setVisible(False)
     
             if self.song.initial_scene in self.song.scenes:
@@ -331,8 +335,12 @@ class Gui(QMainWindow, Ui_MainWindow):
         
         print("Saving preferences")
         # Saving preferences
-        self.settings.setValue('auto_connect', self.auto_connect)
+        self.settings.setValue('auto_connect_output', self.auto_connect_output)
+        self.settings.setValue('auto_connect_input', self.auto_connect_input)
         self.settings.setValue('show_clip_details_on_trigger', self.show_clip_details_on_trigger)
+        self.settings.setValue('use_big_fonts_playlist', self.use_big_fonts_playlist)
+        self.settings.setValue('use_big_fonts_scenes', self.use_big_fonts_scenes)
+        self.settings.setValue('allow_record_empty_clip', self.allow_record_empty_clip)
         self.settings.setValue('show_clip_details_on_volume', self.show_clip_details_on_volume)
         self.settings.setValue('play_clip_after_record', self.play_clip_after_record)
         self.settings.setValue('show_scenes_on_start', self.show_scenes_on_start)
@@ -352,15 +360,49 @@ class Gui(QMainWindow, Ui_MainWindow):
         clip = self.sender().parent().parent().clip
         self.startStop(clip.x, clip.y)
 
-    def startStop(self, x, y):
+    def startStop(self, x, y, controller = False):
         clip = self.btn_matrix[x][y].clip # affected clip
         
         if clip is None:
-            return
+            if controller == False:
+                # No clip instanced
+                return
+            
+            elif controller == True and self.song.is_record:
+                # Clip is none, but triggering came from controller
+
+                if self.allow_record_empty_clip == False:
+                    # if recording on a empty clip is not allowed:
+                    print("Recording on empty clip is not allowed") 
+                    return
+                
+                else:
+                    if x > self.song.width or y > self.song.height:
+                        print("Required coordinates exceed grid dimension")
+                        return 
+
+                    # else a new clip and a new cell are instanced:
+                    print("Istancing a Clip: x = " + str(x) + ", y = " + str(y))
+
+                    clip = Clip(audio_file=None, name='audio-%02d' % len(self.song.clips))
+                    clip.x = x
+                    clip.y = y
+                    clip.one_shot = False
+                    clip.lock_rec = False
+                    clip.beat_diviser = self.song.beat_per_bar
+
+                    cell = Cell(self, clip, x, y)
+                    self.btn_matrix[x][y] = cell
+                    self.gridLayout.addWidget(cell, y, x)
+
+                    cell.setClip(clip, False)
+
+                    self.updateClipInfo()
 
         if self.song.is_record:
+            # If clip is not None and clip.lock_rec == True
+
             if clip.lock_rec == True:
-                # Can't record on this clip:
                 print("This clip is LOCKED for recording")
                 
             else:
@@ -584,8 +626,11 @@ class Gui(QMainWindow, Ui_MainWindow):
             for port in port_to_remove:
                 port.unregister()
 
+        # sort port list
+        active_ports = sorted(list(wanted_ports - current_ports))
+
         # create new ports
-        for new_port_name in wanted_ports - current_ports:
+        for new_port_name in active_ports:
             self._jack_client.outports.register(new_port_name)
 
         self.port_by_name = {port.shortname: port
@@ -666,6 +711,9 @@ class Gui(QMainWindow, Ui_MainWindow):
         else:
             self.onActionSaveAs()
 
+    def getWindowTitle(self, file_name):
+        return "SpinTool - {} - {}".format(APP_VERSION, file_name)
+
     def onActionSaveAs(self):
         file_name, a = self.getSaveFileName('Save Song',
                                             'SpinTool Song (*.sbs)')
@@ -675,6 +723,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.song.file_name = file_name
             self.song.save()
             print("File saved to : {}".format(self.song.file_name))
+            self.setWindowTitle(self.getWindowTitle(file_name or "Empty Song"))
 
     def onActionQuit(self):
         self.onApplicationExit()
@@ -906,7 +955,7 @@ class Gui(QMainWindow, Ui_MainWindow):
                     pass
 
             if (x >= 0 and y >= 0):
-                self.startStop(x, y)
+                self.startStop(x, y, True)
 
     def updateScenesButtons(self, scene):
         if self.device and scene:

@@ -17,8 +17,10 @@ class About(QDialog, Ui_Dialog):
         self.btnWebLink.setText(self.webLink)
         
         self.labelText.setText("Current development by Manu Controvento (Meltin'Pop) \n" +
-                               "Many many thanks go to Vampouille which developed SuperBoucle " + 
-                               "which I started from to make SpinTool")
+                               "Many many thanks go to Vampouille (Julien Acroute) for " +
+                               "developing SuperBoucle, which I started from to make " +
+                               "SpinTool, and to Vince (Vincent Rateau) for helping " + 
+                               "and advices")
         
         self.labelLicense.setText("This is a free and open source application, " +
                                   "you can re-distribute and/or change it according to " + 

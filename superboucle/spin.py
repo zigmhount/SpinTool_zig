@@ -225,7 +225,7 @@ def start():
         
         # QUI TRY-CATCH
         
-        if gui.auto_connect:
+        if gui.auto_connect_input:
             
             # connect inputs
             try:
@@ -233,7 +233,8 @@ def start():
                 client.connect(record[1], inR)
             except:
                 raise RuntimeError("Error connecting input ports. Check JACK Settings")
-            
+
+        if gui.auto_connect_output:    
             
             # connect outputs
             for ch_name, pl_port in zip([my_format(port=Clip.DEFAULT_OUTPUT,

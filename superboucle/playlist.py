@@ -22,14 +22,18 @@ class PlaylistDialog(QDialog, Ui_Dialog):
         self.playlistList.itemDoubleClicked.connect(self.onSongDoubleClick)
         self.playlistList.setDragDropMode(QAbstractItemView.InternalMove)
         self.playlistList.model().rowsMoved.connect(self.onMoveRows)
+        self.cBoxBigFonts.setChecked(self.gui.use_big_fonts_playlist)
+        self.cBoxBigFonts.stateChanged.connect(self.onBigFonts)        
         
         self.geometry = self.gui.playlist_geometry
         
         if self.geometry:
-            self.restoreGeometry(self.geometry)    
+            self.restoreGeometry(self.geometry)
         
         if self.isVisible() == False:
             self.show()
+
+        self.useBigFonts(self.gui.use_big_fonts_playlist)
         
     def updateList(self):
         self.playlistList.clear()
@@ -81,6 +85,10 @@ class PlaylistDialog(QDialog, Ui_Dialog):
             with open(file_name, 'w') as f:
                 f.write(json.dumps(self.gui.playlist))
 
+    def onBigFonts(self):
+        self.gui.use_big_fonts_playlist = self.cBoxBigFonts.isChecked()
+        self.useBigFonts(self.gui.use_big_fonts_playlist)
+
     def onLoadSong(self):
         id = self.playlistList.currentRow()
         self.loadSong(id)
@@ -99,9 +107,20 @@ class PlaylistDialog(QDialog, Ui_Dialog):
         except Exception as e:
             print("could not load File {}.\nError: {}".format(file_name, e))
     
+    def useBigFonts(self, use = False):
+        if use == False:
+            stylesheet = 'font: 10pt "Noto Sans";'
+        else:
+            stylesheet = 'font: bold 36pt "Noto Sans";'
+         
+        self.playlistList.setStyleSheet(stylesheet)
        
     # saving window position
-        
+    
+    def resizeEvent(self, event):
+        self.geometry = self.saveGeometry()
+        self.gui.playlist_geometry = self.geometry
+
     def moveEvent(self, event):
         self.geometry = self.saveGeometry()
         self.gui.playlist_geometry = self.geometry

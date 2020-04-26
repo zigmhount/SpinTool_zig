@@ -289,6 +289,7 @@ class Song():
                              'output': clip.output,
                              'mute_group': str(clip.mute_group),
                              'one_shot': str(clip.one_shot),
+                             'lock_rec': str(clip.lock_rec),
                              'audio_file': basename(
                                  clip.audio_file)}
                 if clip_file['audio_file'] is None:
@@ -364,7 +365,8 @@ def load_song_from_file(file):
                             parser[section].getint('beat_diviser'),
                             parser[section].get('output', Clip.DEFAULT_OUTPUT),
                             parser[section].getint('mute_group', 0),
-                            parser[section].getboolean('one_shot', False))
+                            parser[section].getboolean('one_shot', False),
+                            parser[section].getboolean('lock_rec', False))
                 res.addClip(clip, x, y)
             
     return res

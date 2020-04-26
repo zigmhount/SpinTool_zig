@@ -12,6 +12,8 @@ class Preferences(QDialog, Ui_Dialog):
     COLOR_AMBER = "AMBER"
     
     MESSAGE_RESTART_SB = "Please restart SpinTool to apply these changes."
+    MESSAGE_RE_OPEN_PLAYLIST = "Please restart playlist window to apply these changes"
+    MESSAGE_RE_OPEN_SCENES = "Please restart scenes manager window to apply these changes"
 
     def __init__(self, parent):
         super(Preferences, self).__init__(parent)
@@ -40,8 +42,11 @@ class Preferences(QDialog, Ui_Dialog):
         self.cBoxShowSongAnnotation.setChecked(self.gui.show_song_annotation_on_load)
         self.cBoxShowSongAnnotation.stateChanged.connect(self.onCheckShowSongAnnotation)        
         
-        self.cBoxAutoconnect.setChecked(self.gui.auto_connect)
-        self.cBoxAutoconnect.stateChanged.connect(self.onCheckAutoconnect)
+        self.cBoxAutoconnectOutput.setChecked(self.gui.auto_connect_output)
+        self.cBoxAutoconnectOutput.stateChanged.connect(self.onCheckAutoconnectOutput)
+
+        self.cBoxAutoconnectInput.setChecked(self.gui.auto_connect_input)
+        self.cBoxAutoconnectInput.stateChanged.connect(self.onCheckAutoconnectInput)        
         
         self.cBoxShowDetailsWhenTriggered.setChecked(self.gui.show_clip_details_on_trigger)
         self.cBoxShowDetailsWhenTriggered.stateChanged.connect(self.onCheckShowClipDetails)   
@@ -54,7 +59,16 @@ class Preferences(QDialog, Ui_Dialog):
         
         self.rButtonAmberRecColor.toggled.connect(self.onAmberRecColor)
         self.rButtonRedRecColor.toggled.connect(self.onRedRecColor)
-        
+
+        self.cBoxBigFontPlaylist.setChecked(self.gui.use_big_fonts_playlist)
+        self.cBoxBigFontPlaylist.stateChanged.connect(self.onUseBigFontsPlaylist)  
+
+        self.cBoxBigFontScenes.setChecked(self.gui.use_big_fonts_scenes)
+        self.cBoxBigFontScenes.stateChanged.connect(self.onUseBigFontsScenes)
+
+        self.cBoxAllowRecordEmptyClip.setChecked(self.gui.allow_record_empty_clip)
+        self.cBoxAllowRecordEmptyClip.stateChanged.connect(self.onAllowRecordEmptyClip)
+
         self.labelMessage.setText("")
         
         self.setModal(True)
@@ -72,11 +86,25 @@ class Preferences(QDialog, Ui_Dialog):
     def onCheckShowPlaylistOnStart(self):
         self.gui.show_playlist_on_start = self.cBoxShowPlaylistManager.isChecked()
         
-    def onCheckAutoconnect(self):
-        self.gui.auto_connect = self.cBoxAutoconnect.isChecked()
+    def onCheckAutoconnectOutput(self):
+        self.gui.auto_connect_output = self.cBoxAutoconnectOutput.isChecked()
+
+    def onCheckAutoconnectInput(self):
+        self.gui.auto_connect_input = self.cBoxAutoconnectInput.isChecked()
 
     def onCheckShowSongAnnotation(self):
-       self.gui.show_song_annotation_on_load = self.cBoxShowSongAnnotation.isChecked()
+        self.gui.show_song_annotation_on_load = self.cBoxShowSongAnnotation.isChecked()
+
+    def onUseBigFontsPlaylist(self):
+        self.labelMessage.setText(self.MESSAGE_RE_OPEN_PLAYLIST)
+        self.gui.use_big_fonts_playlist = self.cBoxBigFontPlaylist.isChecked()   
+
+    def onUseBigFontsScenes(self):
+        self.labelMessage.setText(self.MESSAGE_RE_OPEN_SCENES)
+        self.gui.use_big_fonts_scenes = self.cBoxBigFontScenes.isChecked()
+
+    def onAllowRecordEmptyClip(self):
+        self.gui.allow_record_empty_clip = self.cBoxAllowRecordEmptyClip.isChecked()
 
     def onCheckShowClipDetails(self):
         self.gui.show_clip_details_on_trigger = self.cBoxShowDetailsWhenTriggered.isChecked()

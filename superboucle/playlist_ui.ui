@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>333</height>
+    <height>335</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -94,6 +94,13 @@
       </layout>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="cBoxBigFonts">
+     <property name="text">
+      <string>Use big fonts</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Applicazioni/SuperBoucle-Manu/superboucle/port_manager_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/port_manager_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.3
 #
@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(369, 295)
+        Dialog.resize(370, 308)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -58,4 +58,4 @@ class Ui_Dialog(object):
         self.removePortBtn.setText(_translate("Dialog", "Remove Port"))
         self.loadPortlistBtn.setText(_translate("Dialog", "Load Portlist"))
         self.savePortlistBtn.setText(_translate("Dialog", "Save Portlist"))
-        self.autoconnectCBox.setText(_translate("Dialog", "Autoconnect main ports on program start"))
+        self.autoconnectCBox.setText(_translate("Dialog", "Autoconnect main output ports on program start"))

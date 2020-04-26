@@ -99,6 +99,13 @@
      </item>
     </layout>
    </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="cBoxBigFonts">
+     <property name="text">
+      <string>Use big fonts</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources>

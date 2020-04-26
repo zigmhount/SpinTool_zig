@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'superboucle/playlist_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/playlist_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.12.3
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(320, 333)
+        Dialog.resize(320, 335)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -45,6 +47,9 @@ class Ui_Dialog(object):
         self.verticalLayout_3.addWidget(self.savePlaylistBtn)
         self.horizontalLayout.addLayout(self.verticalLayout_3)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.cBoxBigFonts = QtWidgets.QCheckBox(Dialog)
+        self.cBoxBigFonts.setObjectName("cBoxBigFonts")
+        self.gridLayout.addWidget(self.cBoxBigFonts, 1, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -57,4 +62,4 @@ class Ui_Dialog(object):
         self.removeSongBtn.setText(_translate("Dialog", "Remove Song"))
         self.loadPlaylistBtn.setText(_translate("Dialog", "Load Playlist"))
         self.savePlaylistBtn.setText(_translate("Dialog", "Save Playlist"))
-
+        self.cBoxBigFonts.setText(_translate("Dialog", "Use big fonts"))

@@ -37,12 +37,17 @@ class SceneManager(QDialog, Ui_Dialog):
         self.gui.songLoad.connect(self.updateList)
         self.initPreview()
         self.geometry = self.gui.scenes_geometry
+        self.cBoxBigFonts.setChecked(self.gui.use_big_fonts_scenes)
+        self.cBoxBigFonts.stateChanged.connect(self.onBigFonts)            
  
         if self.geometry:
             self.restoreGeometry(self.geometry)   
         
         if self.isVisible() == False:
             self.show()
+        
+        self.useBigFonts(self.gui.use_big_fonts_scenes)
+
 
     def selectItem(self, index):
         s_item = self.scenelistList.item(index)
@@ -107,6 +112,10 @@ class SceneManager(QDialog, Ui_Dialog):
         l.insert(k, v, destinationRow)
         self.updateList()
 
+    def onBigFonts(self):
+        self.gui.use_big_fonts_scenes = self.cBoxBigFonts.isChecked()
+        self.useBigFonts(self.gui.use_big_fonts_scenes)
+
     def onAddedScene(self):
         self.select_scene = True
         self.updateList()
@@ -158,7 +167,19 @@ class SceneManager(QDialog, Ui_Dialog):
         except:
             pass
 
+    def useBigFonts(self, use = False):
+        if use == False:
+            stylesheet = 'font: 10pt "Noto Sans";'
+        else:
+            stylesheet = 'font: bold 36pt "Noto Sans";'
+         
+        self.scenelistList.setStyleSheet(stylesheet)
+
     # Saving window position
+
+    def resizeEvent(self, event):
+        self.geometry = self.saveGeometry()
+        self.gui.scenes_geometry = self.geometry
 
     def moveEvent(self, event):
         self.geometry = self.saveGeometry()

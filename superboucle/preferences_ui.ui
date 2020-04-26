@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
-    <height>551</height>
+    <width>601</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,9 +24,9 @@
    <property name="geometry">
     <rect>
      <x>9</x>
-     <y>291</y>
+     <y>371</y>
      <width>566</width>
-     <height>221</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="font">
@@ -89,7 +89,7 @@
     <property name="geometry">
      <rect>
       <x>23</x>
-      <y>145</y>
+      <y>185</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>150</y>
+      <y>190</y>
       <width>351</width>
       <height>29</height>
      </rect>
@@ -139,7 +139,7 @@
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>190</y>
+      <y>230</y>
       <width>351</width>
       <height>29</height>
      </rect>
@@ -173,12 +173,34 @@
      <string>Show clip details when clip volume is changed from MIDI controller</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="cBoxAllowRecordEmptyClip">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>150</y>
+      <width>461</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Allow recording on an empy clip from MIDI controller</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBoxGrid">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>210</y>
+     <y>290</y>
      <width>566</width>
      <height>71</height>
     </rect>
@@ -327,7 +349,7 @@
      <x>9</x>
      <y>9</y>
      <width>561</width>
-     <height>65</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="font">
@@ -342,29 +364,52 @@
    <property name="title">
     <string>Connections</string>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QCheckBox" name="cBoxAutoconnect">
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-      </property>
-      <property name="text">
-       <string>Autoconnect main ports on program start</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <widget class="QCheckBox" name="cBoxAutoconnectOutput">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>338</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Autoconnect main output ports on program start</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cBoxAutoconnectInput">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>411</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Autoconnect main input ports on program start</string>
+    </property>
+   </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBoxPerformance">
+  <widget class="QGroupBox" name="groupBoxEnvironment">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>90</y>
+     <y>130</y>
      <width>566</width>
-     <height>121</height>
+     <height>141</height>
     </rect>
    </property>
    <property name="font">
@@ -377,13 +422,13 @@
     <string notr="true">color: rgb(0, 0, 0);</string>
    </property>
    <property name="title">
-    <string>Performance</string>
+    <string>Environment</string>
    </property>
    <widget class="QCheckBox" name="cBoxShowScenesManager">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>40</y>
+      <y>70</y>
       <width>251</width>
       <height>29</height>
      </rect>
@@ -402,7 +447,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>80</y>
+      <y>110</y>
       <width>261</width>
       <height>29</height>
      </rect>
@@ -421,7 +466,7 @@
     <property name="geometry">
      <rect>
       <x>280</x>
-      <y>40</y>
+      <y>70</y>
       <width>281</width>
       <height>29</height>
      </rect>
@@ -433,14 +478,49 @@
      <string>Show song annotation on song loading</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="cBoxBigFontScenes">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>30</y>
+      <width>281</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="text">
+     <string>Use big fonts for scene manager</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cBoxBigFontPlaylist">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>251</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Use big fonts for playlist</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QLabel" name="labelMessage">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>520</y>
-     <width>561</width>
-     <height>22</height>
+     <y>630</y>
+     <width>581</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">

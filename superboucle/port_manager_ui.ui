@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
-    <height>295</height>
+    <width>370</width>
+    <height>308</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,7 +91,7 @@
    <item row="1" column="0">
     <widget class="QCheckBox" name="autoconnectCBox">
      <property name="text">
-      <string>Autoconnect main ports on program start</string>
+      <string>Autoconnect main output ports on program start</string>
      </property>
     </widget>
    </item>
