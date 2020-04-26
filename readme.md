@@ -35,14 +35,15 @@ A bunch of issues were fixed, and some features were added.
 Especially:
 
 * One-shot clips
-* Clip lock (prevents a clip from recording)
+* Creating new clips just by recording them (triggering them from controller)
 * Light-on all midi device buttons (scenes and transport too)
 * Preferences Window
-* Song annotation
 * Start a clip just after recording it
+* Lock clip (prevents from recording on it)
 * Show clip details when triggered for start/stop
 * Show clip details when its volume is changed from controller
 * Preferred grid size, to match your controller's buttons grid
+* Use big fonts on Scenes and Playlist windows (see them better on stage!)
 * Choice of clip recording color (amber is default, red available)
 * Open scenes and playlist windows on start up
 
@@ -52,6 +53,7 @@ New versioning starts from 20.04.07
 
 ### Linux
 
+* Gtk2 theme
 * Python 3
 * Pip for python 3
 * Python modules : Cffi, PySoundFile, Numpy, PyQT 5
@@ -61,9 +63,9 @@ Recommended:
 * a2jmidid to access midi controller
 * Carla to save connections
 
-### Windows
+### Windows / other OS
 
-I still have to decide if produce a Windows setup package too
+I still have to decide if produce different OS setup packages too
 
 ## Installation
 
