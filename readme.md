@@ -27,7 +27,6 @@ the time to. Enjoy!
 * Full intuitive MIDI learn interface
 * Support any MIDI device: generic keyboard, pad, BCF, Akai APC, ...
 * Fully controllable by MIDI device or mouse/keyboard
-* "Go to" function to move jack transport to specified location
 
 ## What's new
 
@@ -35,25 +34,24 @@ A bunch of issues were fixed, and some features were added.
 Especially:
 
 * One-shot clips
-* Creating new clips just by recording them (triggering them from controller)
 * Light-on all midi device buttons (scenes and transport too)
 * Preferences Window
 * Start a clip just after recording it
-* Lock clip (prevents from recording on it)
 * Show clip details when triggered for start/stop
 * Show clip details when its volume is changed from controller
 * Preferred grid size, to match your controller's buttons grid
-* Use big fonts on Scenes and Playlist windows (see them better on stage!)
 * Choice of clip recording color (amber is default, red available)
 * Open scenes and playlist windows on start up
+* New grid cells style, showing clip volume
+* New massive clips edit functions to change clips parameters
+* New Export-all samples function
 
-New versioning starts from 20.04.07
+SpinTool releases start from version 20.04.07
 
 ## Requirements
 
 ### Linux
 
-* Gtk2 theme
 * Python 3
 * Pip for python 3
 * Python modules : Cffi, PySoundFile, Numpy, PyQT 5
@@ -63,9 +61,9 @@ Recommended:
 * a2jmidid to access midi controller
 * Carla to save connections
 
-### Windows / other OS
+### Windows
 
-I still have to decide if produce different OS setup packages too
+I still have to decide if produce a Windows setup package too
 
 ## Installation
 
