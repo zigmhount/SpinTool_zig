@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/copy.png</file>
+    <file>icons/clip-edit.png</file>
+    <file>icons/clip-start-stop.png</file>
+    <file>icons/clip-add.png</file>
     <file>icons/logo_sb.png</file>
     <file>icons/MeltinPop_Logo_100.png</file>
     <file>icons/ST_Logo_Small_Transparent.png</file>
@@ -11,6 +15,7 @@
     <file>icons/white_rewind_24.png</file>
     <file>icons/black_goto_24.png</file>
     <file>icons/black_pause_24.png</file>
+    <file>icons/folder.png</file>
     <file>icons/black_play_24.png</file>
     <file>icons/black_rewind_24.png</file>
     <file>icons/icon.png</file>

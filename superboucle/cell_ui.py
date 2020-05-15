@@ -31,35 +31,38 @@ class Ui_Cell(object):
         sizePolicy.setHeightForWidth(self.cell_frame.sizePolicy().hasHeightForWidth())
         self.cell_frame.setSizePolicy(sizePolicy)
         self.cell_frame.setStyleSheet("#frame {border: 0px;\n"
-"    background-color: rgb(210, 210, 210);\n"
+"    background-color: rgb(190, 190, 190);\n"
 "border-radius: 10px;}")
         self.cell_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.cell_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.cell_frame.setObjectName("cell_frame")
         self.clip_name = QtWidgets.QLabel(self.cell_frame)
-        self.clip_name.setGeometry(QtCore.QRect(5, 6, 102, 20))
+        self.clip_name.setGeometry(QtCore.QRect(3, 2, 105, 46))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
-        font.setPointSize(10)
+        font.setPointSize(13)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
         self.clip_name.setFont(font)
-        self.clip_name.setStyleSheet("font: bold 10pt \"Noto Sans\";\n"
+        self.clip_name.setStyleSheet("font: bold 13pt \"Noto Sans\";\n"
 "color: rgb(0, 0, 0);\n"
 "text-align: center;")
+        self.clip_name.setInputMethodHints(QtCore.Qt.ImhMultiLine)
         self.clip_name.setText("")
         self.clip_name.setAlignment(QtCore.Qt.AlignCenter)
+        self.clip_name.setWordWrap(True)
         self.clip_name.setObjectName("clip_name")
         self.clip_position = QtWidgets.QProgressBar(self.cell_frame)
-        self.clip_position.setGeometry(QtCore.QRect(7, 87, 97, 10))
-        self.clip_position.setStyleSheet("color: rgb(0, 85, 255);")
+        self.clip_position.setGeometry(QtCore.QRect(5, 85, 99, 13))
+        self.clip_position.setStyleSheet("color: rgb(0, 85, 255);\n"
+"background-color: rgb(190, 190, 190);")
         self.clip_position.setMaximum(97)
         self.clip_position.setProperty("value", 0)
         self.clip_position.setTextVisible(False)
         self.clip_position.setObjectName("clip_position")
         self.edit = QtWidgets.QPushButton(self.cell_frame)
-        self.edit.setGeometry(QtCore.QRect(10, 60, 91, 23))
+        self.edit.setGeometry(QtCore.QRect(70, 49, 33, 33))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
@@ -70,14 +73,19 @@ class Ui_Cell(object):
         self.edit.setFocusPolicy(QtCore.Qt.NoFocus)
         self.edit.setStyleSheet("font: italic 10pt \"Noto Sans\";\n"
 "color: rgb(0, 0, 0);\n"
-"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(190, 190, 190);\n"
 "text-align: center;")
+        self.edit.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/icons/clip-add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.edit.setIcon(icon)
+        self.edit.setIconSize(QtCore.QSize(35, 35))
         self.edit.setAutoDefault(False)
         self.edit.setDefault(False)
         self.edit.setFlat(False)
         self.edit.setObjectName("edit")
         self.start_stop = QtWidgets.QPushButton(self.cell_frame)
-        self.start_stop.setGeometry(QtCore.QRect(10, 30, 91, 23))
+        self.start_stop.setGeometry(QtCore.QRect(5, 49, 33, 33))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
@@ -87,10 +95,20 @@ class Ui_Cell(object):
         self.start_stop.setFont(font)
         self.start_stop.setFocusPolicy(QtCore.Qt.NoFocus)
         self.start_stop.setStyleSheet("font: italic 10pt \"Noto Sans\";\n"
-"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(190, 190, 190);\n"
 "color: rgb(0, 0, 0);\n"
 "text-align: center;")
+        self.start_stop.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/icons/icons/clip-start-stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.start_stop.setIcon(icon1)
+        self.start_stop.setIconSize(QtCore.QSize(27, 27))
         self.start_stop.setObjectName("start_stop")
+        self.labelVolume = QtWidgets.QLabel(self.cell_frame)
+        self.labelVolume.setGeometry(QtCore.QRect(38, 49, 33, 33))
+        self.labelVolume.setStyleSheet("font: bold 11pt \"Noto Sans\";")
+        self.labelVolume.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelVolume.setObjectName("labelVolume")
 
         self.retranslateUi(Cell)
         QtCore.QMetaObject.connectSlotsByName(Cell)
@@ -98,5 +116,5 @@ class Ui_Cell(object):
     def retranslateUi(self, Cell):
         _translate = QtCore.QCoreApplication.translate
         Cell.setWindowTitle(_translate("Cell", "Form"))
-        self.edit.setText(_translate("Cell", "Edit"))
-        self.start_stop.setText(_translate("Cell", "Start/Stop"))
+        self.labelVolume.setText(_translate("Cell", "5"))
+import gui_rc

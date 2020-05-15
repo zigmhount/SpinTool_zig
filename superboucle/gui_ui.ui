@@ -1375,7 +1375,7 @@ text-align: left;</string>
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1415,7 +1415,19 @@ text-align: left;</string>
     <addaction name="actionOnline_Wiki"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuSong">
+    <property name="title">
+     <string>Song</string>
+    </property>
+    <addaction name="actionExportAllSamples"/>
+    <addaction name="separator"/>
+    <addaction name="actionEditSelectedClips"/>
+    <addaction name="actionEditClipsOutputGroup"/>
+    <addaction name="actionEditClipsMuteGroup"/>
+    <addaction name="actionUnselectAllClips"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuSong"/>
    <addaction name="menuDevice"/>
    <addaction name="menuView"/>
    <addaction name="menuInfo"/>
@@ -1548,6 +1560,34 @@ text-align: left;</string>
    </property>
    <property name="shortcut">
     <string>F9</string>
+   </property>
+  </action>
+  <action name="actionExportAllSamples">
+   <property name="text">
+    <string>Export all samples</string>
+   </property>
+  </action>
+  <action name="actionEditSelectedClips">
+   <property name="text">
+    <string>Edit all selected clips</string>
+   </property>
+  </action>
+  <action name="actionEditClipsOutputGroup">
+   <property name="text">
+    <string>Edit clips by output group</string>
+   </property>
+  </action>
+  <action name="actionEditClipsMuteGroup">
+   <property name="text">
+    <string>Edit clips by mute group</string>
+   </property>
+  </action>
+  <action name="actionUnselectAllClips">
+   <property name="text">
+    <string>Unselect all clips</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
    </property>
   </action>
  </widget>

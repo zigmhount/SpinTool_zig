@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
-    <height>671</height>
+    <width>585</width>
+    <height>738</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,12 +31,16 @@
    </property>
    <property name="font">
     <font>
+     <family>Noto Sans</family>
+     <pointsize>10</pointsize>
      <weight>75</weight>
+     <italic>false</italic>
      <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">color: rgb(0, 0, 0);
+font: bold 10pt &quot;Noto Sans&quot;;</string>
    </property>
    <property name="title">
     <string>Clips</string>
@@ -207,12 +211,16 @@
    </property>
    <property name="font">
     <font>
+     <family>Noto Sans</family>
+     <pointsize>10</pointsize>
      <weight>75</weight>
+     <italic>false</italic>
      <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">color: rgb(0, 0, 0);
+font: bold 10pt &quot;Noto Sans&quot;;</string>
    </property>
    <property name="title">
     <string>Grid</string>
@@ -354,12 +362,16 @@
    </property>
    <property name="font">
     <font>
+     <family>Noto Sans</family>
+     <pointsize>10</pointsize>
      <weight>75</weight>
+     <italic>false</italic>
      <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">color: rgb(0, 0, 0);
+font: bold 10pt &quot;Noto Sans&quot;;</string>
    </property>
    <property name="title">
     <string>Connections</string>
@@ -407,19 +419,23 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>130</y>
+     <y>120</y>
      <width>566</width>
-     <height>141</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="font">
     <font>
+     <family>Noto Sans</family>
+     <pointsize>10</pointsize>
      <weight>75</weight>
+     <italic>false</italic>
      <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">color: rgb(0, 0, 0);
+font: bold 10pt &quot;Noto Sans&quot;;</string>
    </property>
    <property name="title">
     <string>Environment</string>
@@ -427,8 +443,8 @@
    <widget class="QCheckBox" name="cBoxShowScenesManager">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>70</y>
+      <x>270</x>
+      <y>60</y>
       <width>251</width>
       <height>29</height>
      </rect>
@@ -446,8 +462,8 @@
    <widget class="QCheckBox" name="cBoxShowPlaylistManager">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>110</y>
+      <x>270</x>
+      <y>30</y>
       <width>261</width>
       <height>29</height>
      </rect>
@@ -465,14 +481,17 @@
    <widget class="QCheckBox" name="cBoxShowSongAnnotation">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>70</y>
+      <x>270</x>
+      <y>90</y>
       <width>281</width>
       <height>29</height>
      </rect>
     </property>
     <property name="focusPolicy">
      <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
     </property>
     <property name="text">
      <string>Show song annotation on song loading</string>
@@ -481,14 +500,17 @@
    <widget class="QCheckBox" name="cBoxBigFontScenes">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>30</y>
+      <x>20</x>
+      <y>60</y>
       <width>281</width>
       <height>29</height>
      </rect>
     </property>
     <property name="focusPolicy">
      <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
     </property>
     <property name="text">
      <string>Use big fonts for scene manager</string>
@@ -513,13 +535,51 @@
      <string>Use big fonts for playlist</string>
     </property>
    </widget>
+   <widget class="QSpinBox" name="cBigFontSize">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>90</y>
+      <width>71</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="minimum">
+     <number>10</number>
+    </property>
+    <property name="maximum">
+     <number>200</number>
+    </property>
+    <property name="value">
+     <number>20</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>100</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Big fonts size (pt)</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QLabel" name="labelMessage">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>630</y>
-     <width>581</width>
+     <y>700</y>
+     <width>561</width>
      <height>31</height>
     </rect>
    </property>
@@ -542,6 +602,51 @@ font: 75 11pt &quot;Noto Sans&quot;;</string>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBoxExperimental">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>630</y>
+     <width>561</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Noto Sans</family>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <italic>false</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0);
+font: bold 10pt &quot;Noto Sans&quot;;</string>
+   </property>
+   <property name="title">
+    <string>Experimental :-)</string>
+   </property>
+   <widget class="QCheckBox" name="cBoxApplySlowerProcessing">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>501</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Slower processing (try it for XRuns and MIDI controller lighting problems)</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources>

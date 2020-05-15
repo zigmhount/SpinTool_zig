@@ -37,12 +37,13 @@
     <rect>
      <x>40</x>
      <y>100</y>
-     <width>99</width>
+     <width>111</width>
      <height>21</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">color: rgb(0, 0, 0);
+font: 10pt &quot;Noto Sans&quot;;</string>
    </property>
    <property name="text">
     <string>Empty clip</string>
@@ -58,7 +59,8 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">color: rgb(0, 0, 0);
+font: 10pt &quot;Noto Sans&quot;;</string>
    </property>
    <property name="text">
     <string>Load new file...</string>
@@ -69,12 +71,13 @@
     <rect>
      <x>40</x>
      <y>60</y>
-     <width>81</width>
+     <width>91</width>
      <height>21</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);</string>
+    <string notr="true">color: rgb(0, 0, 0);
+font: 10pt &quot;Noto Sans&quot;;</string>
    </property>
    <property name="text">
     <string>Use file</string>

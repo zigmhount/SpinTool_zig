@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
 
-"""JACK client that prints all received MIDI events."""
+print("Initialize settings")
+
+import time
+import settings
+settings.init()
+
+print("Settings initialized")
+
+print("Initialize common")
+
+import common
+common.init()
 
 import superboucle.jack as jack
 import sys, os.path
@@ -9,7 +20,7 @@ from superboucle.gui import Gui
 from PyQt5.QtWidgets import QApplication, QStyleFactory
 from queue import Empty
 import argparse
-from PyQt5.QtCore import QSettings
+# from PyQt5.QtCore import QSettings
 from superboucle.preferences import Preferences
 
 parser = argparse.ArgumentParser(description='launch spintool')
@@ -17,7 +28,8 @@ parser.add_argument("songfile", nargs="?", help="load the song specified here")
 args = parser.parse_args()
 
 song = None
-settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION)
+# settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION
+
 if args.songfile:
     if os.path.isfile(args.songfile):
         song = load_song_from_file(args.songfile)
@@ -27,8 +39,11 @@ else:
 
     # song = Song(8, 8)
     # reading preferred grid size
-    song = Song(int(settings.value('grid_columns', 8)), 
-                int(settings.value('grid_rows', 8)))
+    # song = Song(int(settings.value('grid_columns', 8)), 
+    #             int(settings.value('grid_rows', 8)))
+
+    song = Song(int(settings.grid_columns), 
+                int(settings.grid_rows))
 
 client = jack.Client("SpinTool")
 midi_in = client.midi_inports.register("input")
@@ -40,7 +55,8 @@ app = QApplication(sys.argv)
 gui = Gui(song, client, app)
 
 # option to start playing the clip just after recording:
-if settings.value('play_clip_after_record', False) == False:
+# if settings.value('play_clip_after_record', False) == False:
+if settings.play_clip_after_record == False:
 
     CLIP_TRANSITION = {Clip.STARTING: Clip.START,
                        Clip.STOPPING: Clip.STOP,
@@ -52,7 +68,6 @@ else:
                        Clip.STOPPING: Clip.STOP,
                        Clip.PREPARE_RECORD: Clip.RECORDING,
                        Clip.RECORDING: Clip.START}        
-
 
 def my_callback(frames):
     song = gui.song
@@ -211,21 +226,22 @@ client.set_process_callback(my_callback)
 
 # activate !
 def start():
+
     with client:
-        # make connection
+
+        # make out connections
         playback = client.get_ports(is_physical=True, is_input=True)
         if not playback:
             raise RuntimeError("No physical playback ports")
-
+        
+        # make in connections
         record = client.get_ports(is_physical=True, is_output=True)
         if not record:
             raise RuntimeError("No physical record ports")
 
         my_format = Song.CHANNEL_NAME_PATTERN.format
         
-        # QUI TRY-CATCH
-        
-        if gui.auto_connect_input:
+        if settings.auto_connect_input:
             
             # connect inputs
             try:
@@ -234,7 +250,7 @@ def start():
             except:
                 raise RuntimeError("Error connecting input ports. Check JACK Settings")
 
-        if gui.auto_connect_output:    
+        if settings.auto_connect_output:    
             
             # connect outputs
             for ch_name, pl_port in zip([my_format(port=Clip.DEFAULT_OUTPUT,
@@ -244,7 +260,6 @@ def start():
                 sb_out = gui.port_by_name[ch_name]
                 client.connect(sb_out, pl_port)
 
-        # print(QStyleFactory.keys())
         style = QStyleFactory.create('gtk2')
         app.setStyle(style)
         app.exec_()

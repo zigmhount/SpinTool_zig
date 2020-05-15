@@ -1,6 +1,7 @@
 from superboucle.clip import Clip
 from PyQt5.QtCore import QSettings
 from superboucle.preferences import Preferences
+import settings
 
 class DeviceOutput:
     def __init__(self, method, name=None):
@@ -66,13 +67,13 @@ class Device:
         return (0x90 + channel, pitch, self.getColor(state))  # note on : 0x90
 
     def getColor(self, state):
-        settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION)  # Managing recording color
+        #settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION)  # Managing recording color
         
         if state is None:
             return self.black_vel
         
         elif state == Clip.STOP:
-            if settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_RED:
+            if settings.rec_color == settings.COLOR_RED:
                 return self.amber_vel
             else:
                 return self.red_vel
@@ -84,19 +85,19 @@ class Device:
             return self.green_vel
         
         elif state == Clip.STOPPING:
-            if settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_RED:
+            if settings.rec_color == settings.COLOR_RED:
                 return self.blink_amber_vel
             else:
                 return self.blink_red_vel
         
         elif state == Clip.PREPARE_RECORD:
-            if settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_RED:
+            if settings.rec_color == settings.COLOR_RED:
                 return self.blink_red_vel
             else:
                 return self.blink_amber_vel
         
         elif state == Clip.RECORDING:
-            if settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_RED:
+            if settings.rec_color == settings.COLOR_RED:
                 return self.red_vel
             else:
                 return self.amber_vel

@@ -1,10 +1,15 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtCore import QSize, Qt
 from superboucle.cell_ui import Ui_Cell
 from superboucle.clip import basename, Clip
 import numpy as np
 import soundfile as sf
-from PyQt5.QtCore import QSettings
+from PyQt5 import QtGui
 from superboucle.preferences import Preferences
+import settings
+import common
+
+ICON_EDIT_SIZE = QSize(28, 28)
 
 class Cell(QWidget, Ui_Cell):
 
@@ -19,7 +24,7 @@ class Cell(QWidget, Ui_Cell):
     PURPLE = ("#cell_frame { border: 0px; border-radius: 10px; "
               "background-color: rgb(130, 0, 240);}")
     DEFAULT = ("#cell_frame { border: 0px; border-radius: 10px; "
-               "background-color: rgb(217, 217, 217);}")
+               "background-color: rgb(190, 190, 190);}")
 
     RECORD_BLINK = ("QPushButton {background-color: rgb(255, 255, 255);}"
                     "QPushButton:pressed {background-color: "
@@ -29,10 +34,13 @@ class Cell(QWidget, Ui_Cell):
                       "QPushButton:pressed {background-color: "
                       "rgb(98, 98, 98);}")
 
+    DEFAULT_CLIP_LABEL_STYLE = ('font: bold 13pt "Noto Sans"; color: rgb(0, 0, 0); text-align: center;')
+
+    SELECTED_CLIP_LABEL_STYLE = ('font: bold 13pt "Noto Sans"; color: rgb(255, 255, 0); text-align: center;')
+
     # Managing recording color
     
-    settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION)
-    if settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_RED:
+    if settings.rec_color == settings.COLOR_RED:
         
         # RED color for recording
         STATE_COLORS = {Clip.STOP: AMBER,
@@ -67,15 +75,36 @@ class Cell(QWidget, Ui_Cell):
         self.setupUi(self)
         self.setStyleSheet(Cell.DEFAULT)
         self.setAcceptDrops(True)
+
         if clip:
+            self.labelVolume.setText(str(common.toDigitalVolumeValue(clip.volume)))
             self.clip_name.setText(clip.name)
             self.start_stop.clicked.connect(parent.onStartStopClicked)
             self.edit.clicked.connect(parent.onEdit)
+            self.setEditIcon()
         else:
+            self.labelVolume.setText("")
             self.start_stop.setEnabled(False)
             self.clip_position.setEnabled(False)
-            self.edit.setText("Add Clip...")
+            self.edit.setIcon(QtGui.QIcon(":/icons/icons/clip-add.png"))
             self.edit.clicked.connect(parent.onAddClipClicked)
+
+    def setEditIcon(self):
+        self.edit.setIcon(QtGui.QIcon(":/icons/icons/clip-edit.png"))
+        self.edit.setIconSize(ICON_EDIT_SIZE)
+
+    def clipSelect(self, value):
+        if self.clip:
+            self.clip.selected = value
+            if (self.clip.selected) == True:
+                self.clip_name.setStyleSheet(self.SELECTED_CLIP_LABEL_STYLE)
+            else:
+                self.clip_name.setStyleSheet(self.DEFAULT_CLIP_LABEL_STYLE)
+
+    def mousePressEvent(self, event):
+        if QApplication.keyboardModifiers() == Qt.ShiftModifier and self.clip:
+            value = not(self.clip.selected)
+            self.clipSelect(value)
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -96,8 +125,9 @@ class Cell(QWidget, Ui_Cell):
         
         self.clip = new_clip
         self.clip_name.setText(new_clip.name)
+        self.labelVolume.setText(str(common.toDigitalVolumeValue(new_clip.volume)))
         self.start_stop.clicked.connect(self.gui.onStartStopClicked)
-        self.edit.setText("Edit")
+        self.setEditIcon()
         if fromDialog == True:
             self.edit.clicked.disconnect(self.gui.onAddClipClicked)
         self.edit.clicked.connect(self.gui.onEdit)
@@ -110,7 +140,7 @@ class Cell(QWidget, Ui_Cell):
 
     def openClip(self):
         audio_file, a = self.gui.getOpenFileName('Open Clip',
-                                                 'All files (*.*)', self)
+                                                 common.ALL_FILE_TYPE, self)
         if audio_file and a:
             return self.getClip(audio_file)
 

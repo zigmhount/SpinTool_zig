@@ -90,7 +90,8 @@ class Clip():
         self.mute_group = mute_group
         self.one_shot = one_shot
         self.lock_rec = lock_rec
-        self.shot = False # When one_shot clip is shot, this becomes True
+        self.shot = False   # When one_shot clip is shot, this becomes True
+        self.selected = False
 
     def stop(self):
         self.state = Clip.STOPPING if self.state == Clip.START \

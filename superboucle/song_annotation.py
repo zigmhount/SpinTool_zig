@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QDialog
 from superboucle.song_annotation_ui import Ui_Dialog
 import copy
+import settings
    
 class SongAnnotation(QDialog, Ui_Dialog):
     
@@ -14,8 +15,8 @@ class SongAnnotation(QDialog, Ui_Dialog):
         
         self.setLayout(self.formLayout)
         
-        if self.gui.song_annotation_geometry:
-            self.restoreGeometry(self.gui.song_annotation_geometry)        
+        if settings.song_annotation_geometry:
+            self.restoreGeometry(settings.song_annotation_geometry)        
         
         self.show()
 
@@ -26,7 +27,7 @@ class SongAnnotation(QDialog, Ui_Dialog):
 
     def moveEvent(self, event):
         self.geometry = self.saveGeometry()
-        self.gui.song_annotation_geometry = copy.deepcopy(self.geometry) 
+        settings.song_annotation_geometry = copy.deepcopy(self.geometry) 
 
     def updateText(self, text):
         self.txtAnnotation.setText(text) 

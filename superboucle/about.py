@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QDialog
 from superboucle.about_ui import Ui_Dialog
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtCore import QUrl
+import common
    
 class About(QDialog, Ui_Dialog):
     
@@ -12,7 +13,7 @@ class About(QDialog, Ui_Dialog):
         self.webLink = "https://github.com/manucontrovento/SpinTool"
         self.btnWebLink.clicked.connect(self.onWebLinkDoubleClick)
         
-        self.labelVersion.setText(self.gui.ApplicationVersion())
+        self.labelVersion.setText(common.APP_VERSION)
         
         self.btnWebLink.setText(self.webLink)
         
@@ -31,9 +32,6 @@ class About(QDialog, Ui_Dialog):
 
     def onWebLinkDoubleClick(self):
          QDesktopServices.openUrl(QUrl(self.webLink))
-
-    #def onHide(self):
-        #self.gui.actionAbout.setEnabled(True)
 
     def onFinished(self):
         pass

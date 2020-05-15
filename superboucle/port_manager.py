@@ -3,6 +3,8 @@ from superboucle.port_manager_ui import Ui_Dialog
 from superboucle.add_port import AddPortDialog
 from superboucle.clip import verify_ext, Clip
 import json
+import settings
+import common
 
 class PortManager(QDialog, Ui_Dialog):
     def __init__(self, parent):
@@ -15,7 +17,7 @@ class PortManager(QDialog, Ui_Dialog):
         self.addPortBtn.clicked.connect(self.onAddPort)
         self.loadPortlistBtn.clicked.connect(self.onLoadPortlist)
         self.savePortlistBtn.clicked.connect(self.onSavePortlist)
-        self.autoconnectCBox.setChecked(self.gui.auto_connect_output)
+        self.autoconnectCBox.setChecked(settings.auto_connect_output)
         self.autoconnectCBox.stateChanged.connect(self.onCheckAutoconnect)
         self.finished.connect(self.onFinished)
         self.gui.updatePorts.connect(self.updateList)
@@ -25,7 +27,7 @@ class PortManager(QDialog, Ui_Dialog):
 
     def updateList(self):
         self.portList.clear()
-        self.backup_indixes = list(self.gui.song.outputsPorts)
+        self.backup_indixes = sorted(list(self.gui.song.outputsPorts))
         for name in self.backup_indixes:
             this_item = QListWidgetItem(name)
             this_item.setFlags(this_item.flags())
@@ -44,7 +46,7 @@ class PortManager(QDialog, Ui_Dialog):
     def onLoadPortlist(self):
         file_name, a = (
             self.gui.getOpenFileName('Open Portlist',
-                                     'SpinTool Portlist (*.sbl)',
+                                     common.PORTLIST_FILE_TYPE,
                                      self))
         if not file_name:
             return
@@ -61,7 +63,7 @@ class PortManager(QDialog, Ui_Dialog):
     def onSavePortlist(self):
         file_name, a = (
             self.gui.getSaveFileName('Save Portlist',
-                                     'SpinTool Portlist (*.sbl)',
+                                     common.PORTLIST_FILE_TYPE,
                                      self))
 
         if file_name:
@@ -75,7 +77,7 @@ class PortManager(QDialog, Ui_Dialog):
                 f.write(json.dumps(data))
 
     def onCheckAutoconnect(self):
-        self.gui.auto_connect_output = self.autoconnectCBox.isChecked()
+        settings.auto_connect_output = self.autoconnectCBox.isChecked()
 
     def hideEvent(self, event):
         self.gui.actionPort_Manager.setEnabled(True)

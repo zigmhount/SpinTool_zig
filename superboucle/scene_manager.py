@@ -5,6 +5,7 @@ from superboucle.scene_manager_ui import Ui_Dialog
 from superboucle.add_scene import AddSceneDialog
 from superboucle.clip import load_song_from_file
 from superboucle.preferences import Preferences
+import settings
 
 def getScenes(file_names):
     r = []
@@ -36,8 +37,8 @@ class SceneManager(QDialog, Ui_Dialog):
         self.setInitialSceneBtn.clicked.connect(self.onSetInitial)
         self.gui.songLoad.connect(self.updateList)
         self.initPreview()
-        self.geometry = self.gui.scenes_geometry
-        self.cBoxBigFonts.setChecked(self.gui.use_big_fonts_scenes)
+        self.geometry = settings.scenes_geometry
+        self.cBoxBigFonts.setChecked(settings.use_big_fonts_scenes)
         self.cBoxBigFonts.stateChanged.connect(self.onBigFonts)            
  
         if self.geometry:
@@ -46,7 +47,7 @@ class SceneManager(QDialog, Ui_Dialog):
         if self.isVisible() == False:
             self.show()
         
-        self.useBigFonts(self.gui.use_big_fonts_scenes)
+        self.useBigFonts(settings.use_big_fonts_scenes)
 
 
     def selectItem(self, index):
@@ -113,15 +114,14 @@ class SceneManager(QDialog, Ui_Dialog):
         self.updateList()
 
     def onBigFonts(self):
-        self.gui.use_big_fonts_scenes = self.cBoxBigFonts.isChecked()
-        self.useBigFonts(self.gui.use_big_fonts_scenes)
+        settings.use_big_fonts_scenes = self.cBoxBigFonts.isChecked()
+        self.useBigFonts(settings.use_big_fonts_scenes)
 
     def onAddedScene(self):
         self.select_scene = True
         self.updateList()
 
     def onAddScene(self):
-        # AddSceneDialog(self.gui, callback=self.updateList)  
         AddSceneDialog(self.gui, callback=self.onAddedScene)
 
     def onSetInitial(self):
@@ -153,7 +153,7 @@ class SceneManager(QDialog, Ui_Dialog):
                         cell.setStyleSheet("background-color: rgb(125,242,0);")
                     else:
                         
-                        if self.gui.settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_RED:
+                        if settings.rec_color == settings.COLOR_RED:
                             cell.setStyleSheet("background-color: rgb(255, 102, 0);")
                         else:
                             cell.setStyleSheet("background-color: rgb(255, 21, 65);")        
@@ -168,10 +168,12 @@ class SceneManager(QDialog, Ui_Dialog):
             pass
 
     def useBigFonts(self, use = False):
+        self.bigFontSize = settings.bigFontSize
+
         if use == False:
             stylesheet = 'font: 10pt "Noto Sans";'
         else:
-            stylesheet = 'font: bold 36pt "Noto Sans";'
+            stylesheet = 'font: bold ' + str(self.bigFontSize) + 'pt "Noto Sans";'
          
         self.scenelistList.setStyleSheet(stylesheet)
 
@@ -179,11 +181,11 @@ class SceneManager(QDialog, Ui_Dialog):
 
     def resizeEvent(self, event):
         self.geometry = self.saveGeometry()
-        self.gui.scenes_geometry = self.geometry
+        settings.scenes_geometry = self.geometry
 
     def moveEvent(self, event):
         self.geometry = self.saveGeometry()
-        self.gui.scenes_geometry = self.geometry
+        settings.scenes_geometry = self.geometry
 
     def hideEvent(self, event):
         self.gui.actionScene_Manager.setEnabled(True)        

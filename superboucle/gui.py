@@ -21,6 +21,8 @@ from superboucle.port_manager import PortManager
 from superboucle.new_song import NewSongDialog
 from superboucle.add_clip import AddClipDialog
 from superboucle.add_port import AddPortDialog
+from superboucle.export_samples import ExportAllSamplesDialog
+from superboucle.edit_clips import EditClipsDialog
 from superboucle.device import Device
 import struct
 from queue import Queue, Empty
@@ -31,14 +33,16 @@ import soundfile as sf
 import math
 import time
 import copy
+import os
+import settings
+import common
 
 BAR_START_TICK = 0.0
 BEATS_PER_BAR = 4.0
 BEAT_TYPE = 4.0
 TICKS_PER_BEAT = 960.0
 
-APP_VERSION = "v 20.04.26"
-WIKI_LINK = "https://github.com/manucontrovento/SpinTool/wiki"
+EMPTY_SONG_NAME = "Empty Song"
 
 class Gui(QMainWindow, Ui_MainWindow):
     NOTEON = 0x9
@@ -110,48 +114,17 @@ class Gui(QMainWindow, Ui_MainWindow):
         # Load devices
         self.deviceGroup = QActionGroup(self.menuDevice)
         self.devices = []
-        device_settings = QSettings(Preferences.COMPANY, Preferences.DEVICES)
-        
-        if ((device_settings.contains('devices')
-             and device_settings.value('devices'))):
-            for raw_device in device_settings.value('devices'):
+
+        if (settings.hasDevices == True and settings.devices):
+            for raw_device in settings.devices:
                 self.devices.append(Device(pickle.loads(raw_device)))
         else:
-            self.devices.append(Device({'name': 'No Device'}))
+            self.devices.append(Device({'name': 'No Device'}))            
             
         self.updateDevices()
         self.deviceGroup.triggered.connect(self.onDeviceSelect)
-        
-        self.settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION)
-        # Qsetting appear to serialize empty lists as @QInvalid
-        # which is then read as None :(
 
-        # Load playlist
-        self.playlist = self.settings.value('playlist', []) or []
-        # Load paths
-        self.paths_used = self.settings.value('paths_used', {})
-        
-        print("Loading preferences")
-        
-        # Load preferences
-        self.use_big_fonts_playlist = self.settings.value('use_big_fonts_playlist') == 'true'
-        self.use_big_fonts_scenes = self.settings.value('use_big_fonts_scenes') == 'true'
-        self.auto_connect_output = self.settings.value('auto_connect_output','true') == "true"
-        self.auto_connect_input = self.settings.value('auto_connect_input','true') == 'true'
-        self.show_clip_details_on_trigger = self.settings.value('show_clip_details_on_trigger','false') == "true"
-        self.show_clip_details_on_volume = self.settings.value('show_clip_details_on_volume','false') == "true"
-        self.play_clip_after_record = self.settings.value('play_clip_after_record','false') == "true"     
-        self.show_scenes_on_start = self.settings.value('show_scenes_on_start','false') == 'true'
-        self.allow_record_empty_clip = self.settings.value('allow_record_empty_clip', 'false') == 'true'
-        self.show_playlist_on_start = self.settings.value('show_playlist_on_start','false') == 'true'
-        self.show_song_annotation_on_load = self.settings.value('show_song_annotation_on_load','false') == 'true'
-        # and windows position
-        self.playlist_geometry = self.settings.value('playlist_geometry', None)
-        self.scenes_geometry = self.settings.value('scenes_geometry', None)
-        self.gui_geometry = self.settings.value('gui_geometry', None)
-        self.song_annotation_geometry = self.settings.value('song_annotation_geometry', None)
-
-        # Load song
+        ## Load song
         self.port_by_name = {}
         self.initUI(song)
 
@@ -165,6 +138,11 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.actionPreferences.triggered.connect(self.onPreferences)
         self.actionPlaylist_Editor.triggered.connect(self.onPlaylistEditor)
         self.actionScene_Manager.triggered.connect(self.onSceneManager)
+        self.actionExportAllSamples.triggered.connect(self.onExportAllClips)
+        self.actionEditSelectedClips.triggered.connect(self.onEditSelectedClips)
+        self.actionUnselectAllClips.triggered.connect(self.onUnselectAllClips)
+        self.actionEditClipsOutputGroup.triggered.connect(self.onEditClipsByOutputPort)
+        self.actionEditClipsMuteGroup.triggered.connect(self.onEditClipsByMuteGroup)
         self.actionPort_Manager.triggered.connect(self.onPortManager)
         self.actionFullScreen.triggered.connect(self.onActionFullScreen)
         self.actionAbout.triggered.connect(self.onActionAbout)
@@ -205,17 +183,17 @@ class Gui(QMainWindow, Ui_MainWindow):
 
         self._jack_client.set_timebase_callback(self.timebase_callback)
 
-        if self.gui_geometry:
-            self.restoreGeometry(self.gui_geometry)        
+        if settings.gui_geometry:
+            self.restoreGeometry(settings.gui_geometry)        
         
         self.show()
 
         # showing additional windows if desired:
-        
-        if self.show_scenes_on_start == True:
+
+        if settings.show_scenes_on_start == True:
             self.onSceneManager()
-            
-        if self.show_playlist_on_start == True:
+
+        if settings.show_playlist_on_start == True:
             self.onPlaylistEditor()
         
        
@@ -241,11 +219,10 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.songAnnotationDialog.updateText(self.song.annotation)  
 
         # second pass with removing
-        self.updateJackPorts(new_song, remove_ports=True)
-        self.output.clear()
-        self.output.addItems(new_song.outputsPorts)
+        self.output.clear()        
+        self.output.addItems(sorted(new_song.outputsPorts))
         self.output.addItem(Gui.ADD_PORT_LABEL)
-        self.master_volume.setValue(new_song.volume * 256)
+        self.master_volume.setValue(common.toControllerVolumeValue(new_song.volume))
         self.updateMasterVolumeValue()
         self.bpm.setValue(new_song.bpm)
         self.beat_per_bar.setValue(new_song.beat_per_bar)
@@ -262,7 +239,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             for init_cmd in self.device.init_command:
                 self.queue_out.put(init_cmd)
     
-            self.setWindowTitle(self.getWindowTitle(new_song.file_name or "Empty Song"))
+            self.setWindowTitle(self.getWindowTitle(new_song.file_name or EMPTY_SONG_NAME))
             self.labelRecording.setVisible(False)
     
             if self.song.initial_scene in self.song.scenes:
@@ -278,9 +255,6 @@ class Gui(QMainWindow, Ui_MainWindow):
             
         self.songLoad.emit()
 
-    def ApplicationVersion(self):
-        return APP_VERSION
-
     def openSongFromDisk(self, file_name):
         self._jack_client.transport_stop()
         self._jack_client.transport_locate(0)
@@ -294,7 +268,7 @@ class Gui(QMainWindow, Ui_MainWindow):
 
         self.redraw()
               
-        if self.show_song_annotation_on_load:
+        if settings.show_song_annotation_on_load:
             
             if self.songAnnotationDialog:
                 self.songAnnotationDialog.close()
@@ -307,13 +281,13 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.action_SongAnnotation.setEnabled(False)
 
     def moveEvent(self, event):
-        self.gui_geometry = self.saveGeometry()
+        settings.gui_geometry = self.saveGeometry()
 
     def closeEvent(self, event):
         self.onApplicationExit()
     
     def onApplicationExit(self):
-        self.gui_geometry = self.saveGeometry()
+        settings.gui_geometry = self.saveGeometry()
         
         #device lights turn off, if exhisting. Prevents device from remaining lighted-up
         try:
@@ -324,37 +298,15 @@ class Gui(QMainWindow, Ui_MainWindow):
         time.sleep(1)
         # Sorry for this bad coding. But I tried in all other ways, if you don't wait a while to let
         # the engine processal pending midi messages, the device doesn't light off.
-        
-        device_settings = QSettings(Preferences.COMPANY, Preferences.DEVICES)
-        device_settings.setValue('devices', 
-                                 [pickle.dumps(x.mapping)
-                                  for x in self.devices])
-        
-        self.settings.setValue('playlist', self.playlist)
-        self.settings.setValue('paths_used', self.paths_used)
-        
-        print("Saving preferences")
-        # Saving preferences
-        self.settings.setValue('auto_connect_output', self.auto_connect_output)
-        self.settings.setValue('auto_connect_input', self.auto_connect_input)
-        self.settings.setValue('show_clip_details_on_trigger', self.show_clip_details_on_trigger)
-        self.settings.setValue('use_big_fonts_playlist', self.use_big_fonts_playlist)
-        self.settings.setValue('use_big_fonts_scenes', self.use_big_fonts_scenes)
-        self.settings.setValue('allow_record_empty_clip', self.allow_record_empty_clip)
-        self.settings.setValue('show_clip_details_on_volume', self.show_clip_details_on_volume)
-        self.settings.setValue('play_clip_after_record', self.play_clip_after_record)
-        self.settings.setValue('show_scenes_on_start', self.show_scenes_on_start)
-        self.settings.setValue('show_playlist_on_start', self.show_playlist_on_start)
-        self.settings.setValue('show_song_annotation_on_load', self.show_song_annotation_on_load)
+       
+        settings.devices = [pickle.dumps(x.mapping)
+                            for x in self.devices]
 
-        # and windows position
-        self.settings.setValue("gui_geometry", self.gui_geometry)
-        self.settings.setValue("scenes_geometry", self.scenes_geometry)
-        self.settings.setValue("playlist_geometry", self.playlist_geometry)
-        self.settings.setValue("song_annotation_geometry", self.song_annotation_geometry)
-        
-        self.settings.sync()
-        print("Preferences saved")
+        print("Updating settings")
+
+        settings.update()
+
+        print("Settings updated")
               
     def onStartStopClicked(self):
         clip = self.sender().parent().parent().clip
@@ -371,7 +323,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             elif controller == True and self.song.is_record:
                 # Clip is none, but triggering came from controller
 
-                if self.allow_record_empty_clip == False:
+                if settings.allow_record_empty_clip == False:
                     # if recording on a empty clip is not allowed:
                     print("Recording on empty clip is not allowed") 
                     return
@@ -422,7 +374,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.song.toggle(clip.x, clip.y)
             
             # to automatically view clip details, when triggered:
-            if self.show_clip_details_on_trigger:
+            if settings.show_clip_details_on_trigger:
                 self.last_clip = clip
                 self.updateClipInfo()  
             
@@ -438,7 +390,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.beat_diviser.setValue(self.last_clip.beat_diviser)
             self.output.setCurrentText(self.last_clip.output)
             self.mute_group.setValue(self.last_clip.mute_group)
-            self.clip_volume.setValue(self.last_clip.volume * 256)
+            self.clip_volume.setValue(common.toControllerVolumeValue(self.last_clip.volume))
             self.updateClipVolumeValue()
             self.one_shot_clip.setChecked(self.last_clip.one_shot)
             self.lock_record.setChecked(self.last_clip.lock_rec)
@@ -481,6 +433,201 @@ class Gui(QMainWindow, Ui_MainWindow):
             audio_file = self.last_clip.audio_file
             self.song.data[audio_file] = self.song.data[audio_file][::-1]
 
+    def onUnselectAllClips(self):
+        for x in range(self.song.width):
+            for y in range(self.song.height):
+                cell = self.btn_matrix[x][y]
+                cell.clipSelect(False)
+
+    def onEditSelectedClips(self):
+        self.EditClips(common.CLIPS_EDIT_MODE_ALL_SELECTED)
+
+    def onEditClipsByMuteGroup(self):
+        self.EditClips(common.CLIPS_EDIT_MODE_BY_MUTE_GROUP)
+
+    def onEditClipsByOutputPort(self):
+        self.EditClips(common.CLIPS_EDIT_MODE_BY_OUTPUT_PORT)
+
+    def EditClips(self, edit_mode):
+        selected_clips = []
+
+        clip_list = ""
+
+        if edit_mode == common.CLIPS_EDIT_MODE_ALL_SELECTED:
+
+            for x in range(self.song.width):
+                for y in range(self.song.height):
+                    clip = self.song.clips_matrix[x][y]
+                    if clip and clip.selected == True:
+                        selected_clips.append(clip)
+                        clip_list += (clip.name + "\n")
+            
+            if selected_clips.__len__() == 0:
+                message = QMessageBox(self)
+                message.setWindowTitle("No clips selected")
+                message.setText("Couldn't find any selected clip.\nHold SHIFT and left-click any clip on the grid to select it")
+                message.show()
+                return
+
+        editClipsDialog = EditClipsDialog(self, edit_mode, selected_clips)
+        editClipsDialog.exec_()
+
+        if editClipsDialog.proceed == False:
+            editClipsDialog = None
+            return
+
+        if edit_mode == common.CLIPS_EDIT_MODE_BY_MUTE_GROUP and editClipsDialog.getMuteGroup() != 0:
+            for nclip in self.song.clips:
+                if nclip.mute_group == editClipsDialog.getMuteGroup():
+                    selected_clips.append(nclip)
+                    clip_list += (nclip.name + "\n")
+
+        elif edit_mode == common.CLIPS_EDIT_MODE_BY_OUTPUT_PORT and editClipsDialog.getOutputPort() != "":
+            for nclip in self.song.clips:
+                if nclip.output == editClipsDialog.getOutputPort():
+                    selected_clips.append(nclip)
+                    clip_list += (nclip.name + "\n")                    
+
+        if selected_clips.__len__() == 0:
+            message = QMessageBox(self)
+            message.setWindowTitle("No clips found")
+            message.setText("Couldn't find any clip matching the selection")
+            message.show()
+            return
+
+        clip_volume, change_mode = editClipsDialog.getVolumeAmount()
+        analogVolume = common.toAnalogClipVolumeValue(clip_volume)
+
+        clips_count = 0
+
+        for nclip in selected_clips:
+
+            if editClipsDialog.getEditMuteGroup() == True:
+                nclip.mute_group = editClipsDialog.getMuteGroup()
+
+            if editClipsDialog.getEditOutputPort() == True:
+                nclip.output = editClipsDialog.getOutputPort()
+
+            if editClipsDialog.getEditVolume() == True:
+
+                if change_mode == common.SET_VOLUME:
+                    nclip.volume = analogVolume
+
+                elif change_mode == common.INCREASE_VOLUME:
+                    new_volume = nclip.volume + analogVolume
+                    if new_volume > 1:
+                        new_volume = 1
+                    nclip.volume = new_volume
+                    
+                elif change_mode == common.DECREASE_VOLUME:
+                    new_volume = nclip.volume - analogVolume
+                    if new_volume < 0:
+                        new_volume = 0
+                    nclip.volume = new_volume
+
+            if nclip is self.last_clip:
+                self.updateClipInfo()
+
+            clips_count += 1
+
+        if (editClipsDialog.getEditMuteGroup() == True or 
+            editClipsDialog.getEditOutputPort() == True or
+            editClipsDialog.getEditVolume() == True):
+
+            message = QMessageBox(self)
+            message.setWindowTitle(str(clips_count) + " clips processed")
+            message.setText("The following clips have been processed: \n\n" + clip_list)
+            message.show()
+
+        if edit_mode == common.CLIPS_EDIT_MODE_ALL_SELECTED and editClipsDialog.getUnselectClips() == True:
+            self.onUnselectAllClips()
+
+        editClipsDialog = None
+        self.update()
+        
+    def onExportAllClips(self):
+
+        if self.song.clips.__len__() == 0:
+            message = QMessageBox(self)
+            message.setWindowTitle("Nothing to export")
+            message.setText("Couldn't find any clip to export in current song")
+            message.show()
+            return
+
+        if self._jack_client.transport_state == 1: # ROLLING
+
+            response = QMessageBox.question(self, "Export all samples?", "Are you sure to export all samples? The song execution will be stopped")
+            if response == QMessageBox.No:
+                return
+            
+            self._jack_client.transport_stop()
+            self._jack_client.transport_locate(0)
+
+        suggestedPath = settings.paths_used.get(common.SONG_FILE_TYPE, expanduser('~'))
+        exportDialog = ExportAllSamplesDialog(self)
+        exportDialog.setPath(suggestedPath)
+        exportDialog.exec_()
+      
+        selectedPath = exportDialog.getPath()
+        normalize = exportDialog.getNormalize()
+        prefixX = exportDialog.getX()
+        prefixY = exportDialog.getY()
+        proceed = exportDialog.proceed
+
+        exportDialog = None
+
+        if proceed == True:
+            
+            if os.path.isdir(selectedPath) == False:
+
+                message = QMessageBox(self)
+                message.setWindowTitle("Invalid directory path")
+                message.setText("No exporting path selected, or invalid path")
+                message.show()
+                return
+                
+            message = QMessageBox(self)
+            message.setWindowTitle("Exporting..")
+            message.setText("Exporting clip samples, please wait")
+            message.show()
+
+            clips_count = 0
+
+            for x in range(self.song.width):
+                for y in range(self.song.height):
+                    
+                    clip = self.song.clips_matrix[x][y]
+
+                    if clip and clip.audio_file:
+
+                        clips_count += 1
+                        audio_file = clip.audio_file
+                        sample_rate = self.song.samplerate[clip.audio_file]
+                        export_data = copy.deepcopy(self.song.data[audio_file])
+                        
+                        if normalize:
+                            message.setText("Normalizing " + clip.name)
+                            absolute_val = np.absolute(export_data)
+                            current_level = np.ndarray.max(absolute_val)
+                            export_data[:] *= (1 / current_level)
+
+                        clip_position_name = prefixX + str(x) + '_' + prefixY + str(y) + '_' + clip.name + '.wav'
+
+                        file_name = os.path.join(selectedPath, clip_position_name)
+                        file_name = verify_ext(file_name, 'wav')
+
+                        message.setText("Writing " + clip.name)
+
+                        sf.write(file_name, export_data, sample_rate, subtype=sf.default_subtype('WAV'), format='WAV')
+
+            if (clips_count == 0):
+                message.setText("Couldn't find any sample to export in current song")
+            else:
+                message.close()
+
+            message = None
+            
+
     def onNormalizeClip(self):
         if self.last_clip and self.last_clip.audio_file:
             audio_file = self.last_clip.audio_file
@@ -491,8 +638,7 @@ class Gui(QMainWindow, Ui_MainWindow):
     def onExportClip(self):
         if self.last_clip and self.last_clip.audio_file:
             audio_file = self.last_clip.audio_file
-            file_name, a = self.getSaveFileName(
-                'Export Clip : %s' % self.last_clip.name, 'WAVE (*.wav)')
+            file_name, a = self.getSaveFileName('Export Clip : %s' % self.last_clip.name, 'WAVE (*.wav)')
 
             if file_name:
                 file_name = verify_ext(file_name, 'wav')
@@ -503,19 +649,16 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def onDeleteClipClicked(self):
         if self.last_clip:
-            response = QMessageBox.question(self,
-                                            "Delete Clip?",
-                                            ("Are you sure to delete the clip?"))
+            response = QMessageBox.question(self, "Delete Clip?", ("Are you sure to delete the clip?"))
             if response == QMessageBox.Yes:
-                #self.frame_clip.setEnabled(False)
                 self.song.removeClip(self.last_clip)
                 self.initUI(self.song, False)
 
     def updateMasterVolumeValue(self):
-        self.labelMasterVolume.setText(str(math.trunc(self.song.volume * 100)))  # showing volume numeric value
+        self.labelMasterVolume.setText(str(common.toDigitalVolumeValue(self.song.volume)))  # showing volume numeric value
 
     def onMasterVolumeChange(self):
-        self.song.volume = (self.master_volume.value() / 256)
+        self.song.volume = (common.toAnalogVolumeValue(self.master_volume.value()))
         self.updateMasterVolumeValue()
 
     def onBpmChange(self):
@@ -534,7 +677,6 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def onRecord(self):
         self.song.is_record = not self.song.is_record
-        #self.labelRecording.setVisible(self.song.is_record)
         self.updateRecordBtn()
 
     def updateRecordBtn(self):
@@ -545,7 +687,7 @@ class Gui(QMainWindow, Ui_MainWindow):
         if self.device.record_btn:
             (msg_type, channel, pitch, velocity) = self.device.record_btn
             if self.song.is_record:
-                if self.settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_AMBER:
+                if settings.rec_color == settings.COLOR_AMBER:
                     color = self.device.blink_amber_vel
                 else:
                     color = self.device.blink_red_vel
@@ -562,11 +704,13 @@ class Gui(QMainWindow, Ui_MainWindow):
         cell.clip_name.setText(self.last_clip.name)
 
     def updateClipVolumeValue(self):
-        self.labelClipVolume.setText(str(math.trunc(self.last_clip.volume * 100)))  # Showing numeric clip volume
+        self.labelClipVolume.setText(str(common.toDigitalVolumeValue(self.last_clip.volume)))  # Showing numeric clip volume
+        cell = self.btn_matrix[self.last_clip.x][self.last_clip.y]
+        cell.labelVolume.setText(str(common.toDigitalVolumeValue(self.last_clip.volume)))
 
     def onClipVolumeChange(self):
         if self.last_clip:
-            self.last_clip.volume = (self.clip_volume.value() / 256)
+            self.last_clip.volume = common.toAnalogVolumeValue(self.clip_volume.value())
             self.updateClipVolumeValue()
 
     def onBeatDiviserChange(self):
@@ -682,13 +826,13 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def getOpenFileName(self, title, file_type, parent=None,
                         dialog=QFileDialog.getOpenFileName):
-        path = self.paths_used.get(file_type, expanduser('~'))
+        path = settings.paths_used.get(file_type, expanduser('~'))
         file_name, a = dialog(parent or self, title, path, file_type)
         if a and file_name:
             if isinstance(file_name, list):
-                self.paths_used[file_type] = dirname(file_name[0])
+                settings.paths_used[file_type] = dirname(file_name[0])
             else:
-                self.paths_used[file_type] = dirname(file_name)
+                settings.paths_used[file_type] = dirname(file_name)
         return file_name, a
 
     def getSaveFileName(self, *args):
@@ -696,7 +840,7 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def onActionOpen(self):
         file_name, a = self.getOpenFileName('Open Song',
-                                            'SpinTool Song (*.sbs)')
+                                            common.SONG_FILE_TYPE)  # TODO: const
         if a and file_name and self.checkFileExists(file_name):
             self.openSongFromDisk(file_name)
         else:
@@ -712,18 +856,17 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.onActionSaveAs()
 
     def getWindowTitle(self, file_name):
-        return "SpinTool - {} - {}".format(APP_VERSION, file_name)
+        return "SpinTool - {} - {}".format(common.APP_VERSION, file_name)
 
     def onActionSaveAs(self):
-        file_name, a = self.getSaveFileName('Save Song',
-                                            'SpinTool Song (*.sbs)')
+        file_name, a = self.getSaveFileName('Save Song', common.SONG_FILE_TYPE)
 
         if file_name:
-            file_name = verify_ext(file_name, 'sbs')
+            file_name = verify_ext(file_name, common.SONG_FILE_EXT)
             self.song.file_name = file_name
             self.song.save()
             print("File saved to : {}".format(self.song.file_name))
-            self.setWindowTitle(self.getWindowTitle(file_name or "Empty Song"))
+            self.setWindowTitle(self.getWindowTitle(file_name or EMPTY_SONG_NAME))
 
     def onActionQuit(self):
         self.onApplicationExit()
@@ -757,12 +900,9 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def onActionAbout(self):
         About(self)
-    
-    def onActionShowConsole(self):
-	    self.showConsoleText()
         
     def onActionWiki(self): 
-        QDesktopServices.openUrl(QUrl(WIKI_LINK))
+        QDesktopServices.openUrl(QUrl(common.WIKI_LINK))
         
     def onAction_SongAnnotation(self):
         self.showSongAnnotation()
@@ -783,17 +923,24 @@ class Gui(QMainWindow, Ui_MainWindow):
                     state = None
                 else:
                     state = clp.state
+
+                    # Update cell volume according to clip volume
+                    self.btn_matrix[x][y].labelVolume.setText(str(common.toDigitalVolumeValue(clp.volume)))
+
                 if state != self.state_matrix[x][y]:
                     if clp:
                         self.btn_matrix[x][y].setColor(state)
-                    try:                                            
-                        self.queue_out.put(self.device.generateNote(x,
-                                                                    y,
-                                                                    state))
+                    try:
+                        if (settings.slower_processing == True):
+                            time.sleep(0.001)
+                            
+                        self.queue_out.put(self.device.generateNote(x, y, state))
+
                     except IndexError:
                         # print("No cell associated to %s x %s"
                         # % (clp.x, clp.y))
                         pass
+
                 self.state_matrix[x][y] = state
 
     def lightDownDevice(self):
@@ -836,8 +983,7 @@ class Gui(QMainWindow, Ui_MainWindow):
         if ctrl_key == self.device.master_volume_ctrl:
             self.song.volume = vel / 127
             self.updateMasterVolumeKnob()
-            (self.master_volume
-             .setValue(self.song.master_volume * 256))
+            (self.master_volume.setValue(common.toControllerVolumeValue(self.song.master_volume)))
             
         elif self.device.play_btn in [btn_id, btn_id_vel]:
             self._jack_client.transport_start()
@@ -858,7 +1004,8 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.queue_out.put(note)
             
             (a, b_channel, b_pitch, b) = self.device.pause_btn
-            if self.settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_AMBER:
+            #if self.settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_AMBER:
+            if settings.rec_color == settings.COLOR_AMBER:
                 color = self.device.red_vel
             else:
                 color = self.device.amber_vel
@@ -884,8 +1031,8 @@ class Gui(QMainWindow, Ui_MainWindow):
                 if clip:
                     clip.volume = vel / 127
                     if self.last_clip == clip:
-                        self.clip_volume.setValue(self.last_clip.volume * 256)
-                    elif self.show_clip_details_on_volume:
+                        self.clip_volume.setValue(common.toControllerVolumeValue(self.last_clip.volume))
+                    elif settings.show_clip_details_on_volume:
                         self.last_clip = clip
                         self.updateClipInfo()   
             except KeyError:

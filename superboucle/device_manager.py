@@ -4,6 +4,7 @@ from superboucle.learn import LearnDialog
 from superboucle.device import Device
 from superboucle.clip import verify_ext
 import json
+import common
 
 
 class ManageDialog(QDialog, Ui_Dialog):
@@ -38,7 +39,7 @@ class ManageDialog(QDialog, Ui_Dialog):
 
     def onImport(self):
         file_name, a = self.gui.getOpenFileName('Open Device',
-                                                'SpinTool Mapping (*.sbm)',
+                                                common.DEVICE_MAPPING_TYPE,
                                                 self)
         with open(file_name, 'r') as f:
             read_data = f.read()
@@ -49,10 +50,10 @@ class ManageDialog(QDialog, Ui_Dialog):
     def onExport(self):
         device = self.gui.devices[self.list.currentRow() + 1]
         file_name, a = self.gui.getSaveFileName('Save Device',
-                                                'SpinTool Mapping (*.sbm)',
+                                                common.DEVICE_MAPPING_TYPE,
                                                 self)
         if file_name:
-            file_name = verify_ext(file_name, 'sbm')
+            file_name = verify_ext(file_name, common.DEVICE_MAPPING_EXT)
             with open(file_name, 'w') as f:
                 f.write(json.dumps(device.mapping))
 
