@@ -7,12 +7,6 @@ SuperBoucle, starting from a fork of the original repository.
 Usage Wiki:
 https://github.com/manucontrovento/SpinTool/wiki
 
-Note: I never developed in Python until now and I never developed anything
-on Linux in general. I tried, beacuse I needed some extra features. I made 
-some intensive testing and it seems stable to me.
-This means that perhaps code could be improved furtherly and that some more
-functions could be added in future, when I'll be more skilled, if I'll have
-the time to. Enjoy!
 
 ## Features
 
@@ -44,7 +38,11 @@ Especially:
 * Open scenes and playlist windows on start up
 * New grid cells style, showing clip volume
 * New massive clips edit functions to change clips parameters
-* New Export-all samples function
+* New Export-all samples function 
+* Mixer for output ports with full MIDI support
+* Online Help/Manual
+* New MIDI learning
+* Force clips play/stop
 
 SpinTool releases start from version 20.04.07
 
