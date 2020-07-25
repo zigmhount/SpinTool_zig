@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Applicazioni/SuperBoucle-Manu/superboucle/device_manager_ui.ui'
+# Form implementation generated from reading ui file 'device_manager_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -42,7 +42,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Manage Devices"))
+        Dialog.setWindowTitle(_translate("Dialog", "Manage MIDI configurations"))
         self.editButton.setText(_translate("Dialog", "Edit"))
         self.deleteButton.setText(_translate("Dialog", "Delete"))
         self.importButton.setText(_translate("Dialog", "Import"))

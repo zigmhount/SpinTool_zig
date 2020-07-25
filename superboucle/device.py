@@ -30,7 +30,6 @@ class DeviceOutput:
 class DeviceInput(DeviceOutput):
     # def get_mapping(self, inst):
     #    return inst.mapping
-
     pass
 
 
@@ -59,7 +58,6 @@ class Device:
         elif type(value[0]) is list:
             return [self._formatMapping(v) for v in value]
         else:
-            #print("Device: Unknown structure...")
             return value
 
     def generateNote(self, x, y, state):
@@ -67,7 +65,6 @@ class Device:
         return (0x90 + channel, pitch, self.getColor(state))  # note on : 0x90
 
     def getColor(self, state):
-        #settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION)  # Managing recording color
         
         if state is None:
             return self.black_vel
@@ -113,8 +110,8 @@ class Device:
                 note = ((self.NOTEON << 4) + channel, pitch, color)  
                 queue_out.put(note)
                 
-        # line blocks
-        for btn_key in self.block_buttons:
+        # mute buttons
+        for btn_key in self.mute_buttons:
             (msg_type, channel, pitch, velocity) = btn_key
             note = ((self.NOTEON << 4) + channel, pitch, color)
             queue_out.put(note)
@@ -124,7 +121,26 @@ class Device:
             (msg_type, channel, pitch, velocity) = scene_key
             note = ((self.NOTEON << 4) + channel, pitch, color)
             queue_out.put(note)
+
+        # Shift
+        if self.shift_btn:
+            (msg_type, channel, pitch, velocity) = self.shift_btn
+            note = ((self.NOTEON << 4) + channel, pitch, color)
+            queue_out.put(note)
         
+        # Unlink mixer stripes
+        if self.unlink_stripes_btn:
+            (msg_type, channel, pitch, velocity) = self.unlink_stripes_btn
+            note = ((self.NOTEON << 4) + channel, pitch, color)
+            queue_out.put(note)
+
+        # custom reset
+        if self.custom_reset_btn:
+            (msg_type, channel, pitch, velocity) = self.custom_reset_btn
+            note = ((self.NOTEON << 4) + channel, pitch, color)
+            queue_out.put(note)
+
+
         #transport
         if self.play_btn:
             (msg_type, channel, pitch, velocity) = self.play_btn
@@ -139,8 +155,13 @@ class Device:
         if self.rewind_btn:
             (msg_type, channel, pitch, velocity) = self.rewind_btn
             note = ((self.NOTEON << 4) + channel, pitch, color)
+            queue_out.put(note)         
+
+        if self.stop_btn:
+            (msg_type, channel, pitch, velocity) = self.stop_btn
+            note = ((self.NOTEON << 4) + channel, pitch, color)
             queue_out.put(note)
-        
+
         if self.goto_btn:
             (msg_type, channel, pitch, velocity) = self.goto_btn
             note = ((self.NOTEON << 4) + channel, pitch, color)
@@ -150,7 +171,7 @@ class Device:
             (msg_type, channel, pitch, velocity) = self.record_btn
             note = ((self.NOTEON << 4) + channel, pitch, color)
             queue_out.put(note)
-        
+
 
     def getXY(self, note):
         return self.note_to_coord[note]
@@ -164,8 +185,17 @@ class Device:
         self.mapping['name'] = name
 
     @DeviceInput
-    def ctrls(self):
+    def ctrls(self): # this is for the mixer strip volumes
         return []
+
+    @DeviceInput
+    def send1ctrls(self): # this is for the mixer strip send1
+        return []
+
+    @DeviceInput
+    def send2ctrls(self): # this is for the mixer strip send2
+        return []
+
 
     @DeviceInput
     def start_stop(self):
@@ -176,7 +206,7 @@ class Device:
         return []
 
     @DeviceInput
-    def block_buttons(self):
+    def mute_buttons(self):
         return []
 
     @DeviceInput
@@ -184,7 +214,7 @@ class Device:
         return []
 
     @DeviceInput
-    def master_volume_ctrl(self):
+    def song_volume_ctrl(self):
         return False
 
     @DeviceInput
@@ -201,6 +231,22 @@ class Device:
 
     @DeviceInput
     def goto_btn(self):
+        return False
+
+    @DeviceInput
+    def stop_btn(self):
+        return False
+
+    @DeviceInput
+    def shift_btn(self):
+        return False
+    
+    @DeviceInput
+    def unlink_stripes_btn(self):
+        return False
+
+    @DeviceInput
+    def custom_reset_btn(self):
         return False
 
     @DeviceInput

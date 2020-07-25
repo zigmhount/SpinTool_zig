@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/export_samples_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -14,10 +14,10 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.setWindowModality(QtCore.Qt.WindowModal)
-        Dialog.resize(680, 298)
+        Dialog.resize(680, 338)
         Dialog.setStyleSheet("background-color: rgb(242, 242, 242);")
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(10, 250, 661, 41))
+        self.buttonBox.setGeometry(QtCore.QRect(10, 300, 661, 31))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
@@ -41,7 +41,7 @@ class Ui_Dialog(object):
 "font: 10pt \"Noto Sans\";")
         self.labelChoosePath.setObjectName("labelChoosePath")
         self.btnPath = QtWidgets.QPushButton(Dialog)
-        self.btnPath.setGeometry(QtCore.QRect(10, 50, 61, 51))
+        self.btnPath.setGeometry(QtCore.QRect(10, 50, 51, 41))
         self.btnPath.setStyleSheet("color: rgb(0, 0, 0);\n"
 "background-color: rgb(242, 242, 242);\n"
 "font: 10pt \"Noto Sans\";")
@@ -49,35 +49,35 @@ class Ui_Dialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/icons/folder.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnPath.setIcon(icon)
-        self.btnPath.setIconSize(QtCore.QSize(30, 30))
+        self.btnPath.setIconSize(QtCore.QSize(27, 27))
         self.btnPath.setObjectName("btnPath")
         self.labelPath = QtWidgets.QLabel(Dialog)
-        self.labelPath.setGeometry(QtCore.QRect(80, 50, 581, 51))
+        self.labelPath.setGeometry(QtCore.QRect(70, 50, 591, 41))
         self.labelPath.setStyleSheet("color: rgb(0, 0, 0);\n"
 "background-color: rgb(242, 242, 242);\n"
 "font: 10pt \"Noto Sans\";")
         self.labelPath.setObjectName("labelPath")
         self.labelX = QtWidgets.QLabel(Dialog)
-        self.labelX.setGeometry(QtCore.QRect(20, 160, 101, 18))
+        self.labelX.setGeometry(QtCore.QRect(20, 180, 101, 18))
         self.labelX.setStyleSheet("color: rgb(0, 0, 0);\n"
 "background-color: rgb(242, 242, 242);\n"
 "font: 10pt \"Noto Sans\";")
         self.labelX.setObjectName("labelX")
         self.lineX = QtWidgets.QLineEdit(Dialog)
-        self.lineX.setGeometry(QtCore.QRect(130, 150, 101, 41))
+        self.lineX.setGeometry(QtCore.QRect(130, 170, 101, 41))
         self.lineX.setStyleSheet("color: rgb(0, 0, 0);\n"
 "background-color: rgb(242, 242, 242);\n"
 "font: 10pt \"Noto Sans\";")
         self.lineX.setAlignment(QtCore.Qt.AlignCenter)
         self.lineX.setObjectName("lineX")
         self.labelY = QtWidgets.QLabel(Dialog)
-        self.labelY.setGeometry(QtCore.QRect(20, 210, 101, 18))
+        self.labelY.setGeometry(QtCore.QRect(20, 240, 101, 18))
         self.labelY.setStyleSheet("color: rgb(0, 0, 0);\n"
 "background-color: rgb(242, 242, 242);\n"
 "font: 10pt \"Noto Sans\";")
         self.labelY.setObjectName("labelY")
         self.lineY = QtWidgets.QLineEdit(Dialog)
-        self.lineY.setGeometry(QtCore.QRect(130, 200, 101, 41))
+        self.lineY.setGeometry(QtCore.QRect(130, 230, 101, 41))
         self.lineY.setStyleSheet("color: rgb(0, 0, 0);\n"
 "background-color: rgb(242, 242, 242);\n"
 "font: 10pt \"Noto Sans\";")

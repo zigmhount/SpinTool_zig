@@ -2,10 +2,11 @@ from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from superboucle.edit_clips_ui import Ui_Dialog
 from PyQt5 import QtGui
 import common
+import settings
 
 EDIT_ALL_SELECTED_CLIPS_MESSAGE = "Check the details you want to massively change, then fill the values and press Ok"
 EDIT_BY_OUTPUT_PORT_MESSAGE = "Select an output port, then check the details and fill the values you want to massively change for all the clips belonging to that port"
-EDIT_BY_MUTE_GROUP_MESSAGE = "Select a mute group, then check the details and fill the values you want to massively change for all the clips belonging to that mute group"
+EDIT_BY_MUTE_GROUP_MESSAGE = "Select a solo clip group, then check the details and fill the values you want to massively change for all the clips belonging to that solo clip group"
 
 EDIT_ALL_SELECTED_LABEL_STYLE = ('font: bold 11pt "Noto Sans";background-color: rgb(255, 255, 0);')
 EDIT_OTHER_LABEL_STYLE = ('font: bold 10pt "Noto Sans";')
@@ -35,7 +36,7 @@ class EditClipsDialog(QDialog, Ui_Dialog):
         self.radioButtonIncreaseVolume.toggled.connect(self.updateVolumeRadioButtons)
         self.radioButtonDecreaseVolume.toggled.connect(self.updateVolumeRadioButtons)
 
-        self.comboBoxOutputPorts.addItems(sorted(self.gui.song.outputsPorts))
+        self.comboBoxOutputPorts.addItems(sorted(settings.output_ports.keys()))
 
         self.edit_mode = edit_mode
         if self.edit_mode == common.CLIPS_EDIT_MODE_ALL_SELECTED:

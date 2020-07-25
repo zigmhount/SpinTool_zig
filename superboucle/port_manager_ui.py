@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/port_manager_ui.ui'
+# Form implementation generated from reading ui file 'port_manager_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -14,6 +14,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(370, 308)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/icons/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog.setWindowIcon(icon)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -53,9 +56,10 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Port Manager"))
+        Dialog.setWindowTitle(_translate("Dialog", "Output Ports"))
         self.addPortBtn.setText(_translate("Dialog", "Add Port"))
         self.removePortBtn.setText(_translate("Dialog", "Remove Port"))
         self.loadPortlistBtn.setText(_translate("Dialog", "Load Portlist"))
         self.savePortlistBtn.setText(_translate("Dialog", "Save Portlist"))
         self.autoconnectCBox.setText(_translate("Dialog", "Autoconnect main output ports on program start"))
+import gui_rc

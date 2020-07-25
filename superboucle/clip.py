@@ -6,6 +6,10 @@ from zipfile import ZipFile
 from io import BytesIO, StringIO, TextIOWrapper
 from collections import OrderedDict as OrderedDict_
 import unicodedata
+import settings
+import common
+from superboucle.mixer import Mixer
+
 
 class OrderedDict(OrderedDict_):
     def insert(self, key, value, index=-1):
@@ -40,8 +44,6 @@ class Communicate(QtCore.QObject):
 
 
 class Clip():
-    DEFAULT_OUTPUT = "Main"
-
     STOP = 0
     STARTING = 1
     START = 2
@@ -71,8 +73,10 @@ class Clip():
                          5: "RECORDING"}
 
     def __init__(self, audio_file=None, name='',
-                 volume=1, frame_offset=0, beat_offset=0.0, beat_diviser=1,
-                 output=DEFAULT_OUTPUT, mute_group=0, one_shot = False, lock_rec  =False):
+                 volume=1, 
+                 frame_offset=0, beat_offset=0.0, beat_diviser=1,
+                 output=common.DEFAULT_PORT, 
+                 mute_group=0, one_shot = False, lock_rec = False, always_play = False):
 
         if name == '' and audio_file:
             self.name = audio_file
@@ -85,10 +89,14 @@ class Clip():
         self.beat_diviser = beat_diviser
         self.state = Clip.STOP
         self.audio_file = audio_file
+
+        # clip playhead
         self.last_offset = 0
+
         self.output = output
         self.mute_group = mute_group
         self.one_shot = one_shot
+        self.always_play = always_play
         self.lock_rec = lock_rec
         self.shot = False   # When one_shot clip is shot, this becomes True
         self.selected = False
@@ -99,7 +107,6 @@ class Clip():
             else self.state
 
     def start(self):
-
         if self.one_shot == True:
             self.shot = False
             
@@ -107,32 +114,44 @@ class Clip():
             else Clip.START if self.state == Clip.STOPPING \
             else self.state
 
-class Song():
-    CHANNEL_NAMES = ["L", "R"]
-    CHANNEL_NAME_PATTERN = "{port}_{channel}"
 
-    def __init__(self, width, height):
+
+
+class Song():
+
+    def __init__(self, 
+                 width, 
+                 height, 
+                 volume = 1.0, 
+                 bpm = 120, 
+                 beat_per_bar = 4):
         self.clips_matrix = [[None for y in range(height)]
                              for x in range(width)]
+
         self.clips = []
         self.data, self.samplerate = {}, {}
-        self.volume = 1.0
-        self.bpm = 120
-        self.beat_per_bar = 4
+
+        # song volume
+        self.volume = volume #1.0
+
+        self.bpm = bpm #120
+        self.beat_per_bar = beat_per_bar #4
         self.width = width
         self.height = height
         self.file_name = None
         self.is_record = False
-        self.outputsPorts = set()
-        self.outputsPorts.add(Clip.DEFAULT_OUTPUT)
         self.scenes = OrderedDict()
         self.initial_scene = None
         self.annotation = ""
         self.initial_row_with_clips = 0
 
-    def addScene(self, name):
+
+    def addScene(self, name, clip_start = True, clip_selected = False):
+        # if clip_start == True: includes clips in state Start / starting
+        # if clip_selected == True: includes clips Selected from user (shift + left click)        
         clip_ids = [i for i, c in enumerate(self.clips) if
-                    (c.state == Clip.START or c.state == Clip.STARTING)]
+                    (((c.state == Clip.START or c.state == Clip.STARTING) and clip_start == True) or
+                      (c.selected == True and clip_selected == True))]
         self.scenes[name] = clip_ids
 
     def removeScene(self, name):
@@ -160,13 +179,34 @@ class Song():
                 c.start()
             else:
                 c.stop()
+                
+    # ------------------------------------------------------------------------------------------
+
+    def _stopAllClips(self):
+        for i, c in enumerate(self.clips):
+            c.stop()        
+
+    # sets all Clips in Stop state
+    def stopAllClips(self):
+        self._stopAllClips()
+
+    # returns selected clips
+    def selectedClips(self):
+        selected_clips = []
+
+        for x in range(self.width):
+            for y in range(self.height):
+                clip = self.clips_matrix[x][y]
+                if clip and clip.selected == True:
+                    selected_clips.append(clip)
+        
+        return selected_clips
 
     def addClip(self, clip, x, y):
         if self.clips_matrix[x][y]:
             self.clips.remove(self.clips_matrix[x][y])
         self.clips_matrix[x][y] = clip
         self.clips.append(clip)
-        self.outputsPorts.add(clip.output)
         clip.x = x
         clip.y = y
 
@@ -209,6 +249,7 @@ class Song():
             return 0
         else:
             return self.data[clip.audio_file].shape[0]
+    
 
     def getData(self, clip, channel, offset, length):
         if clip.audio_file is None:
@@ -231,15 +272,11 @@ class Song():
 
         if offset + data.shape[0] > self.length(clip):
             data = data[0:data.shape[0] - 2]
-            # raise Exception(("attempt to write data outside of buffer"
-            #                 ": %s + %s > %s ")
-            #                % (offset, data.shape[0], self.length(clip)))
+
 
         self.data[clip.audio_file][offset:offset + data.shape[0],
         channel] = data
-        # print("Write %s bytes at offset %s to channel %s" % (data.shape[0],
-        # offset,
-        # channel))
+
 
     def init_record_buffer(self, clip, channel, size, samplerate):
         i = 0
@@ -270,14 +307,12 @@ class Song():
         
         with ZipFile(file, 'w') as zip:
             song_file = configparser.ConfigParser()
-            port_list = list(self.outputsPorts)
             song_file['DEFAULT'] = {'volume': self.volume,
                                     'annotation': self.annotation,
                                     'bpm': self.bpm,
                                     'beat_per_bar': self.beat_per_bar,
                                     'width': self.width,
                                     'height': self.height,
-                                    'outputs': json.dumps(port_list),
                                     'scenes': json.dumps(self.scenes)}
             if self.initial_scene is not None:
                 song_file['DEFAULT']['initial_scene'] = self.initial_scene
@@ -291,6 +326,7 @@ class Song():
                              'mute_group': str(clip.mute_group),
                              'one_shot': str(clip.one_shot),
                              'lock_rec': str(clip.lock_rec),
+                             'always_play': str(clip.always_play),
                              'audio_file': basename(
                                  clip.audio_file)}
                 if clip_file['audio_file'] is None:
@@ -312,6 +348,9 @@ class Song():
         self.file_name = file
 
 
+
+
+# this function is NOT in song Class
 def load_song_from_file(file):
     with ZipFile(file) as zip:
         with zip.open('metadata.ini') as metadata_res:
@@ -326,9 +365,6 @@ def load_song_from_file(file):
             res.annotation = parser['DEFAULT'].get('annotation', '')
             res.bpm = parser['DEFAULT'].getfloat('bpm', 120.0)
             res.beat_per_bar = parser['DEFAULT'].getint('beat_per_bar', 4)
-            outputs = parser['DEFAULT'].get('outputs', '["%s"]'
-                                            % Clip.DEFAULT_OUTPUT)
-            res.outputsPorts = set(json.loads(outputs))
 
             scenes = parser['DEFAULT'].get('scenes', '{}')
             jsDecoder = json.JSONDecoder(object_pairs_hook=OrderedDict)
@@ -364,10 +400,17 @@ def load_song_from_file(file):
                             parser[section].getint('frame_offset', 0),
                             parser[section].getfloat('beat_offset', 0.0),
                             parser[section].getint('beat_diviser'),
-                            parser[section].get('output', Clip.DEFAULT_OUTPUT),
+                            parser[section].get('output', common.DEFAULT_PORT),
                             parser[section].getint('mute_group', 0),
                             parser[section].getboolean('one_shot', False),
-                            parser[section].getboolean('lock_rec', False))
+                            parser[section].getboolean('lock_rec', False),
+                            parser[section].getboolean('always_play', False))
+                
+                # if trying to read a non existing port, assigning Defalt.
+                # This will also convert to Default the old Main port:
+                if clip.output not in settings.output_ports.keys():
+                    clip.output = common.DEFAULT_PORT
+
                 res.addClip(clip, x, y)
             
     return res

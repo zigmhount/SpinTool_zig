@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>88</height>
+    <width>482</width>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,14 +16,14 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>50</y>
-     <width>171</width>
-     <height>32</height>
+     <x>360</x>
+     <y>0</y>
+     <width>111</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+    <enum>Qt::Vertical</enum>
    </property>
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
@@ -36,9 +36,9 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>10</y>
-     <width>151</width>
-     <height>23</height>
+     <y>12</y>
+     <width>211</width>
+     <height>31</height>
     </rect>
    </property>
   </widget>
@@ -46,13 +46,45 @@
    <property name="geometry">
     <rect>
      <x>17</x>
-     <y>15</y>
+     <y>20</y>
      <width>111</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
     <string>New Scene name :</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBoxIncludeSelected">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>341</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="accessibleName">
+    <string>Help_Scene_Include</string>
+   </property>
+   <property name="text">
+    <string>include selected clips</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBoxIncludeStart">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>110</y>
+     <width>341</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="accessibleName">
+    <string>Help_Scene_Include</string>
+   </property>
+   <property name="text">
+    <string>include playing / starting clips</string>
    </property>
   </widget>
  </widget>

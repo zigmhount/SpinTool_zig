@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>585</width>
-    <height>738</height>
+    <width>671</width>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,634 +20,879 @@
    <iconset resource="gui.qrc">
     <normaloff>:/icons/icons/icon.png</normaloff>:/icons/icons/icon.png</iconset>
   </property>
-  <widget class="QGroupBox" name="groupBoxClips">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>371</y>
-     <width>566</width>
-     <height>261</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Noto Sans</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <italic>false</italic>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);
-font: bold 10pt &quot;Noto Sans&quot;;</string>
-   </property>
-   <property name="title">
-    <string>Clips</string>
-   </property>
-   <widget class="QCheckBox" name="cBoxShowDetailsWhenTriggered">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>341</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Show clip details when triggered on / off</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxPlayAfterRecord">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>110</y>
-      <width>331</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Start playing a clip immediately after recording</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelRecordingColor">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>23</x>
-      <y>185</y>
-      <width>191</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Cell color for recording clips</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="rButtonAmberRecColor">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>190</y>
-      <width>351</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>AMBER for recording (RED for idle clip) (default)</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="rButtonRedRecColor">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>230</y>
-      <width>351</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>RED for recording (AMBER for idle clip)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxShowDetailsWhenVolumeChanged">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>70</y>
-      <width>451</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Show clip details when clip volume is changed from MIDI controller</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxAllowRecordEmptyClip">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>150</y>
-      <width>461</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Allow recording on an empy clip from MIDI controller</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBoxGrid">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>290</y>
-     <width>566</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Noto Sans</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <italic>false</italic>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);
-font: bold 10pt &quot;Noto Sans&quot;;</string>
-   </property>
-   <property name="title">
-    <string>Grid</string>
-   </property>
-   <widget class="QLabel" name="labelDefaultSize">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>27</x>
-      <y>20</y>
-      <width>201</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Default grid size for new songs</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinRows">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>30</y>
-      <width>71</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Noto Sans</family>
-      <pointsize>10</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="minimum">
-     <number>1</number>
-    </property>
-    <property name="maximum">
-     <number>8</number>
-    </property>
-    <property name="value">
-     <number>8</number>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinColumns">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>30</y>
-      <width>71</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Noto Sans</family>
-      <pointsize>10</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="minimum">
-     <number>1</number>
-    </property>
-    <property name="maximum">
-     <number>8</number>
-    </property>
-    <property name="value">
-     <number>8</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelHG">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>10</y>
-      <width>91</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Lines (Height)</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelVG">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>10</y>
-      <width>111</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Columns (Width)</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBoxConnections">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>9</y>
-     <width>561</width>
-     <height>101</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Noto Sans</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <italic>false</italic>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);
-font: bold 10pt &quot;Noto Sans&quot;;</string>
-   </property>
-   <property name="title">
-    <string>Connections</string>
-   </property>
-   <widget class="QCheckBox" name="cBoxAutoconnectOutput">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>338</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Autoconnect main output ports on program start</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxAutoconnectInput">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>70</y>
-      <width>411</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Autoconnect main input ports on program start</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBoxEnvironment">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>120</y>
-     <width>566</width>
-     <height>151</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Noto Sans</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <italic>false</italic>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);
-font: bold 10pt &quot;Noto Sans&quot;;</string>
-   </property>
-   <property name="title">
-    <string>Environment</string>
-   </property>
-   <widget class="QCheckBox" name="cBoxShowScenesManager">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>60</y>
-      <width>251</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Show scenes window on start up</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxShowPlaylistManager">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>30</y>
-      <width>261</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Show playlist window on start up</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxShowSongAnnotation">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>90</y>
-      <width>281</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Show song annotation on song loading</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxBigFontScenes">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>60</y>
-      <width>281</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Use big fonts for scene manager</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cBoxBigFontPlaylist">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>251</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Use big fonts for playlist</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="cBigFontSize">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>90</y>
-      <width>71</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="minimum">
-     <number>10</number>
-    </property>
-    <property name="maximum">
-     <number>200</number>
-    </property>
-    <property name="value">
-     <number>20</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>100</y>
-      <width>131</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Big fonts size (pt)</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QLabel" name="labelMessage">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>700</y>
-     <width>561</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Noto Sans</family>
-     <pointsize>11</pointsize>
-     <weight>9</weight>
-     <italic>false</italic>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(255, 0, 0);
+  <layout class="QVBoxLayout" name="verticalLayout_11">
+   <item>
+    <widget class="QTabWidget" name="tabPreferences">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">/* background-color: rgb(242, 242, 242);</string>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <widget class="QWidget" name="tabAudioPorts">
+      <attribute name="title">
+       <string>Audio ports</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="styleSheet">
+          <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="title">
+          <string>Autoconnect (on application starting)</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QCheckBox" name="cBoxAutoconnectOutput">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>Autoconnect Master output ports to soundcard</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBoxAutoconnectInput">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>Autoconnect Input ports to soundcard</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabEnvironment">
+      <attribute name="title">
+       <string>Environment</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="accessibleName">
+          <string>Help_Prefs_Environment</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="title">
+          <string>Window management</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="cBoxShowPlaylistManager">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="accessibleName">
+             <string>Help_Prefs_Environment</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>Show playlist window on start up</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBoxShowScenesManager">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="accessibleName">
+             <string>Help_Prefs_Environment</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>Show scenes window on start up</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBoxShowSongAnnotation">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="accessibleName">
+             <string>Help_Prefs_Environment</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>Show song annotation on song loading</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="accessibleName">
+          <string>Help_Prefs_Environment</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="title">
+          <string>Custom font size</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="accessibleName">
+               <string>Help_Prefs_Environment</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Custom font size (pt)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="cBigFontSize">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>41</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="minimum">
+               <number>10</number>
+              </property>
+              <property name="maximum">
+               <number>200</number>
+              </property>
+              <property name="value">
+               <number>20</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBoxBigFontScenes">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="accessibleName">
+             <string>Help_Prefs_Environment</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>Use it in scene manager</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBoxBigFontPlaylist">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="accessibleName">
+             <string>Help_Prefs_Environment</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>Use it in playlist</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+         <zorder>cBoxBigFontPlaylist</zorder>
+         <zorder>cBoxBigFontScenes</zorder>
+         <zorder></zorder>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabNewSong">
+      <attribute name="title">
+       <string>New song</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="1" colspan="2">
+        <widget class="QLabel" name="labelVG">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Columns (Width)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="labelDefaultBPM">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Default BPM</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSpinBox" name="spinDefaultBPM">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>260</number>
+         </property>
+         <property name="value">
+          <number>120</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelDefaultSize">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Default grid size for new songs</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="spinColumns">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="font">
+          <font>
+           <family>Noto Sans</family>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>8</number>
+         </property>
+         <property name="value">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="labelDefaultBeats">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Default Beats per bar</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="spinDefaultBeats">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>99</number>
+         </property>
+         <property name="value">
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QSpinBox" name="spinRows">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="font">
+          <font>
+           <family>Noto Sans</family>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>8</number>
+         </property>
+         <property name="value">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="labelDefaultMasterVolume">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Default initial song master volume</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="spinDefaultMasterVolume">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>200</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="labelHG">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Lines (Height)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabPerformance">
+      <attribute name="title">
+       <string>Performance</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QCheckBox" name="cBoxShowDetailsWhenTriggered">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="accessibleName">
+          <string>Help_Prefs_Performance</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Show clip details when triggered on / off</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cBoxPlayAfterRecord">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="accessibleName">
+          <string>Help_Prefs_Performance</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Start playing a clip immediately after recording</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cBoxAllowRecordEmptyClip">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="accessibleName">
+          <string>Help_Prefs_Performance</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Allow recording on an empy clip from MIDI controller</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="accessibleName">
+          <string>Help_Prefs_Performance</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="title">
+          <string>Cell color for recording clips</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <item>
+           <widget class="QRadioButton" name="rButtonAmberRecColor">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>AMBER for recording (SuperBoucle default)</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="rButtonRedRecColor">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+            </property>
+            <property name="text">
+             <string>RED for recording (SpinTool default)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cBoxUnshiftAfterProcessing">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="accessibleName">
+          <string>Help_Prefs_Performance</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Automatically disable Shift function after processing a command</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cBoxPreventSongSave">
+         <property name="accessibleName">
+          <string>Help_Prefs_Performance</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Prevent song save during performance (while Jack is playing)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cBoxAutoAssignNewClipsColumn">
+         <property name="accessibleName">
+          <string>Help_Prefs_Performance</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Auto-assign Output port &amp;&amp; Solo clip Group to new clips</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Mixer</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QGroupBox" name="groupBoxSaveRestoreMixerValues">
+         <property name="accessibleName">
+          <string>Help_Prefs_Mixer</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="title">
+          <string>Restore / save controls values on application starting / closing</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QCheckBox" name="cBoxSaveMixerMaster">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Master</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="cBoxSaveMixerstripGain">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Gain</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxSaveMixerstripSend1">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Send1</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxSaveMixerstripSend2">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Send2</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxSaveMixerstripVolume">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Volume</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxSaveMixerstripMute">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Mute</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxExcludeFromResetControls">
+         <property name="accessibleName">
+          <string>Help_Prefs_Mixer</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="title">
+          <string>Exclude from custom reset</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QCheckBox" name="cBoxCustomResetMixerstripGain">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Gain</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxCustomResetMixerstripSend1">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Send1</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxCustomResetMixerstripSend2">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Send2</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxCustomResetMixerstripVolume">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Volume</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cBoxCustomResetMixerstripMute">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Mute</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabExperimental">
+      <attribute name="title">
+       <string>Experimental</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_10">
+       <item>
+        <widget class="QCheckBox" name="cBoxApplySlowerProcessing">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="accessibleName">
+          <string>Help_Prefs_Experimental</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Slower processing (try it for XRuns and MIDI controller lighting issues)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelMessage">
+       <property name="font">
+        <font>
+         <family>Noto Sans</family>
+         <pointsize>11</pointsize>
+         <weight>9</weight>
+         <italic>false</italic>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 0, 0);
 font: 75 11pt &quot;Noto Sans&quot;;</string>
-   </property>
-   <property name="text">
-    <string>message</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="groupBoxExperimental">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>630</y>
-     <width>561</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Noto Sans</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <italic>false</italic>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);
-font: bold 10pt &quot;Noto Sans&quot;;</string>
-   </property>
-   <property name="title">
-    <string>Experimental :-)</string>
-   </property>
-   <widget class="QCheckBox" name="cBoxApplySlowerProcessing">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>501</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Slower processing (try it for XRuns and MIDI controller lighting problems)</string>
-    </property>
-   </widget>
-  </widget>
+       </property>
+       <property name="text">
+        <string>message</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_prefs_ok">
+       <property name="text">
+        <string>Ok</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources>
   <include location="gui.qrc"/>

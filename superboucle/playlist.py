@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QFileDialog, QAbstractItemView
+from PyQt5.QtWidgets import QDialog, QFileDialog, QAbstractItemView, QMessageBox
 from superboucle.playlist_ui import Ui_Dialog
 from superboucle.clip import verify_ext
 #from superboucle.clip import load_song_from_file, verify_ext
@@ -44,6 +44,10 @@ class PlaylistDialog(QDialog, Ui_Dialog):
             self.playlistList.addItem('{}. {}'.format(i + 1, name))
 
     def onRemove(self):
+        response = QMessageBox.question(self, "Remove Song?", "Are you sure you want to remove this song from the playlist?")
+        if response == QMessageBox.No:
+            return
+
         id = self.playlistList.currentRow()
         if id != -1:
             del settings.playlist[id]
@@ -61,22 +65,22 @@ class PlaylistDialog(QDialog, Ui_Dialog):
                                                  common.SONG_FILE_TYPE,
                                                  self,
                                                  QFileDialog.getOpenFileNames)
-        settings.playlist += file_names  # getSongs(file_names)
+        settings.playlist += file_names
         self.updateList()
 
     def onLoadPlaylist(self):
-        file_name, a = self.gui.getOpenFileName('Open Playlist',
-                                                common.PLAYLIST_FILE_TYPE,
-                                                self)
+
+        file_name, a = self.gui.getOpenFileName('Import Playlist',
+                                                    common.PLAYLIST_FILE_TYPE,
+                                                    self)        
         if not file_name:
             return
-        with open(file_name, 'r') as f:
-            read_data = f.read()
-        settings.playlist = json.loads(read_data)
+
+        common.updateSettingsPlaylist(file_name, settings)
         self.updateList()
 
     def onSavePlaylist(self):
-        file_name, a = self.gui.getSaveFileName('Save Playlist',
+        file_name, a = self.gui.getSaveFileName('Export Playlist',
                                                 common.PLAYLIST_FILE_TYPE,
                                                 self)
 

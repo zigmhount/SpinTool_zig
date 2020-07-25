@@ -1,5 +1,13 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/edit-delete.png</file>
+    <file>icons/warning.png</file>
+    <file>icons/Superdirt_Logo_80.png</file>
+    <file>icons/sliders.png</file>
+    <file>icons/stop.png</file>
+    <file>icons/shift.png</file>
+    <file>icons/file.png</file>
+    <file>icons/fader.png</file>
     <file>icons/copy.png</file>
     <file>icons/clip-edit.png</file>
     <file>icons/clip-start-stop.png</file>

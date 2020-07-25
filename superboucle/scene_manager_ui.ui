@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Scene Manager</string>
+   <string>Scenes</string>
   </property>
   <property name="windowIcon">
    <iconset resource="gui.qrc">
@@ -50,7 +50,7 @@
        <item>
         <widget class="QPushButton" name="loadScenesBtn">
          <property name="text">
-          <string>Start Scene</string>
+          <string>Trigger Scene</string>
          </property>
         </widget>
        </item>
@@ -64,7 +64,7 @@
        <item>
         <widget class="QPushButton" name="removeScenesBtn">
          <property name="text">
-          <string>Remove Scene</string>
+          <string>Delete Scene</string>
          </property>
         </widget>
        </item>
@@ -102,7 +102,7 @@
    <item row="1" column="0">
     <widget class="QCheckBox" name="cBoxBigFonts">
      <property name="text">
-      <string>Use big fonts</string>
+      <string>Use custom font size</string>
      </property>
     </widget>
    </item>

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/scene_manager_ui.ui'
+# Form implementation generated from reading ui file 'scene_manager_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -60,10 +60,10 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Scene Manager"))
-        self.loadScenesBtn.setText(_translate("Dialog", "Start Scene"))
+        Dialog.setWindowTitle(_translate("Dialog", "Scenes"))
+        self.loadScenesBtn.setText(_translate("Dialog", "Trigger Scene"))
         self.addScenesBtn.setText(_translate("Dialog", "Add Scene"))
-        self.removeScenesBtn.setText(_translate("Dialog", "Remove Scene"))
+        self.removeScenesBtn.setText(_translate("Dialog", "Delete Scene"))
         self.setInitialSceneBtn.setText(_translate("Dialog", "Set initial Scene"))
-        self.cBoxBigFonts.setText(_translate("Dialog", "Use big fonts"))
+        self.cBoxBigFonts.setText(_translate("Dialog", "Use custom font size"))
 import gui_rc

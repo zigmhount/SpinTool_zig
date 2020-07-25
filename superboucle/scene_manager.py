@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QAbstractItemView, QListWidgetItem, QFrame
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QListWidgetItem, QFrame, QMessageBox
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QSize
 from superboucle.scene_manager_ui import Ui_Dialog
@@ -99,6 +99,10 @@ class SceneManager(QDialog, Ui_Dialog):
         return list(self.gui.song.scenes.keys())[item.data(self.ITEM_IT_ROLE)]
 
     def onRemove(self):
+        response = QMessageBox.question(self, "Delete Scene?", "Are you sure you want to delete this scene?")
+        if response == QMessageBox.No:
+            return
+
         item = self.scenelistList.currentItem()
         if item:
             self.gui.song.removeScene(self._getSceneName(item))
@@ -164,6 +168,8 @@ class SceneManager(QDialog, Ui_Dialog):
     def loadScene(self, scene):
         try:
             self.gui.song.loadScene(scene)
+
+            self.gui.updateScene(scene, self.scenelistList.currentRow()) 
         except:
             pass
 

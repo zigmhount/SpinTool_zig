@@ -4,6 +4,7 @@ from superboucle.clip import Song
 from PyQt5.QtCore import QSettings
 from superboucle.preferences import Preferences
 import settings
+import common
 
 class NewSongDialog(QDialog, Ui_Dialog):
 
@@ -11,19 +12,21 @@ class NewSongDialog(QDialog, Ui_Dialog):
         super(NewSongDialog, self).__init__(parent)
         self.gui = parent
         self.setupUi(self)
-        
-        # reading grid preferred size:
-        # settings = QSettings(Preferences.COMPANY, Preferences.APPLICATION)
-        # self.widthSpinBox.setValue(int(settings.value('grid_columns', 8)))
-        # self.heightSpinBox.setValue(int(settings.value('grid_rows', 8)))
 
         self.widthSpinBox.setValue(settings.grid_columns)
         self.heightSpinBox.setValue(settings.grid_rows)
+        self.spinBeats.setValue(settings.new_song_beats)
+        self.spinBPM.setValue(settings.new_song_bpm)
+        self.spinMasterVolume.setValue(settings.new_song_master_volume)
 
         self.show()
 
     def accept(self):
+        volume = common.toStoredSongVolumeValue(self.spinMasterVolume.value())
         self.gui.initUI(Song(self.widthSpinBox.value(),
-                             self.heightSpinBox.value()))
+                             self.heightSpinBox.value(),
+                             volume,
+                             self.spinBPM.value(),
+                             self.spinBeats.value()))
                              
         super(NewSongDialog, self).accept()

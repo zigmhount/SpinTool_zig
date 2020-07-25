@@ -4,6 +4,7 @@ from superboucle.cell_ui import Ui_Cell
 from superboucle.clip import basename, Clip
 import numpy as np
 import soundfile as sf
+import os
 from PyQt5 import QtGui
 from superboucle.preferences import Preferences
 import settings
@@ -34,9 +35,9 @@ class Cell(QWidget, Ui_Cell):
                       "QPushButton:pressed {background-color: "
                       "rgb(98, 98, 98);}")
 
-    DEFAULT_CLIP_LABEL_STYLE = ('font: bold 13pt "Noto Sans"; color: rgb(0, 0, 0); text-align: center;')
+    DEFAULT_CLIP_LABEL_STYLE = ('font: bold 14pt "Noto Sans"; color: rgb(0, 0, 0); text-align: center;')
 
-    SELECTED_CLIP_LABEL_STYLE = ('font: bold 13pt "Noto Sans"; color: rgb(255, 255, 0); text-align: center;')
+    SELECTED_CLIP_LABEL_STYLE = ('font: bold 14pt "Noto Sans"; color: rgb(255, 255, 0); text-align: center;')
 
     # Managing recording color
     
@@ -76,22 +77,56 @@ class Cell(QWidget, Ui_Cell):
         self.setStyleSheet(Cell.DEFAULT)
         self.setAcceptDrops(True)
 
+
         if clip:
             self.labelVolume.setText(str(common.toDigitalVolumeValue(clip.volume)))
             self.clip_name.setText(clip.name)
-            self.start_stop.clicked.connect(parent.onStartStopClicked)
-            self.edit.clicked.connect(parent.onEdit)
-            self.setEditIcon()
-        else:
-            self.labelVolume.setText("")
-            self.start_stop.setEnabled(False)
-            self.clip_position.setEnabled(False)
-            self.edit.setIcon(QtGui.QIcon(":/icons/icons/clip-add.png"))
-            self.edit.clicked.connect(parent.onAddClipClicked)
 
+            # set pointing hand cursor
+            self.cell_frame.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+
+            # buttons - might be removed in future
+            self.start_stop.clicked.connect(self.gui.onStartStopClicked)
+            self.edit.clicked.connect(self.gui.onEdit)
+            self.setEditIcon()
+
+            # for no buttons design
+            #self.edit.hide()
+
+
+
+        else: # empty cell
+            self.labelVolume.setText("")
+            self.clip_position.setEnabled(False)
+
+            # set cross cursor
+            self.cell_frame.setCursor(QtGui.QCursor(Qt.CrossCursor))
+
+            # buttons - might be removed in future
+            self.start_stop.setEnabled(False)
+            self.edit.setIcon(QtGui.QIcon(":/icons/icons/clip-add.png"))
+
+            # add clip button
+            #self.edit.clicked.connect(parent.onAddClipClicked)
+            self.edit.clicked.connect(self.onAddClip)
+
+
+            # needed for no button design
+            self.clip_position.hide()
+
+
+        # needed for no button design
+        self.start_stop.hide()
+        self.edit.hide()
+
+
+
+
+    # for button design only
     def setEditIcon(self):
         self.edit.setIcon(QtGui.QIcon(":/icons/icons/clip-edit.png"))
         self.edit.setIconSize(ICON_EDIT_SIZE)
+
 
     def clipSelect(self, value):
         if self.clip:
@@ -101,10 +136,54 @@ class Cell(QWidget, Ui_Cell):
             else:
                 self.clip_name.setStyleSheet(self.DEFAULT_CLIP_LABEL_STYLE)
 
+
+
+    def force_clip_start_stop(self):
+        # force stop
+        if self.clip.state == Clip.START or self.clip.state == Clip.STOPPING:
+            self.clip.state = Clip.STOP
+            # print("force stop")
+
+        # force start
+        else:
+            self.clip.state = Clip.START
+            # print("force start")
+
+        # update gui to show cell states
+        self.gui.update()
+
+
+
     def mousePressEvent(self, event):
         if QApplication.keyboardModifiers() == Qt.ShiftModifier and self.clip:
             value = not(self.clip.selected)
             self.clipSelect(value)
+
+
+        # ctrl-click to force clip state
+        elif QApplication.keyboardModifiers() == Qt.ControlModifier and self.clip:
+            self.force_clip_start_stop()
+
+
+
+        # for no button design
+        elif self.clip:
+            if event.button() == 2:
+                self.gui.onEditRightClick(self.clip)
+            else:
+                self.gui.startStop(self.clip.x, self.clip.y)
+
+        else: # if cell is empty
+            self.onAddClip()
+        # END for no button design
+
+
+
+    # add clip on empty cell
+    def onAddClip(self):
+        self.gui.onAddClipOnEmptyCell(self)
+
+
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -118,6 +197,9 @@ class Cell(QWidget, Ui_Cell):
             path = urls[0].path()
             self.setClip(self.getClip(path))
 
+
+
+    # set empty clip to clip
     def setClip(self, new_clip, fromDialog = True):
         
         if not new_clip:
@@ -126,17 +208,44 @@ class Cell(QWidget, Ui_Cell):
         self.clip = new_clip
         self.clip_name.setText(new_clip.name)
         self.labelVolume.setText(str(common.toDigitalVolumeValue(new_clip.volume)))
+
+
+        # for button design only
         self.start_stop.clicked.connect(self.gui.onStartStopClicked)
         self.setEditIcon()
+
         if fromDialog == True:
-            self.edit.clicked.disconnect(self.gui.onAddClipClicked)
+            self.edit.clicked.disconnect(self.onAddClip)
         self.edit.clicked.connect(self.gui.onEdit)
+
         self.start_stop.setEnabled(True)
         self.clip_position.setEnabled(True)
+
+
+
+        # get clip info and set beat amount according to clip length
+        size_in_frames, size_in_beats, audio_file_name = self.gui.getClipInfo(new_clip)
+
+        if size_in_beats != 0:
+            self.clip.beat_diviser = int(size_in_beats)
+        else:
+            self.clip.beat_diviser = self.gui.song.beat_per_bar
+
+
+
+        # show progress bar and hide edit button
+        self.clip_position.show()
+        self.edit.hide()
+
+        # set pointing hand cursor
+        self.cell_frame.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+
+
         self.setAcceptDrops(False)
         self.gui.song.addClip(new_clip, self.pos_x, self.pos_y)
         self.gui.last_clip = new_clip
         self.gui.update()
+
 
     def openClip(self):
         audio_file, a = self.gui.getOpenFileName('Open Clip',
@@ -144,8 +253,11 @@ class Cell(QWidget, Ui_Cell):
         if audio_file and a:
             return self.getClip(audio_file)
 
+
     def getClip(self, audio_file):
         wav_id = basename(audio_file)
+        #print("wav_id: " + wav_id)
+
         if wav_id in self.gui.song.data:
             i = 0
             while "%s-%02d" % (wav_id, i) in self.gui.song.data:
@@ -156,7 +268,8 @@ class Cell(QWidget, Ui_Cell):
         self.gui.song.data[wav_id] = data
         self.gui.song.samplerate[wav_id] = samplerate
 
-        return Clip(basename(wav_id))
+        return Clip(audio_file=basename(wav_id), name=os.path.splitext(basename(wav_id))[0])
+
 
     def setColor(self, state):
         self.setStyleSheet(Cell.STATE_COLORS[state])

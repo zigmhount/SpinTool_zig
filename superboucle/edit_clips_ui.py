@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/edit_clips_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -24,7 +24,7 @@ class Ui_Dialog(object):
         self.labelMessage = QtWidgets.QLabel(Dialog)
         self.labelMessage.setGeometry(QtCore.QRect(10, 10, 511, 51))
         self.labelMessage.setStyleSheet("font: bold 11pt \"Noto Sans\";\n"
-"background-color: rgb(255, 255, 0);")
+"background-color: rgb(255, 255, 127);")
         self.labelMessage.setInputMethodHints(QtCore.Qt.ImhMultiLine)
         self.labelMessage.setWordWrap(True)
         self.labelMessage.setObjectName("labelMessage")
@@ -178,7 +178,7 @@ class Ui_Dialog(object):
         self.groupBoxPorts.setTitle(_translate("Dialog", "Clips port"))
         self.buttonCopyPortFromCurrentClip.setToolTip(_translate("Dialog", "Get port from current showing clip"))
         self.checkBoxEnableMutGroupChanges.setText(_translate("Dialog", "Edit"))
-        self.groupBoxMuteGroup.setTitle(_translate("Dialog", "Clips mute group"))
-        self.buttonCopyMuteGroupFromCurrentClip.setToolTip(_translate("Dialog", "Get mute group from current showing clip"))
+        self.groupBoxMuteGroup.setTitle(_translate("Dialog", "Clips solo group"))
+        self.buttonCopyMuteGroupFromCurrentClip.setToolTip(_translate("Dialog", "Get solo group from current showing clip"))
         self.checkBoxUnselectClips.setText(_translate("Dialog", "Unselect clips after processing"))
 import gui_rc

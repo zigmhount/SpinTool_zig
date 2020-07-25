@@ -3,9 +3,8 @@
 """
 Gui
 """
-from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import (QMainWindow, QFileDialog,
-                             QAction, QActionGroup, QMessageBox, QApplication)
+from PyQt5.QtGui import QDesktopServices, QCloseEvent, QCursor
+from PyQt5.QtWidgets import (QMainWindow, QFileDialog, QAction, QActionGroup, QMessageBox, QApplication)
 from PyQt5.QtCore import QTimer, QObject, pyqtSignal, QSettings, Qt, QUrl
 from superboucle.clip import Clip, load_song_from_file, verify_ext, Song
 from superboucle.gui_ui import Ui_MainWindow
@@ -17,7 +16,11 @@ from superboucle.scene_manager import SceneManager
 from superboucle.song_annotation import SongAnnotation
 from superboucle.preferences import Preferences
 from superboucle.about import About
+from superboucle.assistant import Assistant
 from superboucle.port_manager import PortManager
+
+from superboucle.mixer import Mixer # <-------- MIXER WINDOW
+
 from superboucle.new_song import NewSongDialog
 from superboucle.add_clip import AddClipDialog
 from superboucle.add_port import AddPortDialog
@@ -36,6 +39,7 @@ import copy
 import os
 import settings
 import common
+import help
 
 BAR_START_TICK = 0.0
 BEATS_PER_BAR = 4.0
@@ -86,8 +90,6 @@ class Gui(QMainWindow, Ui_MainWindow):
     BLINK_DURATION = 200
     PROGRESS_PERIOD = 300
 
-    ADD_PORT_LABEL = 'Add new Port...'
-
     updateUi = pyqtSignal()
     readQueueIn = pyqtSignal()
     updatePorts = pyqtSignal()
@@ -104,12 +106,14 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.queue_out, self.queue_in = Queue(), Queue()
         self.updateUi.connect(self.update)
         self.readQueueIn.connect(self.readQueue)
-        self.current_vol_block = 0
+        self.mixer_stripes_midi_linked = True # When false, moving faders and knobs and mutes on controller has no effect
         self.last_clip = None
         self.memory_clip = None
         self.songAnnotationDialog = None # Annotation window
         self.scenesManagerDialog = None
         self.current_scene = None
+        self.shift_active = False
+        self.output_mixer = None
 
         # Load devices
         self.deviceGroup = QActionGroup(self.menuDevice)
@@ -119,7 +123,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             for raw_device in settings.devices:
                 self.devices.append(Device(pickle.loads(raw_device)))
         else:
-            self.devices.append(Device({'name': 'No Device'}))            
+            self.devices.append(Device({'name': 'No Devices'}))            
             
         self.updateDevices()
         self.deviceGroup.triggered.connect(self.onDeviceSelect)
@@ -133,36 +137,54 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.actionSave.triggered.connect(self.onActionSave)
         self.actionSave_As.triggered.connect(self.onActionSaveAs)
         self.actionQuit.triggered.connect(self.onActionQuit)
+
         self.actionAdd_Device.triggered.connect(self.onAddDevice)
         self.actionManage_Devices.triggered.connect(self.onManageDevice)
+        self.actionRefresh.triggered.connect(self.onRefresh)
+
         self.actionPreferences.triggered.connect(self.onPreferences)
         self.actionPlaylist_Editor.triggered.connect(self.onPlaylistEditor)
         self.actionScene_Manager.triggered.connect(self.onSceneManager)
+
         self.actionExportAllSamples.triggered.connect(self.onExportAllClips)
         self.actionEditSelectedClips.triggered.connect(self.onEditSelectedClips)
+        self.actionAutoAssignClipsColumn.triggered.connect(self.onAutoAssignClipsColumn)
+        self.actionAutoAssignClipsOutput.triggered.connect(self.onAutoAssignClipsOutput)
+        self.actionAutoAssignClipsSolo.triggered.connect(self.onAutoAssignClipsSolo)
         self.actionUnselectAllClips.triggered.connect(self.onUnselectAllClips)
+        self.actionStopAllClips.triggered.connect(self.onStopAllClips)
         self.actionEditClipsOutputGroup.triggered.connect(self.onEditClipsByOutputPort)
         self.actionEditClipsMuteGroup.triggered.connect(self.onEditClipsByMuteGroup)
+
         self.actionPort_Manager.triggered.connect(self.onPortManager)
+        self.actionMixer.triggered.connect(self.onMixer)
+
         self.actionFullScreen.triggered.connect(self.onActionFullScreen)
         self.actionAbout.triggered.connect(self.onActionAbout)
         self.actionOnline_Wiki.triggered.connect(self.onActionWiki)
+        self.actionUserManual.triggered.connect(self.onActionUserManual)
         self.action_SongAnnotation.triggered.connect(self.onAction_SongAnnotation)
-        self.master_volume.valueChanged.connect(self.onMasterVolumeChange)
+
+        self.song_volume_knob.valueChanged.connect(self.onSongVolumeChange)
         self.bpm.valueChanged.connect(self.onBpmChange)
         self.beat_per_bar.valueChanged.connect(self.onBeatPerBarChange)
-        self.rewindButton.clicked.connect(self.onRewindClicked)
-        self.playButton.clicked.connect(self._jack_client.transport_start)
-        self.pauseButton.clicked.connect(self._jack_client.transport_stop)
-        self.gotoButton.clicked.connect(self.onGotoClicked)
+        self.rewindButton.clicked.connect(self.onRewind)
+        self.playButton.clicked.connect(self.onPlay)
+        self.stopButton.clicked.connect(self.onStop)
+        self.pauseButton.clicked.connect(self.onPause)
+        self.gotoButton.clicked.connect(self.onGoto)
         self.recordButton.clicked.connect(self.onRecord)
         self.clip_name.textChanged.connect(self.onClipNameChange)
         self.clip_volume.valueChanged.connect(self.onClipVolumeChange)
+
+        self.clip_info_combobox.currentTextChanged.connect(self.updateAllCellInfo)
+
         self.beat_diviser.valueChanged.connect(self.onBeatDiviserChange)
         self.output.activated.connect(self.onOutputChange)
         self.mute_group.valueChanged.connect(self.onMuteGroupChange)
         self.one_shot_clip.stateChanged.connect(self.onOneShotClip)
         self.lock_record.stateChanged.connect(self.onLockRecord)
+        self.always_play_clip.stateChanged.connect(self.onAlwaysPlay)
         self.frame_offset.valueChanged.connect(self.onFrameOffsetChange)
         self.beat_offset.valueChanged.connect(self.onBeatOffsetChange)
         self.revertButton.clicked.connect(self.onRevertClip)
@@ -184,8 +206,26 @@ class Gui(QMainWindow, Ui_MainWindow):
         self._jack_client.set_timebase_callback(self.timebase_callback)
 
         if settings.gui_geometry:
-            self.restoreGeometry(settings.gui_geometry)        
-        
+            self.restoreGeometry(settings.gui_geometry)
+
+
+        # set clip info combo box choices
+        self.clip_info_combobox.clear()
+        self.clip_info_combobox.addItems(["Volume",
+                                          "File name",
+                                          "Size in samples",
+                                          "Size in beats",
+                                          "Beat amount",
+                                          "Port",
+                                          "Solo clip group",
+                                          "Sample offset",
+                                          "Beat offset",
+                                          "One-shot",
+                                          "Lock record",
+                                          "Always play"])
+
+
+
         self.show()
 
         # showing additional windows if desired:
@@ -195,8 +235,8 @@ class Gui(QMainWindow, Ui_MainWindow):
 
         if settings.show_playlist_on_start == True:
             self.onPlaylistEditor()
-        
-       
+
+
     def initUI(self, new_song, loading = True):
 
         # remove old buttons
@@ -208,10 +248,7 @@ class Gui(QMainWindow, Ui_MainWindow):
         for i in reversed(range(self.gridLayout.count())):
             self.gridLayout.itemAt(i).widget().close()
             self.gridLayout.itemAt(i).widget().setParent(None)
-
-        # first pass without removing old ports
-        self.updateJackPorts(new_song, remove_ports=False)
-               
+              
         self.song = new_song
 
         if self.songAnnotationDialog:
@@ -219,11 +256,10 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.songAnnotationDialog.updateText(self.song.annotation)  
 
         # second pass with removing
-        self.output.clear()        
-        self.output.addItems(sorted(new_song.outputsPorts))
-        self.output.addItem(Gui.ADD_PORT_LABEL)
-        self.master_volume.setValue(common.toControllerVolumeValue(new_song.volume))
-        self.updateMasterVolumeValue()
+        self.output.clear()
+        self.output.addItems(common.toPortsList(settings.output_ports))
+        self.song_volume_knob.setValue(common.toControllerVolumeValue(new_song.volume))
+        self.updateSongVolumeValue()
         self.bpm.setValue(new_song.bpm)
         self.beat_per_bar.setValue(new_song.beat_per_bar)
         for x in range(new_song.width):
@@ -241,6 +277,7 @@ class Gui(QMainWindow, Ui_MainWindow):
     
             self.setWindowTitle(self.getWindowTitle(new_song.file_name or EMPTY_SONG_NAME))
             self.labelRecording.setVisible(False)
+            self.labelShift.setVisible(False)
     
             if self.song.initial_scene in self.song.scenes:
                 self.song.loadScene(self.song.initial_scene)
@@ -255,26 +292,55 @@ class Gui(QMainWindow, Ui_MainWindow):
             
         self.songLoad.emit()
 
+
+    # help management --------------------------------------------------------
+
+    def keyPressEvent(self, event):
+
+        if event.key() == Qt.Key_H:  # if pressed key is H (help)
+
+            pos = QCursor.pos()
+            widget = QApplication.widgetAt(pos)   # this is widget under cursor
+
+            if widget is None: return
+            accName = widget.accessibleName()     # this is widget accessible name
+            
+            if accName != "":
+                wantedHelp = help.Context(accName)  # Conversion of string accessible name to Context enum
+                self.showContextHelp(wantedHelp)
+                
+
+    def showContextHelp(self, wantedHelp):
+        helpText = help.getContextHelp(wantedHelp)
+        Assistant(self, helpText, Assistant.MODE_CONTEXT)
+    
+    def onActionUserManual(self):
+        helpText = help.getUserManual(help.ManualSection.Manual_All)
+        Assistant(self, helpText, Assistant.MODE_MANUAL)
+
+    # --------------------------------------------------------------------------------
+
     def openSongFromDisk(self, file_name):
         self._jack_client.transport_stop()
         self._jack_client.transport_locate(0)
 
         message = QMessageBox(self)
-        message.setWindowTitle("Loading ....")
-        message.setText("Reading Files, please wait ...")
+        message.setWindowTitle("Loading...")
+        message.setText("Reading Files, please wait...")
         message.show()
         self.initUI(load_song_from_file(file_name))
         message.close()
 
         self.redraw()
               
+        # load annotations
         if settings.show_song_annotation_on_load:
-            
             if self.songAnnotationDialog:
                 self.songAnnotationDialog.close()
                 self.songAnnotationDialog.destroy()
-                
+
             self.showSongAnnotation()
+
 
     def showSongAnnotation(self):
         self.songAnnotationDialog = SongAnnotation(self)
@@ -283,34 +349,66 @@ class Gui(QMainWindow, Ui_MainWindow):
     def moveEvent(self, event):
         settings.gui_geometry = self.saveGeometry()
 
+
     def closeEvent(self, event):
-        self.onApplicationExit()
+        response = QMessageBox.question(self, "Quit SpinTool", "Are you sure you want to quit SpinTool?")
+        if response == QMessageBox.No:
+            event.ignore()
+        else:
+            event.accept()
+            self.onApplicationExit()
     
+
     def onApplicationExit(self):
         settings.gui_geometry = self.saveGeometry()
         
         #device lights turn off, if exhisting. Prevents device from remaining lighted-up
         try:
+            # send init command
+            self.onDeviceSelect()
+
             self.lightDownDevice()
             print("device light off")
+
         except:
             print("no device connected")  # Could not turn off device lights
         time.sleep(1)
         # Sorry for this bad coding. But I tried in all other ways, if you don't wait a while to let
-        # the engine processal pending midi messages, the device doesn't light off.
+        # the engine process pending midi messages, the device doesn't light off.
        
         settings.devices = [pickle.dumps(x.mapping)
                             for x in self.devices]
 
+
+
+        # reset mixer settings if wanted
+        if settings.save_mixerstrip_gain == False:
+            common.resetGain(settings.output_ports)
+
+        if settings.save_mixerstrip_send1 == False:
+            common.resetSend1(settings.output_ports)
+
+        if settings.save_mixerstrip_send2 == False:
+            common.resetSend2(settings.output_ports)
+
+        if settings.save_mixerstrip_volume == False:
+            common.resetVolume(settings.output_ports)
+
+        if settings.save_mixerstrip_mute == False:
+            common.resetMute(settings.output_ports)
+
+
+
         print("Updating settings")
-
         settings.update()
-
         print("Settings updated")
-              
+
+
+
     def onStartStopClicked(self):
         clip = self.sender().parent().parent().clip
         self.startStop(clip.x, clip.y)
+
 
     def startStop(self, x, y, controller = False):
         clip = self.btn_matrix[x][y].clip # affected clip
@@ -329,18 +427,19 @@ class Gui(QMainWindow, Ui_MainWindow):
                     return
                 
                 else:
-                    if x > self.song.width or y > self.song.height:
+                    if (x + 1) > self.song.width or (y + 1) > self.song.height:
                         print("Required coordinates exceed grid dimension")
                         return 
 
                     # else a new clip and a new cell are instanced:
-                    print("Istancing a Clip: x = " + str(x) + ", y = " + str(y))
+                    # print("Instancing a Clip: x = " + str(x) + ", y = " + str(y))
 
                     clip = Clip(audio_file=None, name='audio-%02d' % len(self.song.clips))
                     clip.x = x
                     clip.y = y
                     clip.one_shot = False
                     clip.lock_rec = False
+                    clip.always_play = False
                     clip.beat_diviser = self.song.beat_per_bar
 
                     cell = Cell(self, clip, x, y)
@@ -348,8 +447,13 @@ class Gui(QMainWindow, Ui_MainWindow):
                     self.gridLayout.addWidget(cell, y, x)
 
                     cell.setClip(clip, False)
+                    
+                    if settings.auto_assign_new_clip_column:
+                        self.autoAssignClipColumn(clip)
+
 
                     self.updateClipInfo()
+
 
         if self.song.is_record:
             # If clip is not None and clip.lock_rec == True
@@ -359,7 +463,7 @@ class Gui(QMainWindow, Ui_MainWindow):
                 
             else:
                 self.song.is_record = False
-                self.updateRecordBtn()
+                self.updateRecordControls()
                 # calculate buffer size
                 state, position = self._jack_client.transport_query()
                 bps = position['beats_per_minute'] / 60
@@ -376,12 +480,29 @@ class Gui(QMainWindow, Ui_MainWindow):
             # to automatically view clip details, when triggered:
             if settings.show_clip_details_on_trigger:
                 self.last_clip = clip
-                self.updateClipInfo()  
+                self.updateClipInfo()
             
+
         self.update()
 
+
+
+    def getClipInfo(self, clip):
+        state, position = self._jack_client.transport_query()
+        fps = position['frame_rate']
+        bps = self.bpm.value() / 60
+        size_in_frames = self.song.length(clip)
+        if self.bpm.value() and fps:
+            size_in_beats = (bps / fps) * size_in_frames
+        else:
+            size_in_beats = 0
+        audio_file_name = clip.audio_file
+
+        return size_in_frames, size_in_beats, audio_file_name
+
+
+
     def updateClipInfo(self, updateDetailsOnly = False):
-                
         if self.last_clip:
             self.frame_clip.setEnabled(True)
             self.clip_name.setText(self.last_clip.name)
@@ -391,53 +512,65 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.output.setCurrentText(self.last_clip.output)
             self.mute_group.setValue(self.last_clip.mute_group)
             self.clip_volume.setValue(common.toControllerVolumeValue(self.last_clip.volume))
-            self.updateClipVolumeValue()
+            self.updateClipParameterChange()
             self.one_shot_clip.setChecked(self.last_clip.one_shot)
             self.lock_record.setChecked(self.last_clip.lock_rec)
+            self.always_play_clip.setChecked(self.last_clip.always_play)
             
             if (updateDetailsOnly == False):
-            
-                state, position = self._jack_client.transport_query()
-                fps = position['frame_rate']
-                bps = self.bpm.value() / 60
-                if self.bpm.value() and fps:
-                    size_in_beat = (bps / fps) * self.song.length(self.last_clip)
-                else:
-                    size_in_beat = "No BPM info"
-    
-                # Showing file name too:
-                clip_description = ("Size in sample: %s\nSize in beat: %s\nFile name: %s"
-                    % (self.song.length(self.last_clip),
-                       round(size_in_beat, 1),
-                       self.last_clip.audio_file))
-    
+
+                # get clip info
+                size_in_frames, size_in_beats, audio_file_name = self.getClipInfo(self.last_clip)
+
+                clip_description = ("Size in samples: %s\nSize in beats: %s\nFile name: %s"
+                                    % (size_in_frames, round(size_in_beats, 2), audio_file_name))
+
                 self.clip_description.setText(clip_description)
 
+
+            # update cell info
+            self.updateAllCellInfo()
+
+
+
+    # show clip details on edit button click - for button design only
     def onEdit(self):
         self.last_clip = self.sender().parent().parent().clip
-        
         self.updateClipInfo()
 
-    def onAddClipClicked(self):
-        cell = self.sender().parent().parent()
+
+    # show clip details on right click
+    def onEditRightClick(self, clip):
+        self.last_clip = clip
+        self.updateClipInfo()
+
+
+    # add clip on empty cell from add button and from cell frame
+    def onAddClipOnEmptyCell(self, cell):
         if QApplication.keyboardModifiers() == Qt.ControlModifier:
             cell.setClip(cell.openClip())
         else:
             AddClipDialog(self, cell)
-            # TODO: one day, find a way to show clip details in this Else as well.
-        
+
         self.updateClipInfo()
+
 
     def onRevertClip(self):
         if self.last_clip and self.last_clip.audio_file:
             audio_file = self.last_clip.audio_file
             self.song.data[audio_file] = self.song.data[audio_file][::-1]
 
+    def onStopAllClips(self):
+        self.song.stopAllClips()
+        self.update()
+
+
     def onUnselectAllClips(self):
         for x in range(self.song.width):
             for y in range(self.song.height):
                 cell = self.btn_matrix[x][y]
                 cell.clipSelect(False)
+
 
     def onEditSelectedClips(self):
         self.EditClips(common.CLIPS_EDIT_MODE_ALL_SELECTED)
@@ -447,6 +580,69 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def onEditClipsByOutputPort(self):
         self.EditClips(common.CLIPS_EDIT_MODE_BY_OUTPUT_PORT)
+
+    def onAutoAssignClipsColumn(self):
+        response = QMessageBox.question(self, "Automatic Output Port and Solo Group assignment", 
+                                        "The same Output Port will be assigned to all clips in a column, " +
+                                        "from first column on the left to last one the right, following the " +
+                                        "same order of Output ports (stripes) in Mixer. \n\n" +
+                                        "Clips Solo groups will be assigned too, numbered from 1 to " + str(self.song.width) + 
+                                        " so that each clip will mute all the others of the same column, when triggered. \n\n " + 
+                                        "SELECTED clips (Shift + Left click) will be excluded. If you want to exclude some clips " + 
+                                        "from auto-assignment, you can select them. \n\n" +
+                                        "Do you want to proceed?")
+        if response == QMessageBox.No:
+            return
+        
+        for nclip in self.song.clips:
+            self.autoAssignClipColumn(nclip, True, True)
+
+    def onAutoAssignClipsOutput(self):
+        response = QMessageBox.question(self, "Automatic Output Port assignment", 
+                                        "The same Output Port will be assigned to all clips in a column, " +
+                                        "from first column on the left to last one the right, following the " +
+                                        "same order of Output ports (stripes) in Mixer. \n\n" +
+                                        "SELECTED clips (Shift + Left click) will be excluded. If you want to exclude some clips " + 
+                                        "from auto-assignment, you can select them. \n\n" +                                        
+                                        "Do you want to proceed?")
+        if response == QMessageBox.No:
+            return
+        
+        for nclip in self.song.clips:
+            self.autoAssignClipColumn(nclip, True, False)
+
+    def onAutoAssignClipsSolo(self):
+        response = QMessageBox.question(self, "Automatic Solo Group assignment", 
+                                        "The same Solo Group will be assigned to all clips in a column, " + 
+                                        "numbered from 1 to " + str(self.song.width) + " so that each clip" +
+                                        "  will mute all the others of the same column, when triggered. \n\n " + 
+                                        "SELECTED clips (Shift + Left click) will be excluded. If you want to exclude some clips " + 
+                                        "from auto-assignment, you can select them. \n\n" +                                        
+                                        "Do you want to proceed?")
+        if response == QMessageBox.No:
+            return
+        
+        for nclip in self.song.clips:
+            self.autoAssignClipColumn(nclip, False, True)            
+
+    def autoAssignClipColumn(self, nclip, output=True, solo=True):
+        if nclip.selected == True:
+            return
+
+        if solo == True:    
+            nclip.mute_group = (nclip.x + 1)
+
+        if output == True:
+            out_port = common.getOutputPortByIndex(settings.output_ports, (nclip.x))
+            if out_port:
+                nclip.output = out_port
+            else:
+                nclip.output = common.DEFAULT_PORT
+
+        if nclip is self.last_clip:
+            self.updateClipInfo()
+        
+        return
 
     def EditClips(self, edit_mode):
         selected_clips = []
@@ -465,7 +661,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             if selected_clips.__len__() == 0:
                 message = QMessageBox(self)
                 message.setWindowTitle("No clips selected")
-                message.setText("Couldn't find any selected clip.\nHold SHIFT and left-click any clip on the grid to select it")
+                message.setText("Couldn't find any selected clip.\nHold SHIFT on PC keyboard and left-click any clip on the grid to select it")
                 message.show()
                 return
 
@@ -635,6 +831,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             current_level = np.ndarray.max(absolute_val)
             self.song.data[audio_file][:] *= (1 / current_level)
 
+
     def onExportClip(self):
         if self.last_clip and self.last_clip.audio_file:
             audio_file = self.last_clip.audio_file
@@ -647,6 +844,7 @@ class Gui(QMainWindow, Ui_MainWindow):
                          subtype=sf.default_subtype('WAV'),
                          format='WAV')
 
+
     def onDeleteClipClicked(self):
         if self.last_clip:
             response = QMessageBox.question(self, "Delete Clip?", ("Are you sure to delete the clip?"))
@@ -654,12 +852,21 @@ class Gui(QMainWindow, Ui_MainWindow):
                 self.song.removeClip(self.last_clip)
                 self.initUI(self.song, False)
 
-    def updateMasterVolumeValue(self):
-        self.labelMasterVolume.setText(str(common.toDigitalVolumeValue(self.song.volume)))  # showing volume numeric value
 
-    def onMasterVolumeChange(self):
-        self.song.volume = (common.toAnalogVolumeValue(self.master_volume.value()))
-        self.updateMasterVolumeValue()
+
+    # song vol update
+    def updateSongVolumeValue(self):
+        self.labelMasterVolume.setText(str(common.toDigitalVolumeValue(self.song.volume)*2))  # showing volume numeric value
+        if self.output_mixer:
+            self.output_mixer.updateSongVolumeGui(common.toControllerVolumeValue(self.song.volume)) # = * 256
+
+
+    # song vol
+    def onSongVolumeChange(self):
+        self.song.volume = common.toAnalogVolumeValue(self.song_volume_knob.value()) # = / 256
+        self.updateSongVolumeValue()
+
+
 
     def onBpmChange(self):
         self.song.bpm = self.bpm.value()
@@ -667,7 +874,8 @@ class Gui(QMainWindow, Ui_MainWindow):
     def onBeatPerBarChange(self):
         self.song.beat_per_bar = self.beat_per_bar.value()
 
-    def onGotoClicked(self):
+    def onGoto(self):
+
         state, position = self._jack_client.transport_query()
         new_position = (position['beats_per_bar']
                         * (self.gotoTarget.value() - 1)
@@ -675,15 +883,82 @@ class Gui(QMainWindow, Ui_MainWindow):
                         * (60 / position['beats_per_minute']))
         self._jack_client.transport_locate(int(round(new_position, 0)))
 
-    def onRecord(self):
-        self.song.is_record = not self.song.is_record
-        self.updateRecordBtn()
 
-    def updateRecordBtn(self):
+    def onStop(self):
+                
+        self._jack_client.transport_stop()
+        self.onRewind()
+        self.updateMidiStop()
+
+        if settings.prevent_song_save:
+            # enabling song save
+            self.songSavingEnabled(True)
+
+
+    def onPause(self):
+                
+        self._jack_client.transport_stop()
+        self.updateMidiPause()
+        # update matrix and midi device
+        self.redraw()
+
+        if settings.prevent_song_save:
+            # enabling song save
+            self.songSavingEnabled(True)
+
+
+    def onPlay(self):
+                
+        self._jack_client.transport_start()
+        self.updateMidiPlay()
+        # update matrix and midi device
+        self.redraw()
+
+        if settings.prevent_song_save:
+            # disabling song save
+            self.songSavingEnabled(False)
+
+
+    def onRewind(self):
+
+        self._jack_client.transport_locate(0)
+
+        # reset progress bars
+        self.resetAllClipProgressBars()
+
+        # update matrix and midi device
+        self.redraw()
+
+
+    def onRecord(self):
+                
+        self.song.is_record = not self.song.is_record
+        self.updateRecordControls()
+    
+
+    def onShift(self):
+        self.shift_active = not self.shift_active
+        self.updateShiftActive()
+
+
+    def songSavingEnabled(self, enabled):
+        # needs to be written with if/else;
+        # because passing enabled as argument somehow doesn't work
+        if enabled == True:
+            self.actionSave.setEnabled(True)
+            self.actionSave_As.setEnabled(True)
+        else:
+            self.actionSave.setEnabled(False)
+            self.actionSave_As.setEnabled(False)
+
+
+
+    def updateRecordControls(self):
         self.labelRecording.setVisible(self.song.is_record)
         
         if not self.song.is_record:
             self.recordButton.setStyleSheet(self.RECORD_DEFAULT)
+
         if self.device.record_btn:
             (msg_type, channel, pitch, velocity) = self.device.record_btn
             if self.song.is_record:
@@ -694,92 +969,202 @@ class Gui(QMainWindow, Ui_MainWindow):
             else:
                 color = self.device.black_vel
             self.queue_out.put(((msg_type << 4) + channel, pitch, color))
+    
 
-    def onRewindClicked(self):
-        self._jack_client.transport_locate(0)
+    def updateShiftActive(self):
+        self.labelShift.setVisible(self.shift_active)
+
+        if self.shift_active == True:
+            color = self.device.green_vel
+        else:
+            color = self.device.black_vel
+
+        (a, b_channel, b_pitch, b) = self.device.shift_btn
+        note = ((a << 4) + b_channel, b_pitch, color)
+        self.queue_out.put(note)
+
+
+
+
+    # update specific cell with clip parameter info
+    def updateCellInfo(self, cell, clip):
+
+        cell.labelVolume.setStyleSheet('font: bold 12pt "Noto Sans";')
+
+        if self.clip_info_combobox.currentText() == "Volume":
+            cell.labelVolume.setText(str(common.toDigitalVolumeValue(clip.volume)))
+
+        if self.clip_info_combobox.currentText() == "Beat amount":
+            cell.labelVolume.setText(str(clip.beat_diviser))
+
+        if self.clip_info_combobox.currentText() == "Sample offset":
+            cell.labelVolume.setText(str(clip.frame_offset))
+
+        if self.clip_info_combobox.currentText() == "Beat offset":
+            cell.labelVolume.setText(str(clip.beat_offset))
+
+        if self.clip_info_combobox.currentText() == "Port":
+            cell.labelVolume.setText(str(clip.output))
+
+        if self.clip_info_combobox.currentText() == "Solo clip group":
+            cell.labelVolume.setText(str(clip.mute_group))
+
+        if self.clip_info_combobox.currentText() == "One-shot":
+            cell.labelVolume.setText(str(clip.one_shot))
+
+        if self.clip_info_combobox.currentText() == "Lock record":
+            cell.labelVolume.setText(str(clip.lock_rec))
+
+        if self.clip_info_combobox.currentText() == "Always play":
+            cell.labelVolume.setText(str(clip.always_play))
+
+        size_in_frames, size_in_beats, audio_file_name = self.getClipInfo(clip) # better: save this info into clip
+
+        if self.clip_info_combobox.currentText() == "Size in samples":
+            cell.labelVolume.setText(str(size_in_frames))
+
+        if self.clip_info_combobox.currentText() == "Size in beats":
+            cell.labelVolume.setText(str(round(size_in_beats, 2)))
+
+        if self.clip_info_combobox.currentText() == "File name":
+            cell.labelVolume.setText(audio_file_name)
+            cell.labelVolume.setStyleSheet('font: 8pt "Noto Sans";')
+
+
+
+    # update parameter info of all cells
+    def updateAllCellInfo(self):
+        for i in self.btn_matrix:
+            for j in i:
+                #print(j.pos_x, j.pos_y)
+                if j.clip:
+                    #print(j.clip.name)
+                    cell = self.btn_matrix[j.pos_x][j.pos_y]
+                    self.updateCellInfo(cell, j.clip)
+
+
+
+
+    # reset all clip progress bars
+    def resetAllClipProgressBars(self):
+        for i in self.btn_matrix:
+            for j in i:
+                if j.clip:
+                    j.clip.last_offset = 0 # set clip playhead to 0
+
+
+
+    # update clip parameter of selected cell
+    def updateClipParameterChange(self):
+        cell = self.btn_matrix[self.last_clip.x][self.last_clip.y]
+        self.updateCellInfo(cell, self.last_clip)
+
+
+
+
 
     def onClipNameChange(self):
         self.last_clip.name = self.clip_name.text()
         cell = self.btn_matrix[self.last_clip.x][self.last_clip.y]
         cell.clip_name.setText(self.last_clip.name)
+        self.updateClipParameterChange()
 
-    def updateClipVolumeValue(self):
-        self.labelClipVolume.setText(str(common.toDigitalVolumeValue(self.last_clip.volume)))  # Showing numeric clip volume
-        cell = self.btn_matrix[self.last_clip.x][self.last_clip.y]
-        cell.labelVolume.setText(str(common.toDigitalVolumeValue(self.last_clip.volume)))
+
 
     def onClipVolumeChange(self):
         if self.last_clip:
             self.last_clip.volume = common.toAnalogVolumeValue(self.clip_volume.value())
-            self.updateClipVolumeValue()
+            self.updateClipParameterChange()
+
+
 
     def onBeatDiviserChange(self):
         if self.last_clip:
             self.last_clip.beat_diviser = self.beat_diviser.value()
+            self.updateClipParameterChange()
+
 
     def onOutputChange(self):
         new_port = self.output.currentText()
-        if new_port == Gui.ADD_PORT_LABEL:
-            AddPortDialog(self)
-        else:
-            if self.last_clip:
-                self.last_clip.output = new_port
 
-    def addPort(self, name):
-        self.song.outputsPorts.add(name)
-        self.updateJackPorts(self.song)
+        if self.last_clip:
+            self.last_clip.output = new_port
+            self.updateClipParameterChange()
+
+
+
+    def onOneShotClip(self):
+        if self.last_clip:
+            self.last_clip.one_shot = self.one_shot_clip.isChecked()
+            self.updateClipParameterChange()
+
+    def onLockRecord(self):
+        if self.last_clip:
+            self.last_clip.lock_rec  = self.lock_record.isChecked()
+            self.updateClipParameterChange()
+
+    def onAlwaysPlay(self):
+        if self.last_clip:
+            self.last_clip.always_play = self.always_play_clip.isChecked()
+            self.updateClipParameterChange()
+
+    def onMuteGroupChange(self):
+        if self.last_clip:
+            self.last_clip.mute_group = self.mute_group.value()
+            self.updateClipParameterChange()
+
+    def onFrameOffsetChange(self):
+        if self.last_clip:
+            self.last_clip.frame_offset = self.frame_offset.value()
+            self.updateClipParameterChange()
+
+    def onBeatOffsetChange(self):
+        if self.last_clip:
+            self.last_clip.beat_offset = self.beat_offset.value()
+            self.updateClipParameterChange()
+
+
+
+
+
+    # When adding a port, we also decide if assigning it to current selected clip
+    def addPort(self, name, assign = False):
+        common.addOutputPort(settings.output_ports,
+                             name, 
+                             self._jack_client, 
+                             self.output_mixer)
+        self.updateAudioPorts()
+
         if self.output.findText(name) == -1:
             self.output.insertItem(self.output.count() - 1, name)
-        if self.last_clip:
+            
+        if self.last_clip and assign == True:
             self.last_clip.output = name
             self.output.setCurrentText(name)
 
-    def removePort(self, name):
-        if name != Clip.DEFAULT_OUTPUT:
-            self.song.outputsPorts.remove(name)
-            for c in self.song.clips:
-                if c.output == name:
-                    c.output = Clip.DEFAULT_OUTPUT
-            self.updateJackPorts(self.song)
-            self.output.removeItem(self.output.findText(name))
-            if self.last_clip:
-                self.output.setCurrentText(self.last_clip.output)
 
-    def updateJackPorts(self, song, remove_ports=True):
-        '''Update jack port based on clip output settings
-        update dict containing ports with shortname as key'''
+    # When removing a port, we also decide to which existing port output routing the clips
+    # which were using that output.
+    def removePort(self, name, altPort = None):
+        common.removeOutputPort(settings.output_ports, 
+                                name, 
+                                self._jack_client, 
+                                self.output_mixer)
+        self.updateAudioPorts()                                
+        
+        # if not specified alternative port name, using default:
+        if altPort == None:
+            altPort = common.DEFAULT_PORT
+        
+        for c in self.song.clips:
+            if c.output == name:
+                c.output = altPort
+                
+        self.output.removeItem(self.output.findText(name))
+        if self.last_clip:
+            self.output.setCurrentText(self.last_clip.output)
 
-        current_ports = set()
-        for port in self._jack_client.outports:
-            current_ports.add(port.shortname)
-
-        wanted_ports = set()
-        for port_basename in song.outputsPorts:
-            for ch in Song.CHANNEL_NAMES:
-                port = Song.CHANNEL_NAME_PATTERN.format(port=port_basename,
-                                                        channel=ch)
-                wanted_ports.add(port)
-
-        # remove unwanted ports
-        if remove_ports:
-            port_to_remove = []
-            for port in self._jack_client.outports:
-                if port.shortname not in wanted_ports:
-                    current_ports.remove(port.shortname)
-                    port_to_remove.append(port)
-            for port in port_to_remove:
-                port.unregister()
-
-        # sort port list
-        active_ports = sorted(list(wanted_ports - current_ports))
-
-        # create new ports
-        for new_port_name in active_ports:
-            self._jack_client.outports.register(new_port_name)
-
-        self.port_by_name = {port.shortname: port
-                             for port in self._jack_client.outports}
-
+    def updateAudioPorts(self):
         self.updatePorts.emit()
 
     def onCopyDetailsClicked(self):
@@ -797,29 +1182,16 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.last_clip.mute_group = self.memory_clip.mute_group
             self.last_clip.one_shot = self.memory_clip.one_shot
             self.last_clip.lock_rec = self.memory_clip.lock_rec
+            self.last_clip.always_play = self.memory_clip.always_play
             self.last_clip.shot = False
             
             self.updateClipInfo(True)
 
-    def onOneShotClip(self):
-        if self.last_clip:
-            self.last_clip.one_shot = self.one_shot_clip.isChecked()
 
-    def onLockRecord(self):
-        if self.last_clip:
-            self.last_clip.lock_rec  = self.lock_record.isChecked()
 
-    def onMuteGroupChange(self):
-        if self.last_clip:
-            self.last_clip.mute_group = self.mute_group.value()
 
-    def onFrameOffsetChange(self):
-        if self.last_clip:
-            self.last_clip.frame_offset = self.frame_offset.value()
 
-    def onBeatOffsetChange(self):
-        if self.last_clip:
-            self.last_clip.beat_offset = self.beat_offset.value()
+    # File Menu -------------------------------------------------------------
 
     def onActionNew(self):
         NewSongDialog(self)
@@ -849,7 +1221,12 @@ class Gui(QMainWindow, Ui_MainWindow):
     def checkFileExists(self, file_name):
         return isfile(file_name)
 
+
+
     def onActionSave(self):
+        if self._jack_client.transport_state == 1 and settings.prevent_song_save == True:
+            return
+
         if self.song.file_name:
             self.song.save()
         else:
@@ -859,6 +1236,9 @@ class Gui(QMainWindow, Ui_MainWindow):
         return "SpinTool - {} - {}".format(common.APP_VERSION, file_name)
 
     def onActionSaveAs(self):
+        if self._jack_client.transport_state == 1 and settings.prevent_song_save == True:
+            return
+
         file_name, a = self.getSaveFileName('Save Song', common.SONG_FILE_TYPE)
 
         if file_name:
@@ -868,19 +1248,50 @@ class Gui(QMainWindow, Ui_MainWindow):
             print("File saved to : {}".format(self.song.file_name))
             self.setWindowTitle(self.getWindowTitle(file_name or EMPTY_SONG_NAME))
 
+
     def onActionQuit(self):
-        self.onApplicationExit()
-        self.app.quit()
+        self.close()
+        #self.onApplicationExit()
+        #self.app.quit()
+
+
+
+    # MIDI Menu -------------------------------------------------------------
 
     def onAddDevice(self):
+        if self._jack_client.transport_state == 1: # ROLLING
+
+            response = QMessageBox.question(self, "Enter device configuration?", "The song execution will be stopped")
+            if response == QMessageBox.No:
+                return
+            
+            self._jack_client.transport_stop()
+            self._jack_client.transport_locate(0)        
+
+        
         self.learn_device = LearnDialog(self, self.addDevice)
         self.is_learn_device_mode = True
+        self.update()
 
-    def onPreferences(self):
-        Preferences(self) # Preferences Dialog
+
 
     def onManageDevice(self):
         ManageDialog(self)
+
+
+    def onRefresh(self): # -> send init or not?
+        # send init + redraw + update
+        #self.onDeviceSelect()
+
+        #redraw
+        self.redraw()
+
+
+
+    # MIDI Menu -------------------------------------------------------------
+
+    def onPreferences(self):
+        Preferences(self) # Preferences Dialog
 
     def onPlaylistEditor(self):
         PlaylistDialog(self)
@@ -898,12 +1309,14 @@ class Gui(QMainWindow, Ui_MainWindow):
         PortManager(self)
         self.actionPort_Manager.setEnabled(False)
 
-    def onActionAbout(self):
-        About(self)
-        
-    def onActionWiki(self): 
-        QDesktopServices.openUrl(QUrl(common.WIKI_LINK))
-        
+    def onMixer(self):
+        if self.output_mixer is None:
+            self.output_mixer = Mixer(self)
+
+        self.output_mixer.show()
+        self.actionMixer.setEnabled(False)
+
+
     def onAction_SongAnnotation(self):
         self.showSongAnnotation()
 
@@ -914,7 +1327,23 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.showFullScreen()
         self.show()
 
+
+
+    # Info Menu -------------------------------------------------------------
+
+    def onActionAbout(self):
+        About(self)
+        
+    def onActionWiki(self): 
+        QDesktopServices.openUrl(QUrl(common.WIKI_LINK))
+        
+
+
+
+
     def update(self):
+    # this also updates midi controllers
+        #print("update func")
         for x in range(len(self.song.clips_matrix)):
             line = self.song.clips_matrix[x]
             for y in range(len(line)):
@@ -925,7 +1354,7 @@ class Gui(QMainWindow, Ui_MainWindow):
                     state = clp.state
 
                     # Update cell volume according to clip volume
-                    self.btn_matrix[x][y].labelVolume.setText(str(common.toDigitalVolumeValue(clp.volume)))
+                    #self.btn_matrix[x][y].labelVolume.setText(str(common.toDigitalVolumeValue(clp.volume)))
 
                 if state != self.state_matrix[x][y]:
                     if clp:
@@ -946,10 +1375,13 @@ class Gui(QMainWindow, Ui_MainWindow):
     def lightDownDevice(self):
         self.device.setAllCellsColor(self.queue_out, self.device.black_vel)
         
+
+    # redraw clip matrix and update device
     def redraw(self):
         self.state_matrix = [[-1 for x in range(self.song.height)]
                              for x in range(self.song.width)]
         self.update()
+
 
     def readQueue(self):
         try:
@@ -971,72 +1403,125 @@ class Gui(QMainWindow, Ui_MainWindow):
             if i == i_scene:
                 return index
             index += 1
+       
+        if common.last_gui_triggered_scene:
+            return common.last_gui_triggered_scene
+       
+        return 0            
                     
 
+    # Heart of midi controller note reading (trigger functions with midi controls)
     def processNote(self, msg_type, channel, pitch, vel):
 
         btn_id = (msg_type, channel, pitch, vel)
         btn_id_vel = (msg_type, channel, pitch, -1)
         ctrl_key = (msg_type, channel, pitch)
 
-        # master volume
-        if ctrl_key == self.device.master_volume_ctrl:
-            self.song.volume = vel / 127
-            self.updateMasterVolumeKnob()
-            (self.master_volume.setValue(common.toControllerVolumeValue(self.song.master_volume)))
-            
+        # song volume
+        if ctrl_key == self.device.song_volume_ctrl:
+
+            self.song.volume = common.fromControllerAnalogVolume(vel)
+            self.updateSongVolumeValue()
+            (self.song_volume_knob.setValue(common.toControllerVolumeValue(self.song.volume)))
+        
+        # PLAY
         elif self.device.play_btn in [btn_id, btn_id_vel]:
-            self._jack_client.transport_start()
             
-            (a, b_channel, b_pitch, b) = self.device.play_btn
-            note = ((a << 4) + b_channel, b_pitch, self.device.green_vel)
-            self.queue_out.put(note)
+            self.onPlay()
             
-            (a, b_channel, b_pitch, b) = self.device.pause_btn
-            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
-            self.queue_out.put(note)
-            
+        # PAUSE
         elif self.device.pause_btn in [btn_id, btn_id_vel]:
-            self._jack_client.transport_stop()
             
-            (a, b_channel, b_pitch, b) = self.device.play_btn
-            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
-            self.queue_out.put(note)
+            self.onPause()
+
+        # STOP and rewind
+        elif self.device.stop_btn in [btn_id, btn_id_vel]:
             
-            (a, b_channel, b_pitch, b) = self.device.pause_btn
-            #if self.settings.value('rec_color', Preferences.COLOR_AMBER) == Preferences.COLOR_AMBER:
-            if settings.rec_color == settings.COLOR_AMBER:
-                color = self.device.red_vel
-            else:
-                color = self.device.amber_vel
-            note = ((a << 4) + b_channel, b_pitch, color)
-            self.queue_out.put(note)            
-            
+            self.onStop()
+
+        # REWIND
         elif self.device.rewind_btn in [btn_id, btn_id_vel]:
-            self.onRewindClicked()
-            
+
+            self.onRewind()
+        
+        # GO TO POSITION
         elif self.device.goto_btn in [btn_id, btn_id_vel]:
-            self.onGotoClicked()
-            
+
+            self.onGoto()
+        
+        # RECORD
         elif self.device.record_btn in [btn_id, btn_id_vel]:
             self.onRecord()   # button control color managed in: updateRecordBtn
-            
-        # volume control knobs
-        elif ctrl_key in self.device.ctrls:
+
+        # SHIFT
+        elif self.device.shift_btn in [btn_id, btn_id_vel]:
+            self.onShift()
+
+        # CUSTOM RESET
+        elif self.device.custom_reset_btn in [btn_id, btn_id_vel]:
+            if self.output_mixer:
+                self.output_mixer.onCustomReset()
+
+        # UNLINK MIXER STRIPES
+        elif self.device.unlink_stripes_btn in [btn_id, btn_id_vel]:
+            self.mixer_stripes_midi_linked = not self.mixer_stripes_midi_linked
+
+        # Output ports volume control knobs (ex-block line volumes)
+        elif ctrl_key in self.device.ctrls and self.mixer_stripes_midi_linked:
             try:
                 ctrl_index = self.device.ctrls.index(ctrl_key)
-                clip = (self.song.clips_matrix
-                        [ctrl_index]
-                        [self.current_vol_block])
-                if clip:
-                    clip.volume = vel / 127
-                    if self.last_clip == clip:
-                        self.clip_volume.setValue(common.toControllerVolumeValue(self.last_clip.volume))
-                    elif settings.show_clip_details_on_volume:
-                        self.last_clip = clip
-                        self.updateClipInfo()   
+                volume = common.fromControllerAnalogVolume(vel)
+                
+                # apply change and notify mixer:
+                port = common.getOutputPortByIndex(settings.output_ports, ctrl_index)
+                if port:
+                    settings.output_ports[port]["vol"] = volume
+
+                    if self.output_mixer:
+                        self.output_mixer.updateStripVolume(port)
+
             except KeyError:
                 pass
+
+
+        # Output ports send1 control knobs
+        elif ctrl_key in self.device.send1ctrls and self.mixer_stripes_midi_linked:
+            try:
+                ctrl_index = self.device.send1ctrls.index(ctrl_key)
+                send1 = common.fromControllerAnalogVolume(vel)
+
+                # apply change and notify mixer:
+                port = common.getOutputPortByIndex(settings.output_ports, ctrl_index)
+                if port:
+                    settings.output_ports[port]["send1"] = send1
+
+                    if self.output_mixer:
+                        self.output_mixer.updateStripSend1(port)
+
+            except KeyError:
+                pass
+
+
+        # Output ports send2 control knobs
+        elif ctrl_key in self.device.send2ctrls and self.mixer_stripes_midi_linked:
+            try:
+                ctrl_index = self.device.send2ctrls.index(ctrl_key)
+                send2 = common.fromControllerAnalogVolume(vel)
+
+                # apply change and notify mixer:
+                port = common.getOutputPortByIndex(settings.output_ports, ctrl_index)
+                if port:
+                    settings.output_ports[port]["send2"] = send2
+
+                    if self.output_mixer:
+                        self.output_mixer.updateStripSend2(port)
+
+            except KeyError:
+                pass
+
+
+
+
             
         # Scenes
         elif (btn_id in self.device.scene_buttons
@@ -1048,6 +1533,18 @@ class Gui(QMainWindow, Ui_MainWindow):
                 scene_id = self.device.scene_buttons.index(btn_id_vel)
                 self.current_scene = (self.device.scene_buttons.index(btn_id_vel))
             
+            shifted = False
+
+            # if Shift was pressed, scene id is incremented by scenes number 
+            # (e.g. if 5 scenes buttons were configured and button of scene 2 was pressed with shift active,
+            # scene 7 is launched)
+            if self.shift_active:
+                shifted = True
+                scene_id = scene_id + len(self.device.scene_buttons)
+
+                if settings.disable_shift_after_processing == True:
+                    self.onShift() # unactivating shift function and related midi button
+
             sceneExhists = True
 
             try:
@@ -1064,31 +1561,52 @@ class Gui(QMainWindow, Ui_MainWindow):
                 for i in range(len(self.device.scene_buttons)):
                     (a, b_channel, b_pitch, b) = self.device.scene_buttons[i]
                     if i == self.current_scene:
-                        color = self.device.green_vel
+                        if shifted == False:
+                            # Green for un-shifted scene (button number == scene number)
+                            color = self.device.green_vel
+                            sceneToSelect = self.current_scene
+                        else:
+                            # Green blink for shifted scene (button number == scene number - scenes total buttons)
+                            color = self.device.blink_green_vel
+                            sceneToSelect = self.current_scene + len(self.device.scene_buttons)
                     else:
                         color = self.device.black_vel
                         
                     self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))
                     time.sleep(0.01)
                 
+                # If scene dialog visible, updating selected scene
                 if self.scenesManagerDialog:
-                    self.scenesManagerDialog.selectItem(self.current_scene)
-                
-        # Line blocks 
-        elif (btn_id in self.device.block_buttons
-              or btn_id_vel in self.device.block_buttons):
+                    self.scenesManagerDialog.selectItem(sceneToSelect)
+                            
+        # Mute output ports (ex-Line blocks)
+        elif (btn_id in self.device.mute_buttons
+              or btn_id_vel in self.device.mute_buttons) and self.mixer_stripes_midi_linked:
             try:
-                self.current_vol_block = (self.device.block_buttons.index(btn_id))
+                mute_button = (self.device.mute_buttons.index(btn_id))
             except ValueError:
-                self.current_vol_block = (self.device.block_buttons.index(btn_id_vel))
-                
-            for i in range(len(self.device.block_buttons)):
-                (a, b_channel, b_pitch, b) = self.device.block_buttons[i]
-                if i == self.current_vol_block:
-                    color = self.device.green_vel                                
-                else:
-                    color = self.device.black_vel
-                self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))
+                mute_button = (self.device.mute_buttons.index(btn_id_vel))
+
+            
+            # apply change and notify mixer:
+            port = common.getOutputPortByIndex(settings.output_ports, mute_button)
+            if port:
+                settings.output_ports[port]["mute"] = not settings.output_ports[port]["mute"]
+
+                if self.output_mixer:
+                    self.output_mixer.updateStripMute(port)
+
+                for i in range(len(self.device.mute_buttons)):
+                    (a, b_channel, b_pitch, b) = self.device.mute_buttons[i]
+                    if i == mute_button:
+                        if settings.output_ports[port]["mute"] == True:
+                            color = self.device.red_vel                                
+                        else:
+                            color = self.device.black_vel
+                        self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))
+                        break
+        
+        # Start / Stop clips
         else:
             x, y = -1, -1
             try:
@@ -1101,11 +1619,156 @@ class Gui(QMainWindow, Ui_MainWindow):
                 except KeyError:
                     pass
 
+            # start/stop clip
             if (x >= 0 and y >= 0):
-                self.startStop(x, y, True)
+                # trigger clip
+                if not self.shift_active:
+                    self.startStop(x, y, True)
+                # force clip
+                else:
+                    self.btn_matrix[x][y].force_clip_start_stop()
+
+
+    def updateMidiPause(self):
+
+        if not self.device:
+            return
+
+        if self.device.stop_btn:
+            (a, b_channel, b_pitch, b) = self.device.stop_btn
+            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
+            self.queue_out.put(note)
+
+        if self.device.play_btn:
+            (a, b_channel, b_pitch, b) = self.device.play_btn
+            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
+            self.queue_out.put(note)
+        
+        if self.device.pause_btn:
+            (a, b_channel, b_pitch, b) = self.device.pause_btn
+
+            if settings.rec_color == settings.COLOR_AMBER:
+                color = self.device.red_vel
+            else:
+                color = self.device.amber_vel
+            note = ((a << 4) + b_channel, b_pitch, color)
+            self.queue_out.put(note) 
+
+    def updateMidiStop(self):
+
+        if not self.device:
+            return
+
+        if self.device.pause_btn:
+            (a, b_channel, b_pitch, b) = self.device.pause_btn
+            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
+            self.queue_out.put(note)
+
+        if self.device.play_btn:
+            (a, b_channel, b_pitch, b) = self.device.play_btn
+            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
+            self.queue_out.put(note)
+        
+        if self.device.stop_btn:
+            (a, b_channel, b_pitch, b) = self.device.stop_btn
+
+            if settings.rec_color == settings.COLOR_AMBER:
+                color = self.device.red_vel
+            else:
+                color = self.device.amber_vel
+            note = ((a << 4) + b_channel, b_pitch, color)
+            self.queue_out.put(note)
+
+    def updateMidiPlay(self):
+
+        if not self.device:
+            return
+
+        if self.device.play_btn:
+            (a, b_channel, b_pitch, b) = self.device.play_btn
+            note = ((a << 4) + b_channel, b_pitch, self.device.green_vel)
+            self.queue_out.put(note)
+        
+        if self.device.pause_btn:
+            (a, b_channel, b_pitch, b) = self.device.pause_btn
+            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
+            self.queue_out.put(note)
+
+        if self.device.stop_btn:
+            (a, b_channel, b_pitch, b) = self.device.stop_btn
+            note = ((a << 4) + b_channel, b_pitch, self.device.black_vel)
+            self.queue_out.put(note)
+
+    # called usually from Mixer: to update a mute button on MIDI controller
+    def updateMidiMute(self, port, index):
+
+        if not self.device:
+            return
+        
+        if (index + 1) > len(self.device.mute_buttons):
+            return
+
+        if self.device.mute_buttons[index]:
+            (a, b_channel, b_pitch, b) = self.device.mute_buttons[index]
+
+            if settings.output_ports[port]["mute"] == True:
+                color = self.device.red_vel                                
+            else:
+                color = self.device.black_vel
+            self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))
+    
+    # called usually from Mixer: to reset all mute buttons on MIDI controller
+    def resetMidiMute(self):
+
+        if not self.device:
+            return
+        
+        if not self.device.mute_buttons:
+            return
+
+        for i in range(len(self.device.mute_buttons)):
+            (a, b_channel, b_pitch, b) = self.device.mute_buttons[i]
+            self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, self.device.black_vel))
+
+    # called usually when activating: a Scene from Scene Manager: to update scenes buttons on MIDI controller
+    def updateScene(self, scene, sceneIndex):
+        
+        if not self.device:
+            return
+
+        self.current_scene = scene
+        common.last_gui_triggered_scene = sceneIndex
+        self.update()
+
+        if not self.device.scene_buttons:
+            return
+
+        # Row Index starts from 0, so row NUMBER is Row Index + 1
+        if (sceneIndex + 1) > len(self.device.scene_buttons):
+            shifted = True
+            sceneColor = self.device.blink_green_vel
+        else:
+            shifted = False
+            sceneColor = self.device.green_vel
+
+        # buttons are updated and scene button is lighted on
+        for i in range(len(self.device.scene_buttons)):
+            (a, b_channel, b_pitch, b) = self.device.scene_buttons[i]
+
+            if (shifted == False and i == sceneIndex) or \
+               (shifted == True and i == (sceneIndex - len(self.device.scene_buttons))):
+                color = sceneColor
+            else:
+                color = self.device.black_vel
+                
+            self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))
+            time.sleep(0.01)
 
     def updateScenesButtons(self, scene):
         if self.device and scene:
+
+            if not self.device.scene_buttons:
+                return
             
             index = 0
             for i, enScene in enumerate(self.song.scenes):
@@ -1136,6 +1799,8 @@ class Gui(QMainWindow, Ui_MainWindow):
 
         self.blktimer.state = not self.blktimer.state
 
+
+
     def updateProgress(self):
         state, pos = self._jack_client.transport_query()
         if 'bar' in pos:
@@ -1156,7 +1821,9 @@ class Gui(QMainWindow, Ui_MainWindow):
                     btn.clip_position.setValue(value)
                     btn.clip_position.repaint()
 
+
     def updateDevices(self):
+        #print("update devices")
         for action in self.deviceGroup.actions():
             self.deviceGroup.removeAction(action)
             self.menuDevice.removeAction(action)
@@ -1169,18 +1836,24 @@ class Gui(QMainWindow, Ui_MainWindow):
         action.setChecked(True)
         self.device = device
 
+
     def addDevice(self, device):
         self.devices.append(device)
         self.updateDevices()
         self.is_learn_device_mode = False
 
+
     def onDeviceSelect(self):
         self.device = self.deviceGroup.checkedAction().data()
         if self.device:
+            # send init command
             if self.device.init_command:
                 for note in self.device.init_command:
                     self.queue_out.put(note)
             self.redraw()
+
+
+
 
     def timebase_callback(self, state, nframes, pos, new_pos):
         if pos.frame_rate == 0:

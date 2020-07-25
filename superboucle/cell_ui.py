@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/cell_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -30,6 +30,7 @@ class Ui_Cell(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cell_frame.sizePolicy().hasHeightForWidth())
         self.cell_frame.setSizePolicy(sizePolicy)
+        self.cell_frame.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.cell_frame.setStyleSheet("#frame {border: 0px;\n"
 "    background-color: rgb(190, 190, 190);\n"
 "border-radius: 10px;}")
@@ -40,15 +41,15 @@ class Ui_Cell(object):
         self.clip_name.setGeometry(QtCore.QRect(3, 2, 105, 46))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
-        font.setPointSize(13)
+        font.setPointSize(14)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
         self.clip_name.setFont(font)
-        self.clip_name.setStyleSheet("font: bold 13pt \"Noto Sans\";\n"
+        self.clip_name.setStyleSheet("font: bold 14pt \"Noto Sans\";\n"
 "color: rgb(0, 0, 0);\n"
 "text-align: center;")
-        self.clip_name.setInputMethodHints(QtCore.Qt.ImhMultiLine)
+        self.clip_name.setInputMethodHints(QtCore.Qt.ImhNone)
         self.clip_name.setText("")
         self.clip_name.setAlignment(QtCore.Qt.AlignCenter)
         self.clip_name.setWordWrap(True)
@@ -105,10 +106,20 @@ class Ui_Cell(object):
         self.start_stop.setIconSize(QtCore.QSize(27, 27))
         self.start_stop.setObjectName("start_stop")
         self.labelVolume = QtWidgets.QLabel(self.cell_frame)
-        self.labelVolume.setGeometry(QtCore.QRect(38, 49, 33, 33))
-        self.labelVolume.setStyleSheet("font: bold 11pt \"Noto Sans\";")
+        self.labelVolume.setGeometry(QtCore.QRect(0, 49, 111, 33))
+        self.labelVolume.setStyleSheet("font: bold 12pt \"Noto Sans\";")
+        self.labelVolume.setTextFormat(QtCore.Qt.PlainText)
+        self.labelVolume.setScaledContents(False)
         self.labelVolume.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelVolume.setWordWrap(True)
+        self.labelVolume.setIndent(0)
+        self.labelVolume.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
         self.labelVolume.setObjectName("labelVolume")
+        self.labelVolume.raise_()
+        self.clip_name.raise_()
+        self.clip_position.raise_()
+        self.edit.raise_()
+        self.start_stop.raise_()
 
         self.retranslateUi(Cell)
         QtCore.QMetaObject.connectSlotsByName(Cell)
@@ -116,5 +127,11 @@ class Ui_Cell(object):
     def retranslateUi(self, Cell):
         _translate = QtCore.QCoreApplication.translate
         Cell.setWindowTitle(_translate("Cell", "Form"))
+        self.cell_frame.setAccessibleName(_translate("Cell", "Help_Cell_Info"))
+        self.clip_name.setAccessibleName(_translate("Cell", "Help_Cell_Info"))
+        self.clip_position.setAccessibleName(_translate("Cell", "Help_Cell_Info"))
+        self.edit.setAccessibleName(_translate("Cell", "Help_Cell_Info"))
+        self.start_stop.setAccessibleName(_translate("Cell", "Help_Cell_Info"))
+        self.labelVolume.setAccessibleName(_translate("Cell", "Help_Cell_Info"))
         self.labelVolume.setText(_translate("Cell", "5"))
 import gui_rc

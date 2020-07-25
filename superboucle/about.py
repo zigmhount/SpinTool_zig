@@ -16,16 +16,22 @@ class About(QDialog, Ui_Dialog):
         self.labelVersion.setText(common.APP_VERSION)
         
         self.btnWebLink.setText(self.webLink)
+
+
+        self.description = '''Current development by 
+Manu Controvento (Meltin'Pop) and Vincent Rateau (Superdirt³ / Sonejo.net).
+Many many thanks go to Vampouille (Julien Acroute) for developing SuperBoucle, 
+which was the base of SpinTool, and to IARI (Julian Jarecki) for further development on SB.
+'''
+
+
+        self.license = '''This is a free and open source application, you can re-distribute and/or change it according to 
+GNU General Public License version 2 or later.   
+'''
+
         
-        self.labelText.setText("Current development by Manu Controvento (Meltin'Pop) \n" +
-                               "Many many thanks go to Vampouille (Julien Acroute) for " +
-                               "developing SuperBoucle, which I started from to make " +
-                               "SpinTool, and to Vince (Vincent Rateau) for helping " + 
-                               "and advices")
-        
-        self.labelLicense.setText("This is a free and open source application, " +
-                                  "you can re-distribute and/or change it according to " + 
-                                  "GNU General Public License version 2 or later")
+        self.labelText.setText(self.description)
+        self.labelLicense.setText(self.license)
         
         self.setModal(True)
         self.show()

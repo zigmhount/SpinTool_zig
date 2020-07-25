@@ -46,7 +46,7 @@
    </property>
    <property name="styleSheet">
     <string notr="true">font: bold 11pt &quot;Noto Sans&quot;;
-background-color: rgb(255, 255, 0);</string>
+background-color: rgb(255, 255, 127);</string>
    </property>
    <property name="inputMethodHints">
     <set>Qt::ImhMultiLine</set>
@@ -395,7 +395,7 @@ background-color: rgb(255, 255, 0);</string>
      <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
     </property>
     <property name="title">
-     <string>Clips mute group</string>
+     <string>Clips solo group</string>
     </property>
     <widget class="QSpinBox" name="spinBoxMuteGroups">
      <property name="geometry">
@@ -420,7 +420,7 @@ background-color: rgb(255, 255, 0);</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Get mute group from current showing clip</string>
+      <string>Get solo group from current showing clip</string>
      </property>
      <property name="text">
       <string/>
