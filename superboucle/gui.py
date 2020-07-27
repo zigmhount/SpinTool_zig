@@ -278,7 +278,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.setWindowTitle(self.getWindowTitle(new_song.file_name or EMPTY_SONG_NAME))
             self.labelRecording.setVisible(False)
             self.labelShift.setVisible(False)
-    
+
             if self.song.initial_scene in self.song.scenes:
                 self.song.loadScene(self.song.initial_scene)
 
@@ -1075,6 +1075,8 @@ class Gui(QMainWindow, Ui_MainWindow):
         if self.last_clip:
             self.last_clip.volume = common.toAnalogVolumeValue(self.clip_volume.value())
             self.updateClipParameterChange()
+
+            self.labelClipVolume.setText(str(common.toDigitalVolumeValue(self.last_clip.volume)))
 
 
 
