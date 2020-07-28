@@ -1,7 +1,5 @@
 from PyQt5.QtCore import Qt
-from superboucle.assistant import Assistant
 from PyQt5.QtGui import QCursor
-import help
 from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5.QtCore import QSettings
 from superboucle.preferences_ui import Ui_Dialog
@@ -244,25 +242,3 @@ class Preferences(QDialog, Ui_Dialog):
     def onFinished(self):
         pass
 
-
-
-    # HELP management ---------------------------------------------------------
-
-    def keyPressEvent(self, event):
-
-        if event.key() == Qt.Key_H:  # if pressed key is H (help)
-
-            pos = QCursor.pos()
-            widget = QApplication.widgetAt(pos)   # this is widget under cursor
-
-            if widget is None: return
-            accName = widget.accessibleName()     # this is widget accessible name
-            
-            if accName != "":
-                wantedHelp = help.Context(accName)  # Conversion of string accessible name to Context enum
-                self.showContextHelp(wantedHelp)
-                
-
-    def showContextHelp(self, wantedHelp):
-        helpText = help.getContextHelp(wantedHelp)
-        Assistant(self, helpText, Assistant.MODE_CONTEXT)

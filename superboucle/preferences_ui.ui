@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tabAudioPorts">
       <attribute name="title">
@@ -103,7 +103,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="accessibleName">
-          <string>Help_Prefs_Environment</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
@@ -118,7 +118,7 @@
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="accessibleName">
-             <string>Help_Prefs_Environment</string>
+             <string/>
             </property>
             <property name="styleSheet">
              <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -134,7 +134,7 @@
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="accessibleName">
-             <string>Help_Prefs_Environment</string>
+             <string/>
             </property>
             <property name="styleSheet">
              <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -150,7 +150,7 @@
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="accessibleName">
-             <string>Help_Prefs_Environment</string>
+             <string/>
             </property>
             <property name="styleSheet">
              <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -166,7 +166,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="accessibleName">
-          <string>Help_Prefs_Environment</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
@@ -180,7 +180,7 @@
             <item>
              <widget class="QLabel" name="label">
               <property name="accessibleName">
-               <string>Help_Prefs_Environment</string>
+               <string/>
               </property>
               <property name="styleSheet">
                <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -226,7 +226,7 @@
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="accessibleName">
-             <string>Help_Prefs_Environment</string>
+             <string/>
             </property>
             <property name="styleSheet">
              <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -242,7 +242,7 @@
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="accessibleName">
-             <string>Help_Prefs_Environment</string>
+             <string/>
             </property>
             <property name="styleSheet">
              <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -477,7 +477,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="accessibleName">
-          <string>Help_Prefs_Performance</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -496,7 +496,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="accessibleName">
-          <string>Help_Prefs_Performance</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -515,7 +515,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="accessibleName">
-          <string>Help_Prefs_Performance</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -528,7 +528,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="accessibleName">
-          <string>Help_Prefs_Performance</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
@@ -584,7 +584,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="accessibleName">
-          <string>Help_Prefs_Performance</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -597,7 +597,7 @@
        <item>
         <widget class="QCheckBox" name="cBoxPreventSongSave">
          <property name="accessibleName">
-          <string>Help_Prefs_Performance</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -610,7 +610,7 @@
        <item>
         <widget class="QCheckBox" name="cBoxAutoAssignNewClipsColumn">
          <property name="accessibleName">
-          <string>Help_Prefs_Performance</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
@@ -643,7 +643,7 @@
        <item>
         <widget class="QGroupBox" name="groupBoxSaveRestoreMixerValues">
          <property name="accessibleName">
-          <string>Help_Prefs_Mixer</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
@@ -726,7 +726,7 @@
        <item>
         <widget class="QGroupBox" name="groupBoxExcludeFromResetControls">
          <property name="accessibleName">
-          <string>Help_Prefs_Mixer</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
@@ -818,7 +818,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="accessibleName">
-          <string>Help_Prefs_Experimental</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>

@@ -54,12 +54,6 @@ class Context(enum.Enum):
     Help_Mixer_Reset = "Help_Mixer_Reset"
     Help_Mixer_Unlink = "Help_Mixer_Unlink"
     Help_Mixer_OutputPorts = "Help_Mixer_OutputPorts"
-    
-    # Preferences
-    Help_Prefs_Environment = "Help_Prefs_Environment"
-    Help_Prefs_Performance = "Help_Prefs_Performance"
-    Help_Prefs_Mixer = "Help_Prefs_Mixer"
-    Help_Prefs_Experimental = "Help_Prefs_Experimental"
 
 
 class ManualSection(enum.Enum):
