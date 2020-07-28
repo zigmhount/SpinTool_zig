@@ -4,7 +4,11 @@ SpinTool is a loop based software fully controllable with any midi device,
 synced with Jack transport. This version derives from original Vampouille's
 SuperBoucle, starting from a fork of the original repository.
 
-Usage Wiki:
+Check user manual (from Info menu of application) for a description of 
+usage and functions and press the H key for integrated help to have a quic
+help on what the mouse cursor is pointing at.
+
+Usage Wiki for Starting:
 https://github.com/manucontrovento/SpinTool/wiki
 
 
@@ -12,21 +16,16 @@ https://github.com/manucontrovento/SpinTool/wiki
 
 * Jack Transport
 * Record
-* Auto record latency
 * Audio input / output
 * Midi input / output
 * Normalize and revert samples
 * Negative sample offset, sample offset in beats or frames
 * Load several formats: WAV, FLAC, AIFF, ...  (no MP3 at the moment)
+* Playlist management
+* Scenes management
 * Full intuitive MIDI learn interface
 * Support any MIDI device: generic keyboard, pad, BCF, Akai APC, ...
 * Fully controllable by MIDI device or mouse/keyboard
-
-## What's new
-
-A bunch of issues were fixed, and some features were added.
-Especially:
-
 * One-shot clips
 * Light-on all midi device buttons (scenes and transport too)
 * Preferences Window
@@ -37,11 +36,10 @@ Especially:
 * Choice of clip recording color (amber is default, red available)
 * Open scenes and playlist windows on start up
 * New grid cells style, showing clip volume
-* New massive clips edit functions to change clips parameters
+* New massive clips edit functions to change clips parameters and column instrument-wise assignment
 * New Export-all samples function 
 * Mixer for output ports with full MIDI support
-* Online Help/Manual
-* New MIDI learning
+* Integrated Help/Manual
 * Force clips play/stop
 
 SpinTool releases start from version 20.04.07
@@ -59,13 +57,7 @@ Recommended:
 * a2jmidid to access midi controller
 * Carla to save connections
 
-### Windows
-
-I still have to decide if produce a Windows setup package too
-
 ## Installation
-
-### Linux
 
 * Install Jack server :
 
@@ -83,8 +75,6 @@ I still have to decide if produce a Windows setup package too
 * Download and extract last version of SpinTool from https://github.com/manucontrovento/SpinTool/releases/
 
 ## Running
-
-### Linux
 
 Start Jack audio server and then run SpinTool.sh script from SpinTool directory :
 
