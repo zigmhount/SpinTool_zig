@@ -5,7 +5,8 @@ synced with Jack transport. This version derives from original Vampouille's
 SuperBoucle, starting from a fork of the original repository.
 
 Check user manual (from Info menu of application) for a description of 
-usage and functions and press the H key for integrated help to have a quic
+usage and functions.
+Press the H key for integrated help to have a quick
 help on what the mouse cursor is pointing at.
 
 Usage Wiki for Starting:
