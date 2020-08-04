@@ -1629,6 +1629,8 @@ class Gui(QMainWindow, Ui_MainWindow):
                 # force clip
                 else:
                     self.btn_matrix[x][y].force_clip_start_stop()
+                    if settings.disable_shift_after_processing == True:
+                        self.onShift() # unactivating shift function and related midi button                    
 
 
     def updateMidiPause(self):
