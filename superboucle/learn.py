@@ -92,6 +92,7 @@ class LearnDialog(QDialog, Ui_Dialog):
         # set (restore) current device values
 
         self.name.setText(self.device.name)
+        self.plainTextEditDescription.setPlainText(self.device.description)
         self.black_vel.setValue(self.device.black_vel)
         self.green_vel.setValue(self.device.green_vel)
         self.blink_green_vel.setValue(self.device.blink_green_vel)
@@ -618,6 +619,7 @@ class LearnDialog(QDialog, Ui_Dialog):
 
     def onSave(self):
         self.device.name = str(self.name.text())
+        self.device.description = str(self.plainTextEditDescription.toPlainText())
         self.device.black_vel = int(self.black_vel.value())
         self.device.green_vel = int(self.green_vel.value())
         self.device.blink_green_vel = int(self.blink_green_vel.value())

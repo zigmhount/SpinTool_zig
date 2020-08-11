@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'learn_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/learn_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #
@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(768, 570)
+        Dialog.resize(770, 568)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -38,11 +38,11 @@ class Ui_Dialog(object):
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
         font.setPointSize(10)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(50)
+        font.setWeight(75)
         self.labelMidiConfigName.setFont(font)
-        self.labelMidiConfigName.setStyleSheet("font: 10pt \"Noto Sans\";")
+        self.labelMidiConfigName.setStyleSheet("font: bold 10pt \"Noto Sans\";")
         self.labelMidiConfigName.setObjectName("labelMidiConfigName")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.labelMidiConfigName)
         self.name = QtWidgets.QLineEdit(self.formLayoutWidget)
@@ -822,6 +822,34 @@ class Ui_Dialog(object):
         self.sendInitButton.setGeometry(QtCore.QRect(10, 160, 171, 31))
         self.sendInitButton.setObjectName("sendInitButton")
         self.tabMIDI.addTab(self.tabInit, "")
+        self.tabNotes = QtWidgets.QWidget()
+        self.tabNotes.setObjectName("tabNotes")
+        self.formLayoutWidget_3 = QtWidgets.QWidget(self.tabNotes)
+        self.formLayoutWidget_3.setGeometry(QtCore.QRect(10, 10, 731, 381))
+        self.formLayoutWidget_3.setObjectName("formLayoutWidget_3")
+        self.formLayoutNotes = QtWidgets.QFormLayout(self.formLayoutWidget_3)
+        self.formLayoutNotes.setContentsMargins(0, 0, 0, 0)
+        self.formLayoutNotes.setObjectName("formLayoutNotes")
+        self.labelMidiConfigDescription = QtWidgets.QLabel(self.formLayoutWidget_3)
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.labelMidiConfigDescription.setFont(font)
+        self.labelMidiConfigDescription.setStyleSheet("font: bold 10pt  \"Noto Sans\";")
+        self.labelMidiConfigDescription.setObjectName("labelMidiConfigDescription")
+        self.formLayoutNotes.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.labelMidiConfigDescription)
+        self.plainTextEditDescription = QtWidgets.QPlainTextEdit(self.formLayoutWidget_3)
+        self.plainTextEditDescription.setStyleSheet("font: 10pt \"Noto Sans\";")
+        self.plainTextEditDescription.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.plainTextEditDescription.setLineWidth(2)
+        self.plainTextEditDescription.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.plainTextEditDescription.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustIgnored)
+        self.plainTextEditDescription.setObjectName("plainTextEditDescription")
+        self.formLayoutNotes.setWidget(1, QtWidgets.QFormLayout.SpanningRole, self.plainTextEditDescription)
+        self.tabMIDI.addTab(self.tabNotes, "")
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
         self.buttonBox.setGeometry(QtCore.QRect(580, 510, 181, 61))
         self.buttonBox.setStyleSheet("font: 10pt \"Noto Sans\";")
@@ -844,7 +872,7 @@ class Ui_Dialog(object):
         self.labelTip.setObjectName("labelTip")
 
         self.retranslateUi(Dialog)
-        self.tabMIDI.setCurrentIndex(0)
+        self.tabMIDI.setCurrentIndex(7)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -977,6 +1005,10 @@ class Ui_Dialog(object):
         self.sendInitButton.setAccessibleName(_translate("Dialog", "Help_Learn_Init"))
         self.sendInitButton.setText(_translate("Dialog", "Send"))
         self.tabMIDI.setTabText(self.tabMIDI.indexOf(self.tabInit), _translate("Dialog", "Init"))
+        self.labelMidiConfigDescription.setText(_translate("Dialog", "Description"))
+        self.plainTextEditDescription.setToolTip(_translate("Dialog", "Enter a description for the MIDI configuration"))
+        self.plainTextEditDescription.setPlaceholderText(_translate("Dialog", "enter a description for this MIDI configuration"))
+        self.tabMIDI.setTabText(self.tabMIDI.indexOf(self.tabNotes), _translate("Dialog", "Notes"))
         self.labelMessage.setText(_translate("Dialog", "message"))
         self.labelTip.setText(_translate("Dialog", "TIP: move over each assignment button to find out supported MIDI element (notes / controls)."))
 import gui_rc

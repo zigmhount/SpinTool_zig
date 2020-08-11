@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>768</width>
-    <height>570</height>
+    <width>770</width>
+    <height>568</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -51,13 +51,13 @@
        <font>
         <family>Noto Sans</family>
         <pointsize>10</pointsize>
-        <weight>50</weight>
+        <weight>75</weight>
         <italic>false</italic>
-        <bold>false</bold>
+        <bold>true</bold>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+       <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
       </property>
       <property name="text">
        <string>MIDI configuration name</string>
@@ -2227,6 +2227,67 @@ border-color: rgb(202, 202, 202);</string>
        <string>Send</string>
       </property>
      </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabNotes">
+    <attribute name="title">
+     <string>Notes</string>
+    </attribute>
+    <widget class="QWidget" name="formLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>731</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayoutNotes">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelMidiConfigDescription">
+        <property name="font">
+         <font>
+          <family>Noto Sans</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <italic>false</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: bold 10pt  &quot;Noto Sans&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Description</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QPlainTextEdit" name="plainTextEditDescription">
+        <property name="toolTip">
+         <string>Enter a description for the MIDI configuration</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="lineWidth">
+         <number>2</number>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
+        </property>
+        <property name="placeholderText">
+         <string>enter a description for this MIDI configuration</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>

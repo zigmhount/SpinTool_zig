@@ -19,17 +19,13 @@ class DeviceOutput:
     def __set__(self, inst, value):
         mapping = self.get_mapping(inst)
         mapping[self.name] = value
-        # inst.update_lookup()
 
     def __delete__(self, inst):
         mapping = self.get_mapping(inst)
         del mapping[self.name]
-        # inst.update_lookup()
 
 
 class DeviceInput(DeviceOutput):
-    # def get_mapping(self, inst):
-    #    return inst.mapping
     pass
 
 
@@ -183,6 +179,14 @@ class Device:
     @name.setter
     def name(self, name):
         self.mapping['name'] = name
+
+    @property
+    def description(self):
+        return self.mapping.get('description', '')
+
+    @description.setter
+    def description(self, description):
+        self.mapping['description'] = description        
 
     @DeviceInput
     def ctrls(self): # this is for the mixer strip volumes

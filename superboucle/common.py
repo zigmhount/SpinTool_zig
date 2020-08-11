@@ -8,7 +8,7 @@ def init():
     # Application
 
     global APP_VERSION
-    APP_VERSION = "v 20.07.25"
+    APP_VERSION = "v 20.08.11"
     global WIKI_LINK
     WIKI_LINK = "https://github.com/manucontrovento/SpinTool/wiki"
 

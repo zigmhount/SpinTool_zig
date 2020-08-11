@@ -328,7 +328,7 @@ def getContextHelp(st_context):
 
     elif st_context == Context.Help_Learn_Send_Controls:
         text = "SENDS\n\n" + \
-                "Lean the midi controllers for the mixer sends."
+                "Learn the midi controllers for the mixer sends."
 
     elif st_context == Context.Help_Learn_SongVolume:
         text = "SONG VOLUME\n\n" + \
