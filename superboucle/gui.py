@@ -1467,6 +1467,8 @@ class Gui(QMainWindow, Ui_MainWindow):
         # UNLINK MIXER STRIPES
         elif self.device.unlink_stripes_btn in [btn_id, btn_id_vel]:
             self.mixer_stripes_midi_linked = not self.mixer_stripes_midi_linked
+            if self.output_mixer:
+                self.output_mixer.UpdateStripesLinkGui()
 
         # Output ports volume control knobs (ex-block line volumes)
         elif ctrl_key in self.device.ctrls and self.mixer_stripes_midi_linked:
