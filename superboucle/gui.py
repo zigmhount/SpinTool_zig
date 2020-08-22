@@ -236,6 +236,8 @@ class Gui(QMainWindow, Ui_MainWindow):
         if settings.show_playlist_on_start == True:
             self.onPlaylistEditor()
 
+        self.activateWindow()
+        self.setFocus()
 
     def initUI(self, new_song, loading = True):
 
@@ -325,11 +327,14 @@ class Gui(QMainWindow, Ui_MainWindow):
         self._jack_client.transport_locate(0)
 
         message = QMessageBox(self)
-        message.setWindowTitle("Loading...")
-        message.setText("Reading Files, please wait...")
+        message.setWindowTitle("Loading")
+        message.setText("Reading files, please wait...")
+        message.setModal(False)
+        message.update()
         message.show()
         self.initUI(load_song_from_file(file_name))
         message.close()
+        message = None
 
         self.redraw()
               
@@ -1219,10 +1224,11 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.openSongFromDisk(file_name)
         else:
             print("File not found or no song selected")
+     
+
 
     def checkFileExists(self, file_name):
         return isfile(file_name)
-
 
 
     def onActionSave(self):
