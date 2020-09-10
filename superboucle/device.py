@@ -105,7 +105,7 @@ class Device:
                 (m, channel, pitch, velocity) = data
                 note = ((self.NOTEON << 4) + channel, pitch, color)  
                 queue_out.put(note)
-                
+
         # mute buttons
         for btn_key in self.mute_buttons:
             (msg_type, channel, pitch, velocity) = btn_key

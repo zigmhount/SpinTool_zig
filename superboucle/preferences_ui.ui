@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>671</width>
+    <width>828</width>
     <height>497</height>
    </rect>
   </property>
@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tabAudioPorts">
       <attribute name="title">
@@ -43,7 +43,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QGroupBox" name="groupBox_4">
+        <widget class="QGroupBox" name="groupBoxAutoconnect">
          <property name="styleSheet">
           <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
          </property>
@@ -101,7 +101,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="groupBoxWinManagement">
          <property name="accessibleName">
           <string/>
          </property>
@@ -164,7 +164,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="groupBoxCustomFont">
          <property name="accessibleName">
           <string/>
          </property>
@@ -526,7 +526,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="groupBoxRecColor">
          <property name="accessibleName">
           <string/>
          </property>
@@ -684,7 +684,7 @@
                <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
               </property>
               <property name="text">
-               <string>Send1</string>
+               <string>Send1 amount</string>
               </property>
              </widget>
             </item>
@@ -694,7 +694,7 @@
                <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
               </property>
               <property name="text">
-               <string>Send2</string>
+               <string>Send2 amount</string>
               </property>
              </widget>
             </item>
@@ -753,7 +753,7 @@
                <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
               </property>
               <property name="text">
-               <string>Send1</string>
+               <string>Send1 amount</string>
               </property>
              </widget>
             </item>
@@ -763,7 +763,7 @@
                <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
               </property>
               <property name="text">
-               <string>Send2</string>
+               <string>Send2 amount</string>
               </property>
              </widget>
             </item>
@@ -807,9 +807,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabExperimental">
+     <widget class="QWidget" name="tabSystem">
       <attribute name="title">
-       <string>Experimental</string>
+       <string>System</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
@@ -825,6 +825,16 @@
          </property>
          <property name="text">
           <string>Slower processing (try it for XRuns and MIDI controller lighting issues)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cBoxSystemMonitor">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Enable system monitor on start up (show CPU load, available memory, etc)</string>
          </property>
         </widget>
        </item>

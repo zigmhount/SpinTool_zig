@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/clip-behaviour.png</file>
+    <file>icons/clip-functions.png</file>
+    <file>icons/clip-groups.png</file>
+    <file>icons/clip-measures.png</file>
     <file>icons/edit-delete.png</file>
     <file>icons/warning.png</file>
     <file>icons/Superdirt_Logo_80.png</file>

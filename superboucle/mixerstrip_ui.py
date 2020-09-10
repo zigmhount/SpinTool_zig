@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mixerstrip_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/mixerstrip_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #
@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Mixerstrip(object):
     def setupUi(self, Mixerstrip):
         Mixerstrip.setObjectName("Mixerstrip")
-        Mixerstrip.resize(82, 457)
+        Mixerstrip.resize(82, 519)
         Mixerstrip.setMaximumSize(QtCore.QSize(82, 16777215))
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Mixerstrip)
         self.verticalLayout_2.setContentsMargins(5, 5, 5, 5)

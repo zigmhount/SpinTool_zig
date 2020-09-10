@@ -69,6 +69,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="renameSceneBtn">
+         <property name="text">
+          <string>Rename Scene</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QGridLayout" name="preview">
          <property name="spacing">
           <number>2</number>

@@ -194,6 +194,8 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.btnCopy.clicked.connect(self.onCopyDetailsClicked)
         self.btnPaste.clicked.connect(self.onPasteDetailsClicked)
 
+        self.cBoxSystemInfo.stateChanged.connect(self.onCheckSystemMonitoring)
+
         self.blktimer = QTimer()
         self.blktimer.state = False
         self.blktimer.timeout.connect(self.toggleBlinkButton)
@@ -208,6 +210,17 @@ class Gui(QMainWindow, Ui_MainWindow):
         if settings.gui_geometry:
             self.restoreGeometry(settings.gui_geometry)
 
+        # setting default for system monitoring (on/off)
+        self.cBoxSystemInfo.setChecked(settings.system_monitoring)
+
+        # erase performance/system/cpu/whatever info:
+        self.labelPerformanceInfo.setText("")
+        
+        # set tabClip to 1st tab:
+        self.tabClip.setCurrentIndex(0)
+
+        # reset clipping alert
+        self.updateClipping(False)
 
         # set clip info combo box choices
         self.clip_info_combobox.clear()
@@ -293,6 +306,17 @@ class Gui(QMainWindow, Ui_MainWindow):
             time.sleep(0.5) # wait for all init and light signals to be processed by controller
             
         self.songLoad.emit()
+
+
+    # updating clipping alert
+
+    def updateClipping(self, clipping=False):
+        if clipping == False:
+            stylesheet = 'color: none;'
+        else:
+            stylesheet = 'color: red;'
+
+        self.clipping_label.setStyleSheet(stylesheet)
 
 
     # help management --------------------------------------------------------
@@ -402,12 +426,9 @@ class Gui(QMainWindow, Ui_MainWindow):
         if settings.save_mixerstrip_mute == False:
             common.resetMute(settings.output_ports)
 
-
-
         print("Updating settings")
         settings.update()
         print("Settings updated")
-
 
 
     def onStartStopClicked(self):
@@ -509,7 +530,7 @@ class Gui(QMainWindow, Ui_MainWindow):
 
     def updateClipInfo(self, updateDetailsOnly = False):
         if self.last_clip:
-            self.frame_clip.setEnabled(True)
+            self.groupBoxClip.setEnabled(True)
             self.clip_name.setText(self.last_clip.name)
             self.frame_offset.setValue(self.last_clip.frame_offset)
             self.beat_offset.setValue(self.last_clip.beat_offset)
@@ -840,7 +861,7 @@ class Gui(QMainWindow, Ui_MainWindow):
     def onExportClip(self):
         if self.last_clip and self.last_clip.audio_file:
             audio_file = self.last_clip.audio_file
-            file_name, a = self.getSaveFileName('Export Clip : %s' % self.last_clip.name, 'WAVE (*.wav)')
+            file_name, a = self.getSaveFileName('Clip : %s' % self.last_clip.name, 'WAVE (*.wav)')
 
             if file_name:
                 file_name = verify_ext(file_name, 'wav')
@@ -1269,7 +1290,7 @@ class Gui(QMainWindow, Ui_MainWindow):
     def onAddDevice(self):
         if self._jack_client.transport_state == 1: # ROLLING
 
-            response = QMessageBox.question(self, "Enter device configuration?", "The song execution will be stopped")
+            response = QMessageBox.question(self, "Enter MIDI configuration?", "The song execution will be stopped")
             if response == QMessageBox.No:
                 return
             
@@ -1360,9 +1381,6 @@ class Gui(QMainWindow, Ui_MainWindow):
                     state = None
                 else:
                     state = clp.state
-
-                    # Update cell volume according to clip volume
-                    #self.btn_matrix[x][y].labelVolume.setText(str(common.toDigitalVolumeValue(clp.volume)))
 
                 if state != self.state_matrix[x][y]:
                     if clp:
@@ -1529,9 +1547,6 @@ class Gui(QMainWindow, Ui_MainWindow):
             except KeyError:
                 pass
 
-
-
-
             
         # Scenes
         elif (btn_id in self.device.scene_buttons
@@ -1588,7 +1603,8 @@ class Gui(QMainWindow, Ui_MainWindow):
                 # If scene dialog visible, updating selected scene
                 if self.scenesManagerDialog:
                     self.scenesManagerDialog.selectItem(sceneToSelect)
-                            
+
+
         # Mute output ports (ex-Line blocks)
         elif (btn_id in self.device.mute_buttons
               or btn_id_vel in self.device.mute_buttons) and self.mixer_stripes_midi_linked:
@@ -1728,7 +1744,7 @@ class Gui(QMainWindow, Ui_MainWindow):
             else:
                 color = self.device.black_vel
             self.queue_out.put(((self.NOTEON << 4) + b_channel, b_pitch, color))
-    
+
     # called usually from Mixer: to reset all mute buttons on MIDI controller
     def resetMidiMute(self):
 
@@ -1865,7 +1881,21 @@ class Gui(QMainWindow, Ui_MainWindow):
             self.redraw()
 
 
+    def isSystemMonitoring(self):
+        return self.cBoxSystemInfo.isChecked()
 
+    def updateSystemInfo(self):
+        self.labelPerformanceInfo.setText("CPU: "+ str(common.SYS_CPU_PERCENT) + "%, Free mem: " + 
+                                                   str(common.SYS_MEM_AVAILABLE) + " Mb")
+
+        #self.labelPerformanceInfo.setText("CPU: "+ str(common.SYS_CPU_PERCENT) + "%, Mem: " + 
+        #                                           str(common.SYS_MEM_AVAILABLE) + " Mb, Temp: " + 
+        #                                           str(common.SYS_CPU_TEMP) + "°C")
+
+    def onCheckSystemMonitoring(self):
+        if self.cBoxSystemInfo.isChecked() == False:
+            self.labelPerformanceInfo.setText("")
+        
 
     def timebase_callback(self, state, nframes, pos, new_pos):
         if pos.frame_rate == 0:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'scene_manager_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/scene_manager_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #
@@ -40,6 +40,9 @@ class Ui_Dialog(object):
         self.removeScenesBtn = QtWidgets.QPushButton(Dialog)
         self.removeScenesBtn.setObjectName("removeScenesBtn")
         self.verticalLayout_3.addWidget(self.removeScenesBtn)
+        self.renameSceneBtn = QtWidgets.QPushButton(Dialog)
+        self.renameSceneBtn.setObjectName("renameSceneBtn")
+        self.verticalLayout_3.addWidget(self.renameSceneBtn)
         self.preview = QtWidgets.QGridLayout()
         self.preview.setSpacing(2)
         self.preview.setObjectName("preview")
@@ -64,6 +67,7 @@ class Ui_Dialog(object):
         self.loadScenesBtn.setText(_translate("Dialog", "Trigger Scene"))
         self.addScenesBtn.setText(_translate("Dialog", "Add Scene"))
         self.removeScenesBtn.setText(_translate("Dialog", "Delete Scene"))
+        self.renameSceneBtn.setText(_translate("Dialog", "Rename Scene"))
         self.setInitialSceneBtn.setText(_translate("Dialog", "Set initial Scene"))
         self.cBoxBigFonts.setText(_translate("Dialog", "Use custom font size"))
 import gui_rc

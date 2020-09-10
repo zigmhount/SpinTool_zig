@@ -111,6 +111,14 @@ class Mixer(QDialog, Ui_Dialog):
     def muteUpdated(self, port, index):
         self.gui.updateMidiMute(port, index)
 
+    # used by mixerstrip to notify send1 enabled value updated
+    def send1Updated(self, port, index):
+        self.gui.updateMidiSend1(port, index) #TODO: creare
+        
+    # used by mixerstrip to notify send2 enabled value updated
+    def send2Updated(self, port, index): 
+        self.gui.updateMidiSend2(port, index)          #TODO: creare
+
     def UpdateStripesLinkGui(self):
         if self.gui.mixer_stripes_midi_linked == True:
             self.unlink_stripes_btn.setIcon(QtGui.QIcon(":/icons/icons/sliders.png"))
@@ -141,18 +149,13 @@ class Mixer(QDialog, Ui_Dialog):
     def updateMasterMuteGui(self, value):
         self.masterport_mute_checkbox.setChecked(not(value))
 
-
-
     # set MASTER PORT FINAL VOLUME
     def setMasterPortFinalVolume(self):
         settings.master_port_final_volume = (self.masterport_vol_slider.value() / 100) 
-        # (self.masterport_vol_slider.value() / 100) * (1-bool(self.master_mute_checkbox.checkState()))
     
     # set MASTER PORT MUTE
     def setMasterPortMute(self):
         settings.master_port_mute = not(self.masterport_mute_checkbox.checkState())
-        # (1-bool(self.master_mute_checkbox.checkState()))
-        # self.master_mute_checkbox.isChecked()
 
 
     # RESETS

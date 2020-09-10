@@ -24,7 +24,6 @@ class Mixerstrip(QWidget, Ui_Mixerstrip):
         # ...and PyQt object name:
         self.setObjectName(portname)
 
-
         # set mixer mode
         self.setMixerMode()
 
@@ -44,38 +43,36 @@ class Mixerstrip(QWidget, Ui_Mixerstrip):
         self.to_master_checkbox.clicked.connect(self.writeToMasterValue)
 
 
-
     # set mixer mode
     def setMixerMode(self):
+        self.drop_checkbox.hide() # always hide until drops are implemented
+        
         if common.mixer_mode == False:
-            self.drop_checkbox.hide()
             self.to_master_checkbox.hide()
         else:
-            self.drop_checkbox.hide() # always hide until drops are implemented
             self.to_master_checkbox.show()
-
-
 
     # get and update each mixer values from mixer dict
     def readMixerstrip(self):
         # gain
-        gain = settings.output_ports[self.port_name]["gain"]
+        gain = settings.output_ports[self.port_name][common.PORT_GAIN_DEF]
         self.gain_knob.setValue(gain*200)
         self.gain_label.setText(str(round((gain*200 - 100))))
 
         # send1
-        self.send1_knob.setValue(settings.output_ports[self.port_name]["send1"] * 100)
+        self.send1_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND1_DEF] * 100)
+        
         # send2
-        self.send2_knob.setValue(settings.output_ports[self.port_name]["send2"] * 100)
+        self.send2_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND2_DEF] * 100)
 
         # vol
-        self.vol_slider.setValue(settings.output_ports[self.port_name]["vol"] * 100)
+        self.vol_slider.setValue(settings.output_ports[self.port_name][common.PORT_VOLUME_DEF] * 100)
+        
         # mute
-        self.mute_checkbox.setChecked(settings.output_ports[self.port_name]["mute"])
+        self.mute_checkbox.setChecked(settings.output_ports[self.port_name][common.PORT_MUTE_DEF])
 
         # to_master
-        self.to_master_checkbox.setChecked(settings.output_ports[self.port_name]["to_master"])
-
+        self.to_master_checkbox.setChecked(settings.output_ports[self.port_name][common.PORT_TO_MASTER_DEF])
 
 
     # Port name
@@ -83,47 +80,42 @@ class Mixerstrip(QWidget, Ui_Mixerstrip):
         return self.port_name
 
 
-
     # write Gain into mixer dict
     def writeGainValue(self):
         gain = self.gain_knob.value()
-        settings.output_ports[self.port_name]["gain"] = gain / 200
+        settings.output_ports[self.port_name][common.PORT_GAIN_DEF] = gain / 200
         self.gain_label.setText(str(round((gain-100))))
 
     # write Send1 into mixer dict
     def writeSend1Value(self):
-        settings.output_ports[self.port_name]["send1"] = self.send1_knob.value() / 100
+        settings.output_ports[self.port_name][common.PORT_SEND1_DEF] = self.send1_knob.value() / 100
 
     # write Send2 into mixer dict
     def writeSend2Value(self):
-        settings.output_ports[self.port_name]["send2"] = self.send2_knob.value() / 100
+        settings.output_ports[self.port_name][common.PORT_SEND2_DEF] = self.send2_knob.value() / 100
 
     # write Volume into mixer dict
     def writeVolumeValue(self):
-        settings.output_ports[self.port_name]["vol"] = self.vol_slider.value() / 100
+        settings.output_ports[self.port_name][common.PORT_VOLUME_DEF] = self.vol_slider.value() / 100
         
     # write Mute into mixer dict
     def writeMuteValue(self):
-        settings.output_ports[self.port_name]["mute"] = bool(self.mute_checkbox.checkState())
+        settings.output_ports[self.port_name][common.PORT_MUTE_DEF] = bool(self.mute_checkbox.checkState())
         self.mixer.muteUpdated(self.port_name, self.strip_index)
-
-
+    
 
     def writeToMasterValue(self):
-        settings.output_ports[self.port_name]["to_master"] = bool(self.to_master_checkbox.checkState())
-        #print(settings.output_ports)
-
-
+        settings.output_ports[self.port_name][common.PORT_TO_MASTER_DEF] = bool(self.to_master_checkbox.checkState())
 
     def updateGuiVolume(self):
-        self.vol_slider.setValue(settings.output_ports[self.port_name]["vol"] * 100)
+        self.vol_slider.setValue(settings.output_ports[self.port_name][common.PORT_VOLUME_DEF] * 100)
 
     def updateGuiSend1(self):
-        self.send1_knob.setValue(settings.output_ports[self.port_name]["send1"] * 100)
+        self.send1_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND1_DEF] * 100)
 
     def updateGuiSend2(self):
-        self.send2_knob.setValue(settings.output_ports[self.port_name]["send2"] * 100)
+        self.send2_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND2_DEF] * 100)
 
     def updateGuiMute(self):
-        self.mute_checkbox.setChecked(settings.output_ports[self.port_name]["mute"])
-
+        self.mute_checkbox.setChecked(settings.output_ports[self.port_name][common.PORT_MUTE_DEF])
+     

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -82,8 +82,11 @@
      <height>451</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">tabMIDI:{font: 10pt &quot;Noto Sans&quot;;}</string>
+   </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tabTransport">
     <attribute name="title">
@@ -732,7 +735,7 @@ border-color: rgb(202, 202, 202);</string>
    </widget>
    <widget class="QWidget" name="tabMixer">
     <attribute name="title">
-     <string>Mixer &amp;&amp; controls</string>
+     <string>Mixer</string>
     </attribute>
     <widget class="QGroupBox" name="groupBoxMixerOutputPorts">
      <property name="geometry">
@@ -1100,9 +1103,9 @@ border-color: rgb(202, 202, 202);</string>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab">
+   <widget class="QWidget" name="tabSendsAmount">
     <attribute name="title">
-     <string>Mixer Sends</string>
+     <string>Sends amount</string>
     </attribute>
     <widget class="QGroupBox" name="groupBoxMixerSends">
      <property name="geometry">
@@ -1135,7 +1138,7 @@ border-color: rgb(202, 202, 202);</string>
       <string notr="true">font: bold 10pt &quot;Noto Sans&quot;;</string>
      </property>
      <property name="title">
-      <string>Output port sends</string>
+      <string>Output ports sends amount</string>
      </property>
      <widget class="QWidget" name="gridLayoutWidget_8">
       <property name="geometry">
@@ -1174,7 +1177,7 @@ border-color: rgb(202, 202, 202);</string>
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
          </property>
          <property name="text">
-          <string>Learn Sends 1</string>
+          <string>Learn Sends 1 controllers</string>
          </property>
         </widget>
        </item>
@@ -1325,7 +1328,7 @@ border-color: rgb(202, 202, 202);</string>
           <string notr="true">font: 10pt &quot;Noto Sans&quot;;</string>
          </property>
          <property name="text">
-          <string>Learn Sends 2</string>
+          <string>Learn Sends 2 controllers</string>
          </property>
         </widget>
        </item>

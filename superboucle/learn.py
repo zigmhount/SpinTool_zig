@@ -255,7 +255,6 @@ class LearnDialog(QDialog, Ui_Dialog):
 
         self.btnReset_send1_ctrls.clicked.connect(self.onResetSend1)
         self.btnReset_send2_ctrls.clicked.connect(self.onResetSend2)
-
         
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
@@ -268,6 +267,7 @@ class LearnDialog(QDialog, Ui_Dialog):
         if device:
             self.gui.lightDownDevice()
         
+        self.setFixedSize(self.size())
         self.show()
 
     def notifyMidiLearning(self, value):
@@ -359,8 +359,6 @@ class LearnDialog(QDialog, Ui_Dialog):
     def onSend2Ctrls(self):
         self.notifyMidiLearning(True)
         self.send_midi_to = self.SEND2_CTRLS
-
-
 
     def onMuteBts(self):
         self.notifyMidiLearning(True)

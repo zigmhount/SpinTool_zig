@@ -4,6 +4,8 @@ import enum
 # def keyPressEvent(self, event) and
 # def showContextHelp(self, wantedHelp)
 # needs to be implemented. Eg in learn.py
+# On widgets, the AccessibleName property has to be filled with one of the elements in Context enum, in order to be
+# associated to its context help.
 
 class Context(enum.Enum):
     Help_Undefined = 0
@@ -167,7 +169,7 @@ def getUserManual(st_manual_section):
     if st_manual_section == ManualSection.Manual_Mixer or st_manual_section == ManualSection.Manual_All:
         text += "MIXER\n\n" + \
                 "From Mixer window you can manage the volume level of your song, of Master channels, and all stripes controls (volume, gain, " + \
-                "Send1, Send2, Mute, and Routing to Master)\n" + \
+                "Send1 amount, Send2 amount, Send1 On/Off, Send2 On/off, Mute, and Routing to Master)\n" + \
                 "Volume, Send1, Send2 and Mute have a binding to MIDI device, to manage them during performance from your MIDI controller. Use Gain to adjust " + \
                 "the overall level of an Output port, and Send1/Send2 to adjust the level of the Output port audio in the dedicated Send1 and " + \
                 "Send2 outputs.\n" + \
@@ -327,8 +329,10 @@ def getContextHelp(st_context):
                 "Then, press 'Learn mute buttons' and press buttons in the same order, and in the end press 'stop'."
 
     elif st_context == Context.Help_Learn_Send_Controls:
-        text = "SENDS\n\n" + \
-                "Learn the midi controllers for the mixer sends."
+        text = "SENDS AMOUNT AND ENABLING\n\n" + \
+                "Learn the midi controllers for the mixer sends.\n" + \
+                "You can define sliders / knobs for Send1 and Send2 amount, and buttons to enable / disable Send1 and Send2, for" + \
+                "every mixer stripe (= output ports)."
 
     elif st_context == Context.Help_Learn_SongVolume:
         text = "SONG VOLUME\n\n" + \
@@ -389,7 +393,8 @@ def getContextHelp(st_context):
 
     elif st_context == Context.Help_Mixer_Reset:
         text = "MIXER RESET\n\n" + \
-                "These buttons allow to reset to default point the controls (Gain, Send1, Send2, Volume and Mute) for each strip. " + \
+                "These buttons allow to reset to default value the controls (Gain, Send1 amount, Send2 amount, Send1 enable, Send2 enable, " + \
+                "Volume and Mute) for each strip. " + \
                 "The Custom reset button allows to reset just some controls (which you can define in Preferences)"
 
     elif st_context == Context.Help_Mixer_Unlink:

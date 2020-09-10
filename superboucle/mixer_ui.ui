@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>872</width>
-    <height>470</height>
+    <height>519</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -390,6 +390,9 @@ width: 2px;
         <property name="accessibleName">
          <string>Help_Mixer_Reset</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;Noto Sans&quot;;</string>
+        </property>
         <property name="text">
          <string>Custom</string>
         </property>
@@ -402,6 +405,9 @@ width: 2px;
         </property>
         <property name="accessibleName">
          <string>Help_Mixer_Reset</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;Noto Sans&quot;;</string>
         </property>
         <property name="text">
          <string>Gain</string>
@@ -416,8 +422,12 @@ width: 2px;
         <property name="accessibleName">
          <string>Help_Mixer_Reset</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;Noto Sans&quot;;</string>
+        </property>
         <property name="text">
-         <string>Send1</string>
+         <string>Send1
+amount</string>
         </property>
        </widget>
       </item>
@@ -429,8 +439,12 @@ width: 2px;
         <property name="accessibleName">
          <string>Help_Mixer_Reset</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;Noto Sans&quot;;</string>
+        </property>
         <property name="text">
-         <string>Send2</string>
+         <string>Send2
+amount</string>
         </property>
        </widget>
       </item>
@@ -441,6 +455,9 @@ width: 2px;
         </property>
         <property name="accessibleName">
          <string>Help_Mixer_Reset</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;Noto Sans&quot;;</string>
         </property>
         <property name="text">
          <string>Vol</string>
@@ -454,6 +471,9 @@ width: 2px;
         </property>
         <property name="accessibleName">
          <string>Help_Mixer_Reset</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font:8pt &quot;Noto Sans&quot;;</string>
         </property>
         <property name="text">
          <string>Mute</string>
@@ -547,7 +567,7 @@ width: 2px;
           <x>0</x>
           <y>0</y>
           <width>616</width>
-          <height>424</height>
+          <height>478</height>
          </rect>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">

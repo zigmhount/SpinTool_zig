@@ -1,6 +1,7 @@
 # Vars and functions common to all application
 
 import math
+import datetime
 import json
 
 def init():
@@ -8,13 +9,13 @@ def init():
     # Application
 
     global APP_VERSION
-    APP_VERSION = "v 20.08.11"
+    APP_VERSION = "v 20.09.10"
     global WIKI_LINK
     WIKI_LINK = "https://github.com/manucontrovento/SpinTool/wiki"
 
     # File exensions
 
-    global SONG_FILE_TYPE 
+    global SONG_FILE_TYPE
     SONG_FILE_TYPE = 'SpinTool Song (*.sbs)'
 
     global SONG_FILE_EXT 
@@ -98,11 +99,29 @@ def init():
     global DEFAULT_PORT_CHANNELS
     DEFAULT_PORT_CHANNELS = [DEFAULT_PORT + LEFT_CHANNEL, DEFAULT_PORT + RIGHT_CHANNEL]
 
+    # Dict elements definitions:
+    
+    global PORT_VOLUME_DEF
+    PORT_VOLUME_DEF = "vol"
+    
+    global PORT_MUTE_DEF
+    PORT_MUTE_DEF = "mute"
+    
+    global PORT_GAIN_DEF
+    PORT_GAIN_DEF = "gain"
+    
+    global PORT_SEND1_DEF
+    PORT_SEND1_DEF = "send1"
+    
+    global PORT_SEND2_DEF
+    PORT_SEND2_DEF = "send2"
+    
+    global PORT_TO_MASTER_DEF
+    PORT_TO_MASTER_DEF = "to_master"
 
     # default mixer dict
     global DEFAULT_MIXER_DICT
-    DEFAULT_MIXER_DICT = {"vol":1, "mute":False, "gain":0.5, "send1":0, "send2":0, "to_master": True}
-
+    DEFAULT_MIXER_DICT = {PORT_VOLUME_DEF:1, PORT_MUTE_DEF:False, PORT_GAIN_DEF:0.5, PORT_SEND1_DEF:0, PORT_SEND2_DEF:0, PORT_TO_MASTER_DEF: True}
 
     # this dict contains current channels values {'port_L':value, 'port_R':value, etc}
     global CurrentChannelsValues
@@ -132,28 +151,50 @@ def init():
     global last_gui_triggered_scene
     last_gui_triggered_scene = None
 
+    # system info
+    
+    global SYS_CPU_PERCENT
+    SYS_CPU_PERCENT = 0.0
+    
+    global SYS_MEM_AVAILABLE
+    SYS_MEM_AVAILABLE = 0.0
+    
+    global SYS_CPU_TEMP
+    SYS_CPU_TEMP = 0.0
+
+    global lastTime
+    lastTime = datetime.datetime.now()
+
 # RESET MIXER VALUES ----------------------------------------------------------------------------
 
 def resetGain(output_ports):
     for i in output_ports:
-        output_ports[i]["gain"] = 0.5
+        output_ports[i][PORT_GAIN_DEF] = 0.5
 
 def resetSend1(output_ports):
     for i in output_ports:
-        output_ports[i]["send1"] = 0
+        output_ports[i][PORT_SEND1_DEF] = 0
 
 def resetSend2(output_ports):
     for i in output_ports:
-        output_ports[i]["send2"] = 0
+        output_ports[i][PORT_SEND2_DEF] = 0
 
 def resetVolume(output_ports):
     for i in output_ports:
-        output_ports[i]["vol"] = 1
+        output_ports[i][PORT_VOLUME_DEF] = 1
 
 def resetMute(output_ports):
     for i in output_ports:
-        output_ports[i]["mute"] = False
+        output_ports[i][PORT_MUTE_DEF] = False
 
+# DICT UTILS ------------------------------------------------------------------------------------
+
+def renameDictItem(old_dict, old_name, new_name):
+    new_dict = {}
+    for key,value in zip(old_dict.keys(),old_dict.values()):
+        new_key = key if key != old_name else new_name
+        new_dict[new_key] = old_dict[key]
+    return new_dict
 
 # VOLUME values conversion functions ------------------------------------------------------------
 
@@ -179,7 +220,6 @@ def fromControllerAnalogVolume(controllerValue):
 
 # it provides a newly initialized output port dictionary (so, with just one default output)
 def getDefaultOutputPorts():
-    #ports = {00:{"name": DEFAULT_PORT, "vol":1, "mute":False, "gain":0}}
     ports = {DEFAULT_PORT: DEFAULT_MIXER_DICT}
     return ports
 

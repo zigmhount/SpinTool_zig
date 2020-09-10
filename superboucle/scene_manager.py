@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QAbstractItemView, QListWidgetItem, QFrame, QMessageBox
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QListWidgetItem, QFrame, QMessageBox, QInputDialog, QLineEdit
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QSize
 from superboucle.scene_manager_ui import Ui_Dialog
@@ -30,6 +30,7 @@ class SceneManager(QDialog, Ui_Dialog):
         self.removeScenesBtn.clicked.connect(self.onRemove)
         self.addScenesBtn.clicked.connect(self.onAddScene)
         self.loadScenesBtn.clicked.connect(self.onLoadScene)
+        self.renameSceneBtn.clicked.connect(self.onRename)
         self.scenelistList.itemDoubleClicked.connect(self.onSceneDoubleClick)
         self.scenelistList.setDragDropMode(QAbstractItemView.InternalMove)
         self.scenelistList.model().rowsMoved.connect(self.onMoveRows)
@@ -74,6 +75,7 @@ class SceneManager(QDialog, Ui_Dialog):
         anyScenes = bool(self.gui.song.scenes)
         self.loadScenesBtn.setEnabled(anyScenes)
         self.removeScenesBtn.setEnabled(anyScenes)
+        self.renameSceneBtn.setEnabled(anyScenes)
         
         if self.select_scene == False:
             self.initPreview()
@@ -128,6 +130,21 @@ class SceneManager(QDialog, Ui_Dialog):
     def onAddScene(self):
         AddSceneDialog(self.gui, callback=self.onAddedScene)
 
+    def onRename(self):
+        item = self.scenelistList.currentItem()
+        if item:
+            print("item!")
+            currentName = self._getSceneName(item)
+            print("currentName" + str(currentName))
+            newName, okPressed = QInputDialog.getText(self, "Scene rename", "Enter scene new name:", QLineEdit.Normal, currentName)
+            
+            if okPressed and newName.strip() != '':
+                if newName == currentName:
+                    return
+                    
+                self.gui.song.renameScene(currentName, newName)
+                self.updateList()
+
     def onSetInitial(self):
         item = self.scenelistList.currentItem()
         if item:
@@ -168,9 +185,10 @@ class SceneManager(QDialog, Ui_Dialog):
     def loadScene(self, scene):
         try:
             self.gui.song.loadScene(scene)
-
             self.gui.updateScene(scene, self.scenelistList.currentRow()) 
+            
         except:
+            print("Error loading scene: " + str(scene))
             pass
 
     def useBigFonts(self, use = False):

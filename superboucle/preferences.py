@@ -43,6 +43,9 @@ class Preferences(QDialog, Ui_Dialog):
         self.cBoxApplySlowerProcessing.setChecked(settings.slower_processing)
         self.cBoxApplySlowerProcessing.stateChanged.connect(self.onCheckSlowerProcessing)
 
+        self.cBoxSystemMonitor.setChecked(settings.system_monitoring)
+        self.cBoxSystemMonitor.stateChanged.connect(self.onCheckSystemMonitoring)
+
         self.cBoxShowScenesManager.setChecked(settings.show_scenes_on_start)
         self.cBoxShowScenesManager.stateChanged.connect(self.onCheckShowScenesOnStart)
 
@@ -92,6 +95,7 @@ class Preferences(QDialog, Ui_Dialog):
         self.cBoxCustomResetMixerstripMute.setChecked(settings.customreset_mixerstrip_mute)
         self.cBoxCustomResetMixerstripMute.stateChanged.connect(self.onCustomResetMixerstripMute)
 
+        
 
         self.cBoxUnshiftAfterProcessing.setChecked(settings.disable_shift_after_processing)
         self.cBoxUnshiftAfterProcessing.stateChanged.connect(self.onDisableShiftAfterProcessing)        
@@ -127,6 +131,7 @@ class Preferences(QDialog, Ui_Dialog):
         self.setModal(True)
         self.tabPreferences.setCurrentIndex(0)
         self.show()
+
 
     def onAmberRecColor(self):
         self.labelMessage.setText(self.MESSAGE_RESTART_SB)
@@ -184,7 +189,7 @@ class Preferences(QDialog, Ui_Dialog):
         settings.customreset_mixerstrip_mute = self.cBoxCustomResetMixerstripMute.isChecked()
 
 
-
+    
 
     def onCheckShowSongAnnotation(self):
         settings.show_song_annotation_on_load = self.cBoxShowSongAnnotation.isChecked()
@@ -214,6 +219,9 @@ class Preferences(QDialog, Ui_Dialog):
 
     def onCheckPlayClipAfterRecord(self):
         settings.play_clip_after_record = self.cBoxPlayAfterRecord.isChecked()
+    
+    def onCheckSystemMonitoring(self):
+        settings.system_monitoring = self.cBoxSystemMonitor.isChecked()
 
     def closeEvent(self, event):
 

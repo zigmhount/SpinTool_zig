@@ -29,6 +29,9 @@ import argparse
 from superboucle.preferences import Preferences
 import soundfile as sf
 import numpy as np
+import math
+import datetime
+import psutil
 
 parser = argparse.ArgumentParser(description='launch SpinTool')
 parser.add_argument("file", nargs="?", help="loads the playlist and its first song, or just a song")
@@ -134,26 +137,28 @@ else:
                        Clip.RECORDING: Clip.START}        
 
 
-def updateCurrentChannelsValues(): # is it a good idea to have it in the callback? one could also update it only on mixer changes
+def updateCurrentChannelsValues(): 
+    # is it a good idea to have it in the callback? one could also update it only on mixer changes
     for port_name in settings.output_ports.keys():
 
         # get volume values
-        vol = settings.output_ports[port_name]["vol"]
-        mute = (1-int(settings.output_ports[port_name]["mute"]))
-        gain = settings.output_ports[port_name]["gain"]
+        vol = settings.output_ports[port_name][common.PORT_VOLUME_DEF]
+        mute = (1-int(settings.output_ports[port_name][common.PORT_MUTE_DEF]))
+        gain = settings.output_ports[port_name][common.PORT_GAIN_DEF]
 
         # calculate channels final volume
         final_volume = vol * mute * gain * 2 # -> since default gain is 0.5, then * 2 goes back to the original volume
 
         # get sends values
-        send1 = settings.output_ports[port_name]["send1"]
-        send2 = settings.output_ports[port_name]["send2"]
+        send1 = settings.output_ports[port_name][common.PORT_SEND1_DEF]
+        send2 = settings.output_ports[port_name][common.PORT_SEND2_DEF]
 
         #to master
-        to_master = settings.output_ports[port_name]["to_master"]
+        to_master = settings.output_ports[port_name][common.PORT_TO_MASTER_DEF]
 
         # create channel sub dict
-        channel_subdict = {"final_vol": final_volume, "send1": send1, "send2": send2, "to_master": to_master}
+        channel_subdict = {"final_vol": final_volume, "send1": send1, "send2": send2, 
+                           "to_master": to_master}
 
 
         # assigne channel sub dict to each channel
@@ -167,19 +172,21 @@ def updateCurrentChannelsValues(): # is it a good idea to have it in the callbac
 def checkClipping(tick):
     # clip
     if common.clipping == True and common.is_clipping == False:
-        stylesheet = 'background-color: red;'
-        gui.clipping_label.setStyleSheet(stylesheet)
+        # stylesheet = 'color: red;'
+        # gui.clipping_label.setStyleSheet(stylesheet)
         common.is_clipping = True
-        print("clip")
+        #print("clip")
 
     # unclip
     if common.is_clipping == True and tick < 100:
         # stylesheet = 'color: rgb(160, 6, 89);'
-        stylesheet = 'background-color: none;'
-        gui.clipping_label.setStyleSheet(stylesheet)
+        # stylesheet = 'color: none;'
+        # gui.clipping_label.setStyleSheet(stylesheet)
         common.clipping = False
         common.is_clipping = False
-        print("unclip")
+        #print("unclip")
+    
+    gui.updateClipping(common.is_clipping)
 
 # MAIN AUDIO CALLBACK
 def my_callback(frames):
@@ -210,6 +217,29 @@ def my_callback(frames):
             gui.queue_in.put(indata)
         gui.readQueueIn.emit()
     midi_out.clear_buffer()
+
+
+    # SYSTEM MONITOR -------------------------------------------------
+    
+    if gui.isSystemMonitoring() == True:
+        
+        elapsedTime = datetime.datetime.now() - common.lastTime
+        
+        if elapsedTime.total_seconds() > 1:
+            
+            common.lastTime = datetime.datetime.now()
+    
+            common.SYS_CPU_PERCENT = psutil.cpu_percent()
+            
+            mem = psutil.virtual_memory()
+            common.SYS_MEM_AVAILABLE = math.trunc(mem.available / 1000 / 1000)
+            
+            #temps = psutil.sensors_temperatures()
+            #common.SYS_CPU_TEMP = temps['coretemp'][0]
+            
+            gui.updateSystemInfo()
+    
+    # SYSTEM MONITOR END ---------------------------------------------
 
     if ((state == 1 # == jack.ROLLING
          and 'beats_per_minute' in position
@@ -365,7 +395,7 @@ def my_callback(frames):
 
 
         # MIXER AND MASTER_END -------------------------------------------
-
+        
 
     try:
         i = 1

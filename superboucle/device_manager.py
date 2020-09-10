@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QInputDialog, QLineEdit
 from superboucle.device_manager_ui import Ui_Dialog
 from superboucle.learn import LearnDialog
 from superboucle.device import Device
 from superboucle.clip import verify_ext
 import json
 import common
+import copy
 from PyQt5.QtWidgets import QMessageBox
 
 class ManageDialog(QDialog, Ui_Dialog):
@@ -19,6 +20,7 @@ class ManageDialog(QDialog, Ui_Dialog):
         self.deleteButton.clicked.connect(self.onDelete)
         self.importButton.clicked.connect(self.onImport)
         self.exportButton.clicked.connect(self.onExport)
+        self.cloneButton.clicked.connect(self.onClone)
         self.finished.connect(self.onFinished)
         
         self.setModal(True)
@@ -43,7 +45,24 @@ class ManageDialog(QDialog, Ui_Dialog):
             self.gui.is_learn_device_mode = True
             self.gui.update()
 
+    def onClone(self):
+        if self.list.currentRow() != -1:
+            device = self.gui.devices[self.list.currentRow() + 1]
+            
+            currentName = str(self.list.currentItem().text())
+            newName, okPressed = QInputDialog.getText(self, "Clone MIDI configuration", "Enter new MIDI configuration name:", QLineEdit.Normal, currentName)
+            
+            if currentName.strip() == newName.strip():
+                print("Device won't be cloned since names are equals")
+                return
 
+            newDevice = copy.deepcopy(device)
+            newDevice.name = newName
+            newDevice.description = device.description + "\n\n(Cloned from " + currentName +")"
+
+            self.gui.addDevice(newDevice)
+            self.updateDeviceList()
+            
 
     def onDelete(self):
         if self.list.currentRow() != -1:

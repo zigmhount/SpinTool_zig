@@ -49,7 +49,7 @@ def init():
 
     global save_mixerstrip_send1
     save_mixerstrip_send1 = appSettings.value('save_mixerstrip_send1', 'false') == 'true'
-
+    
     global save_mixerstrip_send2
     save_mixerstrip_send2 = appSettings.value('save_mixerstrip_send2', 'false') == 'true'
 
@@ -87,9 +87,6 @@ def init():
     global show_clip_details_on_trigger
     show_clip_details_on_trigger = appSettings.value('show_clip_details_on_trigger','false') == 'true'
 
-    #global show_clip_details_on_volume
-    #show_clip_details_on_volume = appSettings.value('show_clip_details_on_volume','false') == 'true'
-
     global play_clip_after_record
     play_clip_after_record = appSettings.value('play_clip_after_record','false')  == 'true'
 
@@ -110,6 +107,9 @@ def init():
 
     global slower_processing
     slower_processing = appSettings.value('slower_processing','false') == 'true'
+
+    global system_monitoring
+    system_monitoring = appSettings.value('system_monitoring','false') == 'true'
 
     global rec_color
     rec_color = appSettings.value('rec_color', COLOR_AMBER)
@@ -217,7 +217,7 @@ def update():
     # customreset
     appSettings.setValue('customreset_mixerstrip_gain', customreset_mixerstrip_gain)
     appSettings.setValue('customreset_mixerstrip_send1', customreset_mixerstrip_send1)
-    appSettings.setValue('customreset_mixerstrip_send2', customreset_mixerstrip_send2)
+    appSettings.setValue('customreset_mixerstrip_send2', customreset_mixerstrip_send2)  
     appSettings.setValue('customreset_mixerstrip_volume', customreset_mixerstrip_volume)
     appSettings.setValue('customreset_mixerstrip_mute', customreset_mixerstrip_mute)
 
@@ -233,6 +233,7 @@ def update():
     appSettings.setValue('show_playlist_on_start', show_playlist_on_start)
     appSettings.setValue('show_song_annotation_on_load', show_song_annotation_on_load)
     appSettings.setValue('slower_processing', slower_processing)
+    appSettings.setValue('system_monitoring', system_monitoring)
     appSettings.setValue('rec_color', rec_color)
     appSettings.setValue('grid_rows', str(grid_rows))
     appSettings.setValue('grid_columns', str(grid_columns))
