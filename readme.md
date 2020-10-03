@@ -70,7 +70,7 @@ Recommended:
 
 * Install python modules : 
 
-        sudo aptitude install python3 python3-pip python3-cffi python3-numpy python3-pyqt5 python3-psutil
+        sudo aptitude install python3 python3-pip python3-cffi python3-numpy python3-pyqt5
         sudo pip3 install PySoundFile
 
 * Download and extract last version of SpinTool from https://github.com/manucontrovento/SpinTool/releases/
