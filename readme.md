@@ -12,7 +12,7 @@ help on what the mouse cursor is pointing at.
 Usage Wiki for Starting:
 https://github.com/manucontrovento/SpinTool/wiki
 
-DEV BRANCH
+DEV BRANCH MANU
 
 
 ## Features
