@@ -218,29 +218,6 @@ def my_callback(frames):
         gui.readQueueIn.emit()
     midi_out.clear_buffer()
 
-
-    # SYSTEM MONITOR -------------------------------------------------
-    
-    if gui.isSystemMonitoring() == True:
-        
-        elapsedTime = datetime.datetime.now() - common.lastTime
-        
-        if elapsedTime.total_seconds() > 1:
-            
-            common.lastTime = datetime.datetime.now()
-    
-            common.SYS_CPU_PERCENT = psutil.cpu_percent()
-            
-            mem = psutil.virtual_memory()
-            common.SYS_MEM_AVAILABLE = math.trunc(mem.available / 1000 / 1000)
-            
-            #temps = psutil.sensors_temperatures()
-            #common.SYS_CPU_TEMP = temps['coretemp'][0]
-            
-            gui.updateSystemInfo()
-    
-    # SYSTEM MONITOR END ---------------------------------------------
-
     if ((state == 1 # == jack.ROLLING
          and 'beats_per_minute' in position
          and position['frame_rate'] != 0)):

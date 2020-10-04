@@ -43,9 +43,6 @@ class Preferences(QDialog, Ui_Dialog):
         self.cBoxApplySlowerProcessing.setChecked(settings.slower_processing)
         self.cBoxApplySlowerProcessing.stateChanged.connect(self.onCheckSlowerProcessing)
 
-        self.cBoxSystemMonitor.setChecked(settings.system_monitoring)
-        self.cBoxSystemMonitor.stateChanged.connect(self.onCheckSystemMonitoring)
-
         self.cBoxShowScenesManager.setChecked(settings.show_scenes_on_start)
         self.cBoxShowScenesManager.stateChanged.connect(self.onCheckShowScenesOnStart)
 
@@ -219,9 +216,6 @@ class Preferences(QDialog, Ui_Dialog):
 
     def onCheckPlayClipAfterRecord(self):
         settings.play_clip_after_record = self.cBoxPlayAfterRecord.isChecked()
-    
-    def onCheckSystemMonitoring(self):
-        settings.system_monitoring = self.cBoxSystemMonitor.isChecked()
 
     def closeEvent(self, event):
 

@@ -1,9 +1,11 @@
 from PyQt5.QtWidgets import QDialog, QFileDialog, QAbstractItemView, QMessageBox
 from superboucle.playlist_ui import Ui_Dialog
 from superboucle.clip import verify_ext
-#from superboucle.clip import load_song_from_file, verify_ext
-import json
+import configparser, json
+from zipfile import ZipFile
 from os.path import basename, splitext
+from io import BytesIO, StringIO, TextIOWrapper
+from os import path
 import settings
 import common
 

@@ -9,7 +9,7 @@ def init():
     # Application
 
     global APP_VERSION
-    APP_VERSION = "v 20.09.10"
+    APP_VERSION = "v 20.10.04"
     global WIKI_LINK
     WIKI_LINK = "https://github.com/manucontrovento/SpinTool/wiki"
 
@@ -151,19 +151,6 @@ def init():
     global last_gui_triggered_scene
     last_gui_triggered_scene = None
 
-    # system info
-    
-    global SYS_CPU_PERCENT
-    SYS_CPU_PERCENT = 0.0
-    
-    global SYS_MEM_AVAILABLE
-    SYS_MEM_AVAILABLE = 0.0
-    
-    global SYS_CPU_TEMP
-    SYS_CPU_TEMP = 0.0
-
-    global lastTime
-    lastTime = datetime.datetime.now()
 
 # RESET MIXER VALUES ----------------------------------------------------------------------------
 

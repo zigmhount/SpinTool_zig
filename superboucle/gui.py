@@ -194,8 +194,6 @@ class Gui(QMainWindow, Ui_MainWindow):
         self.btnCopy.clicked.connect(self.onCopyDetailsClicked)
         self.btnPaste.clicked.connect(self.onPasteDetailsClicked)
 
-        self.cBoxSystemInfo.stateChanged.connect(self.onCheckSystemMonitoring)
-
         self.blktimer = QTimer()
         self.blktimer.state = False
         self.blktimer.timeout.connect(self.toggleBlinkButton)
@@ -209,9 +207,6 @@ class Gui(QMainWindow, Ui_MainWindow):
 
         if settings.gui_geometry:
             self.restoreGeometry(settings.gui_geometry)
-
-        # setting default for system monitoring (on/off)
-        self.cBoxSystemInfo.setChecked(settings.system_monitoring)
 
         # erase performance/system/cpu/whatever info:
         self.labelPerformanceInfo.setText("")
@@ -1880,21 +1875,6 @@ class Gui(QMainWindow, Ui_MainWindow):
                     self.queue_out.put(note)
             self.redraw()
 
-
-    def isSystemMonitoring(self):
-        return self.cBoxSystemInfo.isChecked()
-
-    def updateSystemInfo(self):
-        self.labelPerformanceInfo.setText("CPU: "+ str(common.SYS_CPU_PERCENT) + "%, Free mem: " + 
-                                                   str(common.SYS_MEM_AVAILABLE) + " Mb")
-
-        #self.labelPerformanceInfo.setText("CPU: "+ str(common.SYS_CPU_PERCENT) + "%, Mem: " + 
-        #                                           str(common.SYS_MEM_AVAILABLE) + " Mb, Temp: " + 
-        #                                           str(common.SYS_CPU_TEMP) + "°C")
-
-    def onCheckSystemMonitoring(self):
-        if self.cBoxSystemInfo.isChecked() == False:
-            self.labelPerformanceInfo.setText("")
         
 
     def timebase_callback(self, state, nframes, pos, new_pos):

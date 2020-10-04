@@ -8,6 +8,7 @@ from collections import OrderedDict as OrderedDict_
 import unicodedata
 import settings
 import common
+import copy
 from superboucle.mixer import Mixer
 
 
@@ -153,6 +154,10 @@ class Song():
                     (((c.state == Clip.START or c.state == Clip.STARTING) and clip_start == True) or
                       (c.selected == True and clip_selected == True))]
         self.scenes[name] = clip_ids
+
+    def renameScene(self, old_name, new_name): ##### TESTA SE FUNZIONA!
+        old_scenes = copy.deepcopy(self.scenes)
+        self.scenes = common.renameDictItem(old_scenes, old_name, new_name)
 
     def removeScene(self, name):
         del self.scenes[name]
@@ -346,8 +351,6 @@ class Song():
                 zip.writestr(member, buffer.getvalue())
 
         self.file_name = file
-
-
 
 
 # this function is NOT in song Class
