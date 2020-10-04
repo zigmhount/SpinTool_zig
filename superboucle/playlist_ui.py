@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'playlist_ui.ui'
+# Form implementation generated from reading ui file '/home/manu/Sviluppo/SpinTool/superboucle/playlist_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #

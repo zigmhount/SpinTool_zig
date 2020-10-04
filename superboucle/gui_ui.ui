@@ -1732,7 +1732,7 @@ color: rgb(175, 178, 178);
 border-radius: 5px;}</string>
            </property>
            <property name="text">
-            <string>system info</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -1832,29 +1832,6 @@ border: 1px solid black;</string>
            </property>
            <property name="text">
             <string>SHIFT</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="cBoxSystemInfo">
-           <property name="geometry">
-            <rect>
-             <x>100</x>
-             <y>1</y>
-             <width>121</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(90, 90, 90);
-font: 8pt &quot;Noto Sans&quot;;</string>
-           </property>
-           <property name="text">
-            <string>system monitor</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
            </property>
           </widget>
          </widget>

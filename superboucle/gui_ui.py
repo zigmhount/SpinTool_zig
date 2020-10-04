@@ -754,6 +754,7 @@ class Ui_MainWindow(object):
 "font: 10pt \"Noto Sans\";\n"
 "color: rgb(175, 178, 178);\n"
 "border-radius: 5px;}")
+        self.labelPerformanceInfo.setText("")
         self.labelPerformanceInfo.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignHCenter)
         self.labelPerformanceInfo.setObjectName("labelPerformanceInfo")
         self.clipping_label = QtWidgets.QLabel(self.groupBoxMessages)
@@ -804,13 +805,6 @@ class Ui_MainWindow(object):
 "background-color: rgb(0, 0, 0);\n"
 "border: 1px solid black;")
         self.labelShift.setObjectName("labelShift")
-        self.cBoxSystemInfo = QtWidgets.QCheckBox(self.groupBoxMessages)
-        self.cBoxSystemInfo.setGeometry(QtCore.QRect(100, 1, 121, 20))
-        self.cBoxSystemInfo.setLayoutDirection(QtCore.Qt.RightToLeft)
-        self.cBoxSystemInfo.setStyleSheet("color: rgb(90, 90, 90);\n"
-"font: 8pt \"Noto Sans\";")
-        self.cBoxSystemInfo.setChecked(True)
-        self.cBoxSystemInfo.setObjectName("cBoxSystemInfo")
         self.groupBoxSong.raise_()
         self.groupBoxClip.raise_()
         self.groupBoxMessages.raise_()
@@ -1033,11 +1027,9 @@ class Ui_MainWindow(object):
         self.global_volume_label.setAccessibleName(_translate("MainWindow", "Help_Song_Volume"))
         self.global_volume_label.setText(_translate("MainWindow", "Volume"))
         self.groupBoxMessages.setTitle(_translate("MainWindow", "Info"))
-        self.labelPerformanceInfo.setText(_translate("MainWindow", "system info"))
         self.clipping_label.setText(_translate("MainWindow", "CLIP!"))
         self.labelRecording.setText(_translate("MainWindow", "ready to REC"))
         self.labelShift.setText(_translate("MainWindow", "SHIFT"))
-        self.cBoxSystemInfo.setText(_translate("MainWindow", "system monitor"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuDevice.setTitle(_translate("MainWindow", "MIDI"))
         self.menuView.setTitle(_translate("MainWindow", "View"))

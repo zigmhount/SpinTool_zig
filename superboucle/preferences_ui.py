@@ -353,10 +353,6 @@ class Ui_Dialog(object):
         self.cBoxApplySlowerProcessing.setStyleSheet("font: 10pt \"Noto Sans\";")
         self.cBoxApplySlowerProcessing.setObjectName("cBoxApplySlowerProcessing")
         self.verticalLayout_10.addWidget(self.cBoxApplySlowerProcessing)
-        self.cBoxSystemMonitor = QtWidgets.QCheckBox(self.tabSystem)
-        self.cBoxSystemMonitor.setStyleSheet("font: 10pt \"Noto Sans\";")
-        self.cBoxSystemMonitor.setObjectName("cBoxSystemMonitor")
-        self.verticalLayout_10.addWidget(self.cBoxSystemMonitor)
         spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_10.addItem(spacerItem5)
         self.tabPreferences.addTab(self.tabSystem, "")
@@ -384,7 +380,7 @@ class Ui_Dialog(object):
         self.verticalLayout_11.addLayout(self.horizontalLayout)
 
         self.retranslateUi(Dialog)
-        self.tabPreferences.setCurrentIndex(4)
+        self.tabPreferences.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -435,7 +431,6 @@ class Ui_Dialog(object):
         self.cBoxCustomResetMixerstripMute.setText(_translate("Dialog", "Mute"))
         self.tabPreferences.setTabText(self.tabPreferences.indexOf(self.tab), _translate("Dialog", "Mixer"))
         self.cBoxApplySlowerProcessing.setText(_translate("Dialog", "Slower processing (try it for XRuns and MIDI controller lighting issues)"))
-        self.cBoxSystemMonitor.setText(_translate("Dialog", "Enable system monitor on start up (show CPU load, available memory, etc)"))
         self.tabPreferences.setTabText(self.tabPreferences.indexOf(self.tabSystem), _translate("Dialog", "System"))
         self.labelMessage.setText(_translate("Dialog", "message"))
         self.btn_prefs_ok.setText(_translate("Dialog", "Ok"))
