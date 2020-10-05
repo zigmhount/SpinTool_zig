@@ -31,7 +31,6 @@ import soundfile as sf
 import numpy as np
 import math
 import datetime
-import psutil
 
 parser = argparse.ArgumentParser(description='launch SpinTool')
 parser.add_argument("file", nargs="?", help="loads the playlist and its first song, or just a song")
