@@ -12,8 +12,6 @@ help on what the mouse cursor is pointing at.
 Usage Wiki for Starting:
 https://github.com/manucontrovento/SpinTool/wiki
 
-DEV BRANCH MANU
-
 
 ## Features
 
@@ -53,7 +51,7 @@ SpinTool releases start from version 20.04.07
 
 * Python 3
 * Pip for python 3
-* Python modules : Cffi, PySoundFile, Numpy, PyQT 5, psUtil
+* Python modules : Cffi, PySoundFile, Numpy, PyQT 5
 * Running jack server
 
 Recommended:
