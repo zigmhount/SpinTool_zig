@@ -4,6 +4,8 @@ SpinTool is a loop based software fully controllable with any midi device,
 synced with Jack transport. This version derives from original Vampouille's
 SuperBoucle, starting from a fork of the original repository.
 
+![SpinTool main window](https://raw.githubusercontent.com/manucontrovento/SpinTool/master/docs/img/ST_overview.png)
+
 Check user manual (from Info menu of application) for a description of 
 usage and functions.
 Press the H key for integrated help to have a quick
