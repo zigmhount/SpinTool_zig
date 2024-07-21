@@ -1,8 +1,8 @@
-# SpinTool
+# SpinTool_zig
 
 SpinTool is a loop based software fully controllable with any midi device,
-synced with Jack transport. This version derives from original Vampouille's
-SuperBoucle, starting from a fork of the original repository.
+synced with Jack transport. This fork of manucontrovento's SpinTool is Zig's attempt at getting it to work in 2024, and a few adjustments to match a slightly different workflow.
+See [the development roadmap](zig_roadmap.md).
 
 ![SpinTool main window](https://raw.githubusercontent.com/manucontrovento/SpinTool/master/docs/img/ST_overview.png)
 
