@@ -496,12 +496,13 @@ class Gui(QMainWindow, Ui_MainWindow):
                 clip.state = Clip.PREPARE_RECORD
                 self.recordButton.setStyleSheet(self.RECORD_DEFAULT)
         else:
-            self.song.toggle(clip.x, clip.y)
-            
-            # to automatically view clip details, when triggered:
-            if settings.show_clip_details_on_trigger:
-                self.last_clip = clip
-                self.updateClipInfo()
+            if clip is not None:
+                self.song.toggle(clip.x, clip.y)
+
+                # to automatically view clip details, when triggered:
+                if settings.show_clip_details_on_trigger:
+                    self.last_clip = clip
+                    self.updateClipInfo()
             
 
         self.update()
