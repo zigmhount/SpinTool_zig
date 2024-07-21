@@ -56,17 +56,17 @@ class Mixerstrip(QWidget, Ui_Mixerstrip):
     def readMixerstrip(self):
         # gain
         gain = settings.output_ports[self.port_name][common.PORT_GAIN_DEF]
-        self.gain_knob.setValue(gain*200)
+        self.gain_knob.setValue(int(gain*200))
         self.gain_label.setText(str(round((gain*200 - 100))))
 
         # send1
-        self.send1_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND1_DEF] * 100)
+        self.send1_knob.setValue(int(settings.output_ports[self.port_name][common.PORT_SEND1_DEF] * 100))
         
         # send2
-        self.send2_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND2_DEF] * 100)
+        self.send2_knob.setValue(int(settings.output_ports[self.port_name][common.PORT_SEND2_DEF] * 100))
 
         # vol
-        self.vol_slider.setValue(settings.output_ports[self.port_name][common.PORT_VOLUME_DEF] * 100)
+        self.vol_slider.setValue(int(settings.output_ports[self.port_name][common.PORT_VOLUME_DEF] * 100))
         
         # mute
         self.mute_checkbox.setChecked(settings.output_ports[self.port_name][common.PORT_MUTE_DEF])
@@ -108,13 +108,13 @@ class Mixerstrip(QWidget, Ui_Mixerstrip):
         settings.output_ports[self.port_name][common.PORT_TO_MASTER_DEF] = bool(self.to_master_checkbox.checkState())
 
     def updateGuiVolume(self):
-        self.vol_slider.setValue(settings.output_ports[self.port_name][common.PORT_VOLUME_DEF] * 100)
+        self.vol_slider.setValue(int(settings.output_ports[self.port_name][common.PORT_VOLUME_DEF] * 100))
 
     def updateGuiSend1(self):
-        self.send1_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND1_DEF] * 100)
+        self.send1_knob.setValue(int(settings.output_ports[self.port_name][common.PORT_SEND1_DEF] * 100))
 
     def updateGuiSend2(self):
-        self.send2_knob.setValue(settings.output_ports[self.port_name][common.PORT_SEND2_DEF] * 100)
+        self.send2_knob.setValue(int(settings.output_ports[self.port_name][common.PORT_SEND2_DEF] * 100))
 
     def updateGuiMute(self):
         self.mute_checkbox.setChecked(settings.output_ports[self.port_name][common.PORT_MUTE_DEF])

@@ -1838,9 +1838,9 @@ class Gui(QMainWindow, Ui_MainWindow):
         for line in self.btn_matrix:
             for btn in line:
                 if btn.clip and btn.clip.audio_file:
-                    value = ((btn.clip.last_offset
+                    value = int(((btn.clip.last_offset
                               / self.song.length(btn.clip))
-                             * 97)
+                             * 97))
                     btn.clip_position.setValue(value)
                     btn.clip_position.repaint()
 

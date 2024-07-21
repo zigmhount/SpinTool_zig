@@ -198,7 +198,7 @@ def toAnalogVolumeValue(controllerValue):
     return controllerValue / 256
 
 def toControllerVolumeValue(analogValue):
-    return analogValue * 256
+    return int(analogValue * 256)
 
 def fromControllerAnalogVolume(controllerValue):
     return controllerValue / 127

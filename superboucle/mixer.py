@@ -130,20 +130,20 @@ class Mixer(QDialog, Ui_Dialog):
 
     # update SONG VOLUME GUI
     def updateSongVolumeGui(self, value):
-        self.song_vol_slider.setValue(value)
+        self.song_vol_slider.setValue(int(value))
         self.song_vol_label.setText(str(int(common.toAnalogVolumeValue(value)*100*2))) # =  / 256
 
 
     # set SONG VOLUME
     def setSongVolume(self):
         self.gui.song.volume = common.toAnalogVolumeValue(self.song_vol_slider.value()) # =  / 256
-        self.gui.song_volume_knob.setValue(common.toControllerVolumeValue(self.gui.song.volume)) # = * 256)
+        self.gui.song_volume_knob.setValue(int(common.toControllerVolumeValue(self.gui.song.volume))) # = * 256)
 
 
 
     # MASTER PORT FINAL VOLUME
     def updateMasterVolumeGui(self, value):
-        self.masterport_vol_slider.setValue(value)
+        self.masterport_vol_slider.setValue(int(value))
 
     # MASTER PORT MUTE
     def updateMasterMuteGui(self, value):
